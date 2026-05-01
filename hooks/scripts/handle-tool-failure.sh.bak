@@ -1,0 +1,78 @@
+#!/bin/bash
+# PostToolUseFailure: Handle tool failures during implementation
+# Captures context about the failure for better recovery
+
+# Async hook — don't let parse errors kill the script mid-write
+set +e
+trap 'rm -f "$_tmpfile" 2>/dev/null; exit 0' ERR
+
+# Require jq
+if ! command -v jq &> /dev/null; then
+  exit 0
+fi
+
+# Read failure info from stdin into temp file (async stdin can be unreliable via pipe)
+_tmpfile=$(mktemp 2>/dev/null || echo "/tmp/craft-failure-$$")
+cat > "$_tmpfile"
+
+# Extract failure details
+tool_name=$(jq -r '.tool_name // "unknown"' < "$_tmpfile" 2>/dev/null)
+error=$(jq -r '.error // ""' < "$_tmpfile" 2>/dev/null)
+rm -f "$_tmpfile"
+
+# Only track failures in craft-enabled projects during implementation
+if [ ! -f ".craft/.global-state" ]; then
+  exit 0
+fi
+
+source .craft/.global-state
+
+# Only log failures during active implementation
+if [ -z "$ACTIVE_CYCLE" ] || [ -z "$CURRENT_STORY" ]; then
+  exit 0
+fi
+
+# Log the failure for potential learning capture
+failure_log=".craft/cycles/$ACTIVE_CYCLE/.failures"
+timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+
+# Append to failures log (create if doesn't exist)
+cat >> "$failure_log" << EOF
+---
+timestamp: "$timestamp"
+story: "$CURRENT_STORY"
+chunk: "${CURRENT_CHUNK:-unknown}"
+tool: "$tool_name"
+error: |
+  $error
+EOF
+
+# Provide helpful context back to Claude based on failure type
+case "$tool_name" in
+  "Bash")
+    # Common bash failures
+    if echo "$error" | grep -q "command not found"; then
+      echo "💡 Bash failure: Command not found. Check if the tool is installed or use an alternative."
+    elif echo "$error" | grep -q "Permission denied"; then
+      echo "💡 Bash failure: Permission denied. May need elevated permissions or different approach."
+    elif echo "$error" | grep -q "No such file"; then
+      echo "💡 Bash failure: File not found. Verify the path exists before proceeding."
+    fi
+    ;;
+  "Edit")
+    # Edit failures
+    if echo "$error" | grep -q "not unique"; then
+      echo "💡 Edit failure: String not unique. Add more context to old_string or use replace_all."
+    elif echo "$error" | grep -q "not found"; then
+      echo "💡 Edit failure: String not found. Re-read the file to get current content."
+    fi
+    ;;
+  "Write")
+    # Write failures
+    if echo "$error" | grep -q "Permission"; then
+      echo "💡 Write failure: Permission denied. Check file permissions."
+    fi
+    ;;
+esac
+
+exit 0

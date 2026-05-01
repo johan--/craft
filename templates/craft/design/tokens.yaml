@@ -1,0 +1,158 @@
+# Design Tokens - Craft Design System
+# All code must use these tokens. Hooks enforce compliance.
+# Hardcoded values will be flagged.
+
+# ─────────────────────────────────────────────────────────────
+# COLORS
+# ─────────────────────────────────────────────────────────────
+colors:
+  # Primary palette
+  primary: "{{PRIMARY_COLOR}}"           # Main brand color
+  primary-hover: "{{PRIMARY_HOVER}}"     # Hover state
+  primary-light: "{{PRIMARY_LIGHT}}"     # Backgrounds, badges
+
+  # Neutrals
+  background: "#FFFFFF"                  # Page background
+  surface: "#F9FAFB"                     # Card backgrounds
+  surface-hover: "#F3F4F6"               # Hover state
+  border: "#E5E7EB"                      # Borders, dividers
+  border-strong: "#D1D5DB"               # Emphasized borders
+
+  # Text
+  text-primary: "#111827"                # Main text
+  text-secondary: "#6B7280"              # Secondary text
+  text-muted: "#9CA3AF"                  # Muted/disabled text
+  text-inverse: "#FFFFFF"                # Text on dark backgrounds
+
+  # Semantic
+  success: "#10B981"                     # Success states
+  success-light: "#D1FAE5"               # Success backgrounds
+  warning: "#F59E0B"                     # Warning states
+  warning-light: "#FEF3C7"               # Warning backgrounds
+  error: "#EF4444"                       # Error states
+  error-light: "#FEE2E2"                 # Error backgrounds
+  info: "#3B82F6"                        # Info states
+  info-light: "#DBEAFE"                  # Info backgrounds
+
+# ─────────────────────────────────────────────────────────────
+# SPACING
+# ─────────────────────────────────────────────────────────────
+spacing:
+  unit: 4px                              # Base unit
+  scale:
+    0: "0px"
+    1: "4px"                             # xs
+    2: "8px"                             # sm
+    3: "12px"
+    4: "16px"                            # md
+    5: "20px"
+    6: "24px"                            # lg
+    8: "32px"                            # xl
+    10: "40px"
+    12: "48px"                           # 2xl
+    16: "64px"
+    20: "80px"
+    24: "96px"
+
+  # Named aliases
+  xs: "4px"
+  sm: "8px"
+  md: "16px"
+  lg: "24px"
+  xl: "32px"
+  2xl: "48px"
+
+# ─────────────────────────────────────────────────────────────
+# BORDER RADIUS
+# ─────────────────────────────────────────────────────────────
+radius:
+  none: "0px"
+  sm: "4px"                              # Subtle rounding
+  md: "8px"                              # Default for cards, inputs
+  lg: "12px"                             # Larger cards, modals
+  xl: "16px"                             # Extra large
+  full: "9999px"                         # Pills, avatars
+
+# ─────────────────────────────────────────────────────────────
+# TYPOGRAPHY
+# ─────────────────────────────────────────────────────────────
+typography:
+  # Font families
+  font-sans: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  font-mono: "JetBrains Mono, 'Fira Code', Consolas, monospace"
+
+  # Font sizes (px)
+  text-xs: 12
+  text-sm: 14
+  text-base: 16
+  text-lg: 18
+  text-xl: 20
+  text-2xl: 24
+  text-3xl: 30
+  text-4xl: 36
+
+  # Font weights
+  weight-normal: 400
+  weight-medium: 500
+  weight-semibold: 600
+  weight-bold: 700
+
+  # Line heights
+  leading-none: 1
+  leading-tight: 1.25
+  leading-snug: 1.375
+  leading-normal: 1.5
+  leading-relaxed: 1.625
+  leading-loose: 2
+
+  # Letter spacing
+  tracking-tighter: "-0.05em"
+  tracking-tight: "-0.025em"
+  tracking-normal: "0em"
+  tracking-wide: "0.025em"
+
+# ─────────────────────────────────────────────────────────────
+# SHADOWS
+# ─────────────────────────────────────────────────────────────
+shadows:
+  none: "none"
+  sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
+  md: "0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04)"
+  lg: "0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04)"
+  xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+
+# ─────────────────────────────────────────────────────────────
+# TRANSITIONS
+# ─────────────────────────────────────────────────────────────
+transitions:
+  fast: "150ms ease"                     # Micro-interactions
+  normal: "200ms ease"                   # Standard transitions
+  slow: "300ms ease"                     # Larger animations
+
+  # Easing functions
+  ease-in: "cubic-bezier(0.4, 0, 1, 1)"
+  ease-out: "cubic-bezier(0, 0, 0.2, 1)"
+  ease-in-out: "cubic-bezier(0.4, 0, 0.2, 1)"
+
+# ─────────────────────────────────────────────────────────────
+# Z-INDEX
+# ─────────────────────────────────────────────────────────────
+z-index:
+  dropdown: 1000
+  sticky: 1020
+  fixed: 1030
+  modal-backdrop: 1040
+  modal: 1050
+  popover: 1060
+  tooltip: 1070
+  toast: 1080
+
+# ─────────────────────────────────────────────────────────────
+# BREAKPOINTS
+# ─────────────────────────────────────────────────────────────
+breakpoints:
+  sm: "640px"                            # Mobile landscape
+  md: "768px"                            # Tablet
+  lg: "1024px"                           # Desktop
+  xl: "1280px"                           # Large desktop
+  2xl: "1536px"                          # Extra large

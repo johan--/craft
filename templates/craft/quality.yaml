@@ -1,0 +1,160 @@
+# Quality Configuration - Craft Harness
+# Philosophy: Pristine by default (Stripe, Linear, Vercel level)
+
+philosophy: pristine
+# pristine = industry-leading, not "good enough"
+# This is the ONLY default. We don't ship mediocre.
+
+# ─────────────────────────────────────────────────────────────
+# VISUAL STANDARDS (all required for pristine)
+# ─────────────────────────────────────────────────────────────
+standards:
+  visual:
+    pixel_perfect_alignment: true
+    consistent_spacing: true        # Tokens only, no magic numbers
+    smooth_animations: true         # 60fps, 150ms default
+    responsive: true                # Mobile-first, all breakpoints
+
+  interaction:
+    loading_feedback: skeleton      # Skeletons, not spinners
+    optimistic_updates: true        # Where safe
+    error_recovery: true            # Help fix, not just display
+    keyboard_navigable: true
+    touch_targets: 44px             # Minimum for mobile
+
+  performance:
+    core_web_vitals: green
+    bundle_size: monitored
+    lazy_loading: below_fold
+
+  accessibility:
+    wcag_level: AA
+    screen_reader_tested: true
+    color_contrast: verified
+    focus_indicators: visible
+
+# ─────────────────────────────────────────────────────────────
+# QUALITY GATES (all must pass before "complete")
+# ─────────────────────────────────────────────────────────────
+gates:
+  # NOTE: Commands use $PM variable which should be detected from:
+  # 1. .craft/project.md (package_manager field)
+  # 2. Lockfiles (pnpm-lock.yaml, yarn.lock, bun.lockb, package-lock.json)
+  # Default fallback is npm if neither found
+
+  typecheck:
+    enabled: true
+    command: "$PM run typecheck"
+    blocking: true
+
+  lint:
+    enabled: true
+    command: "$PM run lint"
+    fix_automatically: true
+    blocking: true
+
+  format:
+    enabled: true
+    command: "$PM run format:check"
+    fix_automatically: true
+    blocking: false               # Auto-fix, don't block
+
+  tests:
+    enabled: true
+    scope: affected               # Only run affected tests
+    command: "$PM test -- --passWithNoTests"
+    coverage_threshold: 80        # High bar for pristine
+    blocking: true
+
+  accessibility:
+    enabled: true
+    tool: axe-core
+    level: AA
+    blocking: true
+
+  build:
+    enabled: true
+    command: "$PM run build"
+    blocking: true
+
+# ─────────────────────────────────────────────────────────────
+# POLISH REQUIREMENTS (ALL required for pristine)
+# ─────────────────────────────────────────────────────────────
+polish:
+  loading_states:
+    required: true
+    style: skeleton               # Not spinners
+    description: "Every async operation shows skeleton loading"
+
+  error_handling:
+    required: true
+    style: recovery               # Help user fix, not just show error
+    description: "Errors explain what happened and how to fix it"
+
+  empty_states:
+    required: true
+    style: helpful                # Illustration + action + copy
+    description: "Never show blank screens, always guide next action"
+
+  keyboard_navigation:
+    required: true
+    description: "All interactive elements reachable via keyboard"
+
+  responsive:
+    required: true
+    breakpoints:
+      - mobile     # < 640px
+      - tablet     # 640px - 1024px
+      - desktop    # > 1024px
+    description: "Works beautifully at all screen sizes"
+
+  animations:
+    required: true                # YES required for pristine
+    style: subtle                 # Micro-interactions, not flashy
+    duration: 150ms               # Default, snappy
+    description: "Smooth, purposeful motion that guides attention"
+
+# ─────────────────────────────────────────────────────────────
+# APPROVAL MODEL (nothing happens without consent)
+# ─────────────────────────────────────────────────────────────
+approval:
+  before_implementation: true     # Review plan before coding
+  after_each_chunk: true          # Checkpoint after each chunk
+  before_complete: true           # Final review before marking done
+  before_locking_pattern: true    # Confirm before making standard
+
+# ─────────────────────────────────────────────────────────────
+# SELF-CRITIQUE (Claude compares against standards)
+# ─────────────────────────────────────────────────────────────
+self_critique:
+  enabled: true
+  compare_against:
+    - inspiration_sites           # Does it match the vibe?
+    - locked_patterns             # Does it follow standards?
+    - design_tokens               # Are tokens used correctly?
+  must_acknowledge_gaps: true     # Can't hide issues
+
+# ─────────────────────────────────────────────────────────────
+# PREVIEW BEFORE COMPLETE
+# ─────────────────────────────────────────────────────────────
+preview:
+  enabled: true
+  generate_url: true              # Local or Vercel preview
+  capture_screenshot: true
+  responsive_check:
+    - mobile
+    - desktop
+
+# ─────────────────────────────────────────────────────────────
+# HUMAN REVIEW CHECKLIST
+# ─────────────────────────────────────────────────────────────
+review:
+  required_for:
+    - complete
+  checklist:
+    - "Matches design intent"
+    - "Matches or exceeds locked patterns"
+    - "Works on mobile"
+    - "Error states tested"
+    - "Copy is clear and helpful"
+    - "Would I be proud to show this?"

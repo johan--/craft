@@ -1,0 +1,8 @@
+# Craft Global State
+# This file tracks the current state of the Craft harness
+
+ACTIVE_CYCLE=""
+CURRENT_STORY=""
+DEFAULT_MODE="creative"
+LAST_ACTIVITY=""
+BACKLOG_COUNT=0

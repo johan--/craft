@@ -1,0 +1,10 @@
+name: {{CYCLE_NAME}}
+title: "{{CYCLE_TITLE}}"
+status: planning
+created: {{DATE}}
+updated: {{DATE}}
+target: {{CYCLE_TARGET}}
+focus: {{CYCLE_FOCUS}}
+
+goals:
+  - {{GOAL_1}}

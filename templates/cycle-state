@@ -1,0 +1,11 @@
+# Cycle State
+# Runtime state for active implementation session
+
+CYCLE_NAME="{{CYCLE_NAME}}"
+CYCLE_STATUS="planning"
+CURRENT_STORY=""
+CURRENT_CHUNK=0
+TOTAL_CHUNKS=0
+LAST_VALIDATION=""
+LAST_CHECKPOINT=""
+TOUCHED_FILES=""

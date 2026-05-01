@@ -1,0 +1,52 @@
+# Project Conventions - CLI / Plugin / Library projects
+# Naming, structure, and code style conventions
+
+last_updated: "{{DATE}}"
+
+naming:
+  # File naming conventions
+  commands: "kebab-case"           # my-command.md
+  skills: "kebab-case"             # my-skill
+  agents: "kebab-case"             # my-agent.md
+  hooks: "kebab-case"              # my-hook.sh
+  scripts: "kebab-case"            # my-script.sh
+  templates: "kebab-case"          # my-template.md
+
+  # Code naming conventions
+  functions: "camelCase"           # myFunction()
+  classes: "PascalCase"            # MyClass
+  constants: "SCREAMING_SNAKE"     # MY_CONSTANT
+  variables: "camelCase"           # myVariable
+
+frontmatter:
+  # Standard fields for different file types
+  commands:
+    required: [name, description]
+    optional: [version]
+  skills:
+    required: [name, description, version]
+  agents:
+    required: [name, description, model, tools]
+    optional: [permissionMode, disallowedTools, allowedPrompts, hooks]
+
+file_structure:
+  # Where different file types live
+  commands: "commands/{name}.md"
+  skills: "skills/{name}/SKILL.md"
+  agents: "agents/{name}.md"
+  hooks_config: "hooks/hooks.json"
+  hooks_scripts: "hooks/scripts/{name}.sh"
+  templates: "templates/{name}.md"
+  tests: "__tests__/{name}.test.ts"
+
+versioning:
+  format: "semver"                 # major.minor.patch
+  changelog: "CHANGELOG.md"
+
+documentation:
+  readme: "README.md"
+  api: "docs/api.md"
+  contributing: "CONTRIBUTING.md"
+
+# Customize based on your project's specific conventions
+# This file is a starting point — adapt to your needs

@@ -1,0 +1,73 @@
+#!/bin/bash
+# Update-progress: Update story and state files after successful edits
+# Keeps track of which files were touched during implementation
+
+# Async hook — don't let parse errors kill the script mid-write
+set +e
+trap 'rm -f "$_tmpfile" 2>/dev/null; exit 0' ERR
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Require jq for JSON parsing
+if ! command -v jq &> /dev/null; then
+  exit 0
+fi
+
+# Read input from stdin into temp file (avoids shell variable size limits in async context)
+_tmpfile=$(mktemp 2>/dev/null || echo "/tmp/craft-progress-$$")
+cat > "$_tmpfile"
+
+tool_name=$(jq -r '.tool_name // empty' < "$_tmpfile" 2>/dev/null)
+file_path=$(jq -r '.tool_input.file_path // .tool_input.path // empty' < "$_tmpfile" 2>/dev/null)
+rm -f "$_tmpfile"
+
+# Skip tracking for .craft/ paths - these are harness state files, not implementation
+if [[ "$file_path" == .craft/* ]] || [[ "$file_path" == */.craft/* ]]; then
+  exit 0
+fi
+
+# Resolve project root (handles monorepo)
+source "$SCRIPT_DIR/find-project-root.sh" 2>/dev/null || exit 0
+
+# Only track if .craft exists and we have an active story
+if [ ! -d "${PROJECT_ROOT}.craft" ]; then
+  exit 0
+fi
+
+if [ ! -f "${PROJECT_ROOT}.craft/.global-state" ]; then
+  exit 0
+fi
+
+source "${PROJECT_ROOT}.craft/.global-state"
+
+if [ -z "$ACTIVE_CYCLE" ] || [ -z "$CURRENT_STORY" ]; then
+  exit 0
+fi
+
+# Update last activity timestamp
+echo "LAST_ACTIVITY=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" >> "${PROJECT_ROOT}.craft/.global-state.tmp"
+grep -v "^LAST_ACTIVITY=" "${PROJECT_ROOT}.craft/.global-state" >> "${PROJECT_ROOT}.craft/.global-state.tmp" 2>/dev/null || true
+mv "${PROJECT_ROOT}.craft/.global-state.tmp" "${PROJECT_ROOT}.craft/.global-state"
+
+# Track touched files in cycle state
+if [ -f "${PROJECT_ROOT}.craft/cycles/$ACTIVE_CYCLE/.state" ]; then
+  state_file="${PROJECT_ROOT}.craft/cycles/$ACTIVE_CYCLE/.state"
+
+  # Add file to touched files list (if not already there)
+  if ! grep -q "TOUCHED_FILES=.*$file_path" "$state_file" 2>/dev/null; then
+    if grep -q "^TOUCHED_FILES=" "$state_file"; then
+      # Append to existing list
+      sed -i.bak "s|^TOUCHED_FILES=\"\(.*\)\"|TOUCHED_FILES=\"\1 $file_path\"|" "$state_file"
+      rm -f "$state_file.bak"
+    else
+      # Create new list
+      echo "TOUCHED_FILES=\"$file_path\"" >> "$state_file"
+    fi
+  fi
+
+  # Update last checkpoint timestamp
+  sed -i.bak "s|^LAST_CHECKPOINT=.*|LAST_CHECKPOINT=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"|" "$state_file" 2>/dev/null || true
+  rm -f "$state_file.bak"
+fi
+
+exit 0

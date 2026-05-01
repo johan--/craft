@@ -1,0 +1,11 @@
+{
+  "name": "craft",
+  "version": "1.44.0",
+  "description": "Creative-first, feedback-loop-driven development harness. Riff on ideas, lock decisions, execute with confidence.",
+  "author": {
+    "name": "Darin Drobinski"
+  },
+  "repository": "https://github.com/drobins25/craft-plugin",
+  "license": "MIT",
+  "keywords": ["development", "workflow", "creative", "harness"]
+}

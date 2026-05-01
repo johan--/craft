@@ -1,0 +1,84 @@
+# Cycle Learnings
+# Auto-populated during implementation, processed at cycle-complete
+# Schema matches craft-story-implement.md canonical format
+
+conventions: []
+  # - pattern: "Use Zustand for client state"
+  #   evidence:
+  #     - source: user_statement
+  #       quote: "We use Zustand here"
+  #       story: "[story-name]"
+  #       date: 2026-01-01
+  #   occurrences: 1
+  #   status: pending
+  #   section: stack  # stack | patterns | preferences
+
+enforcements: []
+  # - pattern: "Never use 'any' type"
+  #   evidence:
+  #     - source: user_correction
+  #       quote: "Don't use any, type it properly"
+  #       file: "[file where correction happened]"
+  #       story: "[story-name]"
+  #       date: 2026-01-01
+  #   occurrences: 1
+  #   status: pending
+  #   rule_name: no-any-type
+  #   paths: ["**/*.ts", "**/*.tsx"]
+
+behaviors: []
+  # - pattern: "Never skip pre-existing code"
+  #   evidence:
+  #     - source: user_correction
+  #       quote: "Don't skip that"
+  #       story: "[story-name]"
+  #       date: 2026-01-01
+  #   occurrences: 1
+  #   status: pending
+
+automations: []
+  # - name: prettier-on-edit
+  #   trigger: "After editing .tsx files"
+  #   action: "prettier --write"
+  #   evidence:
+  #     - source: user_request
+  #       quote: "Always run prettier after"
+  #       story: "[story-name]"
+  #       date: 2026-01-01
+  #   occurrences: 1
+  #   status: pending
+  #   hook_event: PostToolUse
+  #   hook_matcher: "Write|Edit"
+
+skills: []
+  # - name: our-form-pattern
+  #   description: "How we build forms..."
+  #   evidence:
+  #     - source: user_explanation
+  #       quote: "Let me explain how we do forms..."
+  #       story: "[story-name]"
+  #       date: 2026-01-01
+  #   occurrences: 1
+  #   status: pending
+  #   canonical_example: "[reference file]"
+  #   key_points: [...]
+
+workflows: []
+  # - name: create-component
+  #   description: "Create component with test"
+  #   steps: [...]
+  #   evidence:
+  #     - source: repeated_pattern
+  #       files: [...]
+  #       story: "[story-name]"
+  #       date: 2026-01-01
+  #   occurrences: 1
+  #   status: pending
+  #   allowed_tools: [Read, Write, Edit]
+
+# Metadata
+meta:
+  cycle: ""
+  started: ""
+  last_updated: ""
+  stories_processed: 0

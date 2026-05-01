@@ -1,0 +1,63 @@
+# Creative Pending Findings
+# Delight opportunities, feature ideas, and enhancement suggestions
+# Status: pending | story_created | dismissed
+
+updated: null
+scope: null
+findings: []
+
+# Example finding:
+#
+# - id: creative-001
+#   priority: medium  # high | medium | low (no critical for creative)
+#   title: First task completion feels flat
+#   found_at: /tasks
+#   component: TaskList
+#
+#   # The opportunity
+#   opportunity: |
+#     Completing the first task is a key activation moment. Currently,
+#     the task just gets a checkmark with no celebration. This is a
+#     missed chance to create emotional connection and reinforce the
+#     behavior we want users to repeat.
+#
+#   # Category of delight
+#   category: celebration  # micro-interaction | celebration | surprise | personality | onboarding
+#
+#   # Options with tradeoffs
+#   options:
+#     - label: Confetti animation
+#       description: Burst of confetti particles when task completes
+#       effort: small
+#       impact: high
+#       inspiration: Duolingo streak celebrations
+#       recommended: true
+#
+#     - label: Achievement badge popup
+#       description: "First Task Complete!" badge with animation
+#       effort: medium
+#       impact: medium
+#       inspiration: GitHub achievement badges
+#       recommended: false
+#
+#     - label: Encouraging toast message
+#       description: "You did it! First task down." with emoji
+#       effort: small
+#       impact: medium
+#       inspiration: Notion's friendly toasts
+#       recommended: false
+#
+#   # Why Claude recommends the top option
+#   recommendation_rationale: |
+#     Confetti has the highest emotional impact for minimal effort.
+#     It's become a recognizable "celebration" pattern that users
+#     understand immediately. The animation can be subtle enough
+#     not to annoy on subsequent completions.
+#
+#   # Evidence
+#   screenshot: screenshots/creative-001-flat-completion.png
+#   inspiration_screenshots:
+#     - screenshots/creative-001-ref-duolingo.png
+#
+#   status: pending
+#   discovered: 2024-01-31T10:30:00

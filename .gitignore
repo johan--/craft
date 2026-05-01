@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+
+# Craft ephemeral/runtime files
+.craft/.global-state
+.craft/.continuation
+.craft/.chunk-state
+.craft/.active-fix
+.craft/.pinned-project
+.craft/.exports/
+.craft/cycles/*/.state
+.craft/cycles/.state
+.craft/cycles/*/.events/
+.craft/cycles/*/.usage/
+.craft/cycles/*/.failures
+.craft/cycles/*/.craft/
+.craft/browser/snapshots/

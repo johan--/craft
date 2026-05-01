@@ -1,0 +1,66 @@
+# Style Pending Findings
+# Token violations, pattern drift, and design consistency issues
+# Status: pending | story_created | dismissed
+
+updated: null
+scope: null
+findings: []
+
+# Example finding:
+#
+# - id: style-001
+#   priority: high  # critical | high | medium | low
+#   title: Hardcoded colors in Header
+#   component: Header
+#
+#   # What was violated
+#   violation_type: token  # token | pattern | component | responsive
+#
+#   # Specific violations found
+#   violations:
+#     - file: src/components/Header.tsx
+#       line: 42
+#       code: 'className="text-[#6B7280]"'
+#       found: "#6B7280"
+#       should_be: text-secondary
+#       token_ref: colors.text.secondary
+#
+#     - file: src/components/Header.tsx
+#       line: 58
+#       code: 'className="text-[#1F2937]"'
+#       found: "#1F2937"
+#       should_be: text-primary
+#       token_ref: colors.text.primary
+#
+#   # Why this matters
+#   impact: |
+#     Hardcoded colors bypass the design system. When tokens are
+#     updated (e.g., for dark mode or brand refresh), these values
+#     won't change, causing visual inconsistency.
+#
+#   # Fix options
+#   fix_options:
+#     - label: Replace with Tailwind classes
+#       description: Change text-[#6B7280] to text-secondary
+#       effort: small
+#       recommended: true
+#
+#     - label: Extract to CSS variables
+#       description: Create --header-text variable, use in component
+#       effort: medium
+#       recommended: false
+#       rationale: Overkill when Tailwind classes exist
+#
+#   # Why Claude recommends the top option
+#   recommendation_rationale: |
+#     Direct Tailwind class replacement is the simplest fix. The
+#     tokens already exist in the design system, just need to use them.
+#
+#   # Reference to locked pattern (if applicable)
+#   locked_pattern_ref: null
+#
+#   # Evidence
+#   screenshot: screenshots/style-001-header-colors.png
+#
+#   status: pending
+#   discovered: 2024-01-31T10:30:00

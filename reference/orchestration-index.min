@@ -1,0 +1,61 @@
+v1|craft-orchestration-index
+=ROUTING
+in-progress story|AskUser: Continue? → story-continue
+planning cycle|All ready? → cycle-start | Still planning? → cycle-design
+pending requests|AskUser: Review? → /craft Step 5b
+status:planning (no chunks)|plan-chunks first
+status:ready|story-implement
+in backlog|cycle-assign first
+mid-chunk (CHUNK>0)|Continue implement loop
+validation FAILED (test)|test-fix (via story-implement)
+validation FAILED (build/lint)|refine-chunk (via story-implement)
+all stories complete|cycle-complete
+post-cycle|analyze (QA,UX,Creative,Style)
+known bug/post-story issue (no active story)|craft:fix (adhoc,no story needed)
+=LOOP
+Per chunk 1..N:
+1.create-checkpoint.sh [story] [chunk]
+2.INVOKE implementer via Task (NEVER implement directly)
+3.INVOKE chunk-validator via Task (haiku)
+4.PASSED:complete-chunk.sh→next chunk | FAILED:Read validate-fix-loop.md→fix(Skill)→re-validate
+5.Loop to 1
+After all: chunk-validator MODE=story-final→self-critique→complete-story.sh
+=CHAINS
+story-implement→[checkpoint→implementer(Task)→chunk-validator(Task,haiku)→ON pass:complete-chunk.sh→ON fail:Read validate-fix-loop.md→fix(Skill)→re-validate]×N→chunk-validator MODE=story-final→complete-story.sh
+test-fix→triage→HAND BACK TO story-implement
+refine-chunk→surgical fix→HAND BACK TO story-implement
+cycle-design→content-spark(per story)→creative-spark(opt)→design-vibe→plan-chunks MODE=batch
+story-new→content-spark→creative-spark(opt)→plan-chunks
+fix→investigate→confidence-check→ON yes:edit→validate symptom|ON no:escalate→story-new
+=RULES
+!implement chunks directly—ALWAYS invoke implementer via Task
+!validate directly—invoke chunk-validator via Task (validate-chunk skill is manual-only)
+!edit .state/.global-state directly—use transition scripts
+!run_in_background for test/typecheck/lint/build—must be synchronous
+!override FAILED verdict—FAILED means FAILED
+!present story content from memory—Read file fresh
+!batch concerns—surface each via AskUserQuestion
++checkpoint before each chunk (create-checkpoint.sh)
++transition scripts for state changes
++breadcrumb before nested skill invocation
++clean up breadcrumb on ALL exit paths
+!stop after chunk/story completes—continue to next chunk or next story
+=SCRIPTS
+start-cycle.sh [cycle]|activate,set ACTIVE_CYCLE
+complete-cycle.sh|archive,clear ACTIVE_CYCLE
+start-story.sh [file]|set CURRENT_STORY,CHUNK=1,status=active
+complete-story.sh [file]|clear CURRENT_STORY,status=complete
+complete-chunk.sh|increment CURRENT_CHUNK
+create-checkpoint.sh [story] [chunk]|git commit+snapshot
+update-global-state.sh KEY VAL|safe .global-state update
+=STATE
+.craft/.global-state|ACTIVE_CYCLE,CURRENT_STORY,PLANNING_CYCLE,RUN_MODE
+.craft/cycles/{c}/.state|CURRENT_CHUNK,TOTAL_CHUNKS,CURRENT_STORY
+.craft/cycles/{c}/cycle.yaml|title,goal,status(planning|ready|active|complete)
+Story frontmatter:status|planning→ready→active→complete
+.craft/.continuation|breadcrumb for nested skills(30min TTL,one-shot)
+.craft/settings.yaml|run_mode_default,parallel planning
+.craft/design/locked.md|locked decisions(enforced by validation)
+.craft/design/tokens.yaml|design tokens(enforced by style-analyzer)
+.craft/fixes/*.md|adhoc fix records(category,root cause,validation)
+.craft/.active-fix|safety marker for in-progress fix(session-start clears)

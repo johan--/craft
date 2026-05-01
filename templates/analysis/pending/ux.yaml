@@ -1,0 +1,53 @@
+# UX Pending Findings
+# Usability issues, accessibility problems, and heuristic violations
+# Status: pending | story_created | dismissed
+
+updated: null
+scope: null
+findings: []
+
+# Example finding:
+#
+# - id: ux-001
+#   priority: high  # critical | high | medium | low
+#   title: No loading state on checkout
+#   found_at: /checkout
+#   component: CheckoutButton
+#
+#   # Nielsen's heuristic violated
+#   heuristic: Visibility of System Status
+#   heuristic_number: 1
+#
+#   # The problem
+#   problem: |
+#     When users click "Place Order", there's no visual feedback that
+#     the action is processing. Users click multiple times thinking
+#     the button didn't work, causing duplicate orders.
+#
+#   # User impact
+#   impact: |
+#     Duplicate charges, frustrated users, support tickets.
+#     Estimated 5-10% of orders affected based on duplicate detection.
+#
+#   # Recommendation (Claude's suggestion)
+#   recommendation:
+#     description: Add loading spinner and disable button during processing
+#     effort: small
+#     rationale: Standard pattern, minimal code change, immediate impact
+#
+#   # Alternative approaches
+#   alternatives:
+#     - description: Optimistic UI with rollback on failure
+#       effort: medium
+#       rationale: Better UX but more complex error handling
+#     - description: Full-page loading overlay
+#       effort: small
+#       rationale: Prevents all interaction but feels heavy
+#
+#   # Evidence
+#   screenshot: screenshots/ux-001-checkout-no-loading.png
+#   lighthouse_score: null
+#   accessibility_issues: []
+#
+#   status: pending
+#   discovered: 2024-01-31T10:30:00
