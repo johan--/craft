@@ -5,6 +5,9 @@ __pycache__/
 # Per-machine GitHub account marker (multi-account routing)
 .gh-account
 
+# Per-machine Claude Code project config (project-local commands, agents, permissions)
+.claude/
+
 # Craft ephemeral/runtime files
 .craft/.global-state
 .craft/.continuation
