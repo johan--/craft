@@ -25,7 +25,26 @@ Claude is smarter now. Trust it to run further. Checkpoint for safety, not for c
 6. **Claude Self-Critiques Before Complete** — Compares against your standards.
 7. **The Harness Evolves** — Gets smarter with every cycle.
 
-## Quick Start
+## Install
+
+Inside Claude Code, run these two commands:
+
+```
+/plugin marketplace add drobins25/craft
+/plugin install craft@craft
+```
+
+The first command registers the Craft marketplace by cloning this repo to `~/.claude/plugins/marketplaces/craft/`. The second installs the plugin from it.
+
+Verify it worked:
+
+```
+/craft
+```
+
+You should see the Craft entry-point prompt.
+
+## Getting Started
 
 ### Initialize a Project
 

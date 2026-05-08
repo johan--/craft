@@ -444,6 +444,7 @@ For each chunk:
 - Console.logs left in code
 - Commented-out code
 - Any `// TODO` without a linked story
+- **Craft workflow leakage in comments** — Never reference chunks, stories, cycles, sprints, or task IDs in code comments (`// chunk 3 calls this`, `# Story: handles auth`, `// from spec`). Code outlives the workflow that produced it; those references belong in commit messages and PR descriptions.
 - Magic numbers without explanation
 - Overly clever one-liners
 - God components (> 200 lines)

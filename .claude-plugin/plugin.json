@@ -5,7 +5,7 @@
   "author": {
     "name": "Darin Drobinski"
   },
-  "repository": "https://github.com/drobins25/craft-plugin",
+  "repository": "https://github.com/drobins25/craft",
   "license": "MIT",
   "keywords": ["development", "workflow", "creative", "harness"]
 }

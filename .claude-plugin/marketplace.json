@@ -1,10 +1,10 @@
 {
-  "name": "craft-local",
-  "description": "Local marketplace for Craft plugin",
+  "name": "craft",
+  "description": "Marketplace for the Craft plugin",
   "version": "1.0.0",
   "owner": {
     "name": "Darin Drobinski",
-    "email": "darin@example.com"
+    "email": "darin@darinbuilds.com"
   },
   "plugins": [
     {

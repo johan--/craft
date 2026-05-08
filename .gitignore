@@ -2,6 +2,9 @@
 __pycache__/
 *.pyc
 
+# Per-machine GitHub account marker (multi-account routing)
+.gh-account
+
 # Craft ephemeral/runtime files
 .craft/.global-state
 .craft/.continuation

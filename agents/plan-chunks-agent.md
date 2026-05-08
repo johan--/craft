@@ -330,6 +330,8 @@ Produce FULL implementation details. Each chunk must be specific enough that an 
 
 **Read the chunk format reference** at the skill's `references/chunk-format-guide.md` relative to the Craft plugin root. If you can locate the Craft plugin root from your context, read it for the full template, quality gate, and bad → mediocre → good examples.
 
+**No craft-workflow leakage in example code.** Code blocks in your Implementation Details must not contain comments referencing chunks, stories, cycles, sprints, or task IDs (`// Chunk 2 spec`, `# Story: handles auth`, `// from this cycle`). The implementer copies the style of your example code verbatim — if your spec includes those references, that pattern leaks into production code where it rots. Workflow context belongs in commit messages and PR descriptions, not in source.
+
 Each chunk MUST include these sections:
 
 ```markdown
