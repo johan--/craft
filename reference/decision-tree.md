@@ -30,7 +30,8 @@ flowchart TD
     READ_STATE -->|OK| CHECK_REQUESTS{"Step 2.5: Pending requests<br/>in .craft/requests/?"}
 
     CHECK_REQUESTS -->|Yes| REQUESTS_GATE["AskUserQuestion:<br/>• Review N pending requests<br/>• Continue to full state scan"]
-    REQUESTS_GATE -->|Review| ROUTE_PLAN["/craft:plan (requests mode)"]
+    REQUESTS_GATE -->|Review| ROUTE_5B["Step 5b inline (in /craft):<br/>review and route requests<br/>(NOT a separate command)"]
+    ROUTE_5B --> CHECK_LEARNINGS
     REQUESTS_GATE -->|Continue| CHECK_LEARNINGS
 
     CHECK_REQUESTS -->|No| CHECK_LEARNINGS{"Learnings > 0?"}
@@ -43,20 +44,18 @@ flowchart TD
 
     CHECK_PENDING --> CHECK_CYCLE{"ACTIVE_CYCLE set?"}
 
-    CHECK_CYCLE -->|Yes| ASK_PICK["AskUserQuestion:<br/>• Pick story from [Cycle]<br/>• Pull from backlog<br/>• Create new story<br/>+ Review N findings (if pending)"]
+    CHECK_CYCLE -->|Yes| ASK_PICK["AskUserQuestion:<br/>• Start [first ready story]<br/>• Pick a different story<br/>• Create new story<br/>+ Review N findings (if pending)"]
     CHECK_CYCLE -->|No| CHECK_BACKLOG{"Backlog has stories?"}
 
-    CHECK_BACKLOG -->|Yes| ASK_START["AskUserQuestion:<br/>• Start cycle with backlog<br/>• Create new story<br/>• Create new cycle<br/>+ Review N findings (if pending)"]
+    CHECK_BACKLOG -->|Yes| ASK_START["AskUserQuestion:<br/>• Start a cycle (designs from backlog)<br/>• Create new story<br/>+ Review N findings (if pending)"]
     CHECK_BACKLOG -->|No| ASK_NEW["AskUserQuestion:<br/>• Create first story<br/>• Create first cycle"]
 
-    ASK_PICK -->|Pick| ROUTE_IMPL["/craft:story-implement"]
-    ASK_PICK -->|Pull| ROUTE_ASSIGN["/craft:cycle-assign"]
+    ASK_PICK -->|Start/Pick| ROUTE_IMPL["/craft:story-implement"]
     ASK_PICK -->|Create| ROUTE_NEW["/craft:story-new"]
     ASK_PICK -->|Review| ROUTE_ANALYZE["/craft:analyze pending"]
 
-    ASK_START -->|Start cycle| ROUTE_CYCLE_START["/craft:cycle-start"]
+    ASK_START -->|Start a cycle| ROUTE_CYCLE_NEW["/craft:cycle-design"]
     ASK_START -->|New story| ROUTE_NEW
-    ASK_START -->|New cycle| ROUTE_CYCLE_NEW["/craft:cycle-design"]
 
     ASK_NEW -->|Story| ROUTE_NEW
     ASK_NEW -->|Cycle| ROUTE_CYCLE_NEW
@@ -76,28 +75,29 @@ flowchart TD
     ASK_CLARIFY --> CLARIFY
     CLARIFY -->|Yes| CHOOSE_PATH{"Step 3: How formed is this idea?"}
 
-    CHOOSE_PATH -->|"Let's get creative"| CONTENT_CREATIVE["Step 3b: Invoke content-spark"]
-    CHOOSE_PATH -->|"I know what I want"| CONTENT_SMART["Step 3b: Invoke content-spark"]
+    CHOOSE_PATH -->|"Just a spark"| SAVE_MIN["Step 10: Save & Place<br/>(minimal — no content-spark, no chunks)"]
+    CHOOSE_PATH -->|"Let's get creative"| CONTENT_CREATIVE["Step 3b: Execute content-spark-inline.md<br/>(inline, NOT Skill tool — chain break)"]
+    CHOOSE_PATH -->|"I know what I want"| CONTENT_SMART["Step 3b: Execute content-spark-inline.md<br/>(inline, NOT Skill tool — chain break)"]
 
     CONTENT_CREATIVE --> CREATIVE["PATH A: Creative Mode"]
     CONTENT_SMART --> SMART["PATH B: Smart Mode"]
 
-    CREATIVE --> SPARK["Step 4: Invoke creative-spark<br/>Generate 3-5 options"]
-    SPARK --> USER_PICK{"User picks option"}
+    CREATIVE --> SPARK["Step 4: Execute creative-spark-inline.md<br/>(inline, NOT Skill tool — chain break)<br/>Generate 2-3 options + visual direction"]
+    SPARK --> USER_PICK["Step 5: User picks option<br/>Visual direction comes from option<br/>(no separate design-vibe per-story)"]
 
-    USER_PICK --> CHECK_UI{"UI work involved?"}
+    USER_PICK --> DESIGN_DECISIONS["Step 6: Capture typed design decisions<br/>AskUserQuestion: layout / component /<br/>density / visibility"]
 
-    CHECK_UI -->|Yes| VIBE["Invoke: design-vibe skill<br/>Establish visual direction"]
-    CHECK_UI -->|No| DESIGN_DECISIONS["Step 6: Design Decisions<br/>AskUserQuestion for each"]
-    VIBE --> DESIGN_DECISIONS
+    DESIGN_DECISIONS --> LOCK_CREATIVE["Decisions stored in story file<br/>(story-scoped, not project-locked)"]
 
-    DESIGN_DECISIONS --> LOCK_CREATIVE["Lock typed decisions<br/>layout/component/density/visibility"]
+    LOCK_CREATIVE --> CONT_OR_SAVE_A{"Continue or save?"}
+    CONT_OR_SAVE_A -->|Save what we have| SAVE
+    CONT_OR_SAVE_A -->|Keep designing| ALIGNMENT
 
-    LOCK_CREATIVE --> ALIGNMENT
-
-    SMART["PATH B: Smart Mode"] --> QUICK["Step 7: Quick decisions only"]
-    QUICK --> LOCK_SMART["Lock decisions"]
-    LOCK_SMART --> ALIGNMENT
+    SMART["PATH B: Smart Mode"] --> QUICK["Step 7: Quick decisions only<br/>(story-scoped, NOT lock-decision unless project-wide)"]
+    QUICK --> CONT_OR_SAVE_B{"Continue or save?"}
+    CONT_OR_SAVE_B -->|Save what we have| SAVE
+    CONT_OR_SAVE_B -->|Keep designing| ALIGNMENT
+    CONT_OR_SAVE_B -->|"Let's get creative"| SPARK
 
     ALIGNMENT["Step 8: Codebase Alignment Check<br/>Spawn Explore agent, investigate codebase"]
     ALIGNMENT --> INVESTIGATE["Read commands/references/alignment-check.md<br/>Surface product questions"]
@@ -109,17 +109,24 @@ flowchart TD
     SCOPE_CHECK -->|No| GAPS
     GAPS -->|No| SET_ALIGNED["Set alignment: complete<br/>in story frontmatter"]
 
-    SET_ALIGNED --> ACCEPTANCE["Step 9: Define acceptance criteria"]
+    SET_ALIGNED --> ACCEPTANCE["Step 9: Define acceptance,<br/>scope, preserve list, dependencies"]
+    ACCEPTANCE --> SAVE
 
-    ACCEPTANCE --> CHUNKS["Step 10: Invoke plan-chunks<br/>Break into implementable pieces"]
+    SAVE["Step 10: Save & Place<br/>Write story file to .craft/backlog/<br/>Status: planning (until chunks planned)"]
+    SAVE --> SAVE_MIN
+    SAVE_MIN --> CHUNK_OFFER{"Step 11: Plan chunks now? (OPTIONAL)"}
 
-    CHUNKS --> CREATE_FILE["Step 11: Create story file<br/>.craft/backlog/[name].md<br/>Status: ready"]
+    CHUNK_OFFER -->|"Yes, plan chunks now"| CHUNKS["Invoke plan-chunks via Skill tool<br/>(this IS a Skill invocation —<br/>plan-chunks does not chain back)<br/>Status → ready"]
+    CHUNK_OFFER -->|"Later, just save spark"| KEEP_PLANNING["Status stays: planning<br/>plan-chunks needed before implementing"]
+    CHUNK_OFFER -->|"Explore creatively first"| SPARK
 
-    CREATE_FILE --> PLACE{"Step 12: Where should it go?"}
+    CHUNKS --> PLACE
+    KEEP_PLANNING --> PLACE
 
-    PLACE -->|"Add to cycle"| MOVE["Run move-story.sh<br/>Move to cycle/stories/"]
-    PLACE -->|"Save to backlog"| DONE["Story in backlog<br/>Ready for later"]
-    MOVE --> IMPLEMENT["Route to /craft:story-implement"]
+    PLACE{"Step 12: Where should it go?"}
+    PLACE -->|"Save to backlog"| DONE_BACKLOG["Stays in .craft/backlog/<br/>Ready for later (user decides when to implement)"]
+    PLACE -->|"Add to current cycle"| MOVE["Run move-story.sh<br/>Move to cycle/stories/<br/>(does NOT auto-implement)"]
+    PLACE -->|"Create new cycle"| ROUTE_CD["/craft:cycle-design"]
 ```
 
 ---
@@ -196,55 +203,54 @@ flowchart TD
 ```mermaid
 %%{init: {'theme': 'dark'}}%%
 flowchart TD
-    CYCLE_NEW["/craft:cycle-design"] --> NAME["Step 1: Name & Goal"]
-    NAME --> SET_PLANNING["Set PLANNING_CYCLE in .global-state"]
+    CYCLE_DESIGN["/craft:cycle-design"] --> MODE_DISPATCH{"Mode dispatch<br/>(args provided?)"}
 
-    SET_PLANNING --> BRAINSTORM["Step 2: Story Brainstorm<br/>Invoke: creative-spark"]
+    MODE_DISPATCH -->|"Args = existing PLANNING cycle"| DETAILING["Read references/cycle-design/<br/>detailing-mode.md<br/>(Resume + flesh out unfinished cycle)"]
+    MODE_DISPATCH -->|"Args = ready/active/complete cycle"| ERR["Error: cycle not in planning.<br/>Use /craft:cycle-start instead"]
+    MODE_DISPATCH -->|"No args (new cycle)"| NAME["Step 1: Name & Goal"]
+
+    NAME --> CREATE_FILES["Create cycle.yaml + .state IMMEDIATELY<br/>(create-cycle.sh)<br/>Set PLANNING_CYCLE in .global-state<br/>(prevents orphaned dirs on interrupt)"]
+    CREATE_FILES --> DEPTH{"Step 1b: Planning depth?"}
+
+    DEPTH -->|"Add stories now"| DEFAULT["Read references/cycle-design/<br/>default-mode.md"]
+    DEPTH -->|"Quick sketch (Roadmap)"| ROADMAP["Read references/cycle-design/<br/>roadmap-mode.md<br/>(story titles only, detail later)"]
+
+    DEFAULT --> BRAINSTORM["Step 2: Brainstorm story list<br/>(plain conversation —<br/>NO skill invocation here:<br/>brainstorm is decomposition,<br/>not creative exploration)"]
     BRAINSTORM --> LIST["Present story list"]
-
-    LIST --> CONFIRM_LIST{"User confirms list?"}
-    CONFIRM_LIST -->|No| ADJUST["Add/remove/adjust stories"]
+    LIST --> CONFIRM_LIST{"User confirms?"}
+    CONFIRM_LIST -->|No| ADJUST["Add/remove/adjust"]
     ADJUST --> LIST
-    CONFIRM_LIST -->|Yes| FLESH_OUT["Step 3: Flesh out each story"]
-
-    FLESH_OUT --> FOR_EACH["FOR EACH STORY"]
+    CONFIRM_LIST -->|Yes| FOR_EACH["FOR EACH STORY (Step 3)"]
 
     FOR_EACH --> STORY_SPARK["3a: Discuss spark"]
-    STORY_SPARK --> CHECK_UI{"UI work?"}
-
-    CHECK_UI -->|Yes| STORY_VIBE["3b: Invoke design-vibe"]
-    CHECK_UI -->|No| STORY_DECIDE["3b: Technical decisions"]
-    STORY_VIBE --> STORY_DECIDE
-
-    STORY_DECIDE --> STORY_LOCK["Invoke: lock-decision<br/>For each choice (typed keys)"]
-    STORY_LOCK --> STORY_ALIGN["3c: Codebase Alignment Check<br/>Read commands/references/alignment-check.md"]
-    STORY_ALIGN --> STORY_INVESTIGATE["Spawn Explore agent<br/>Surface product questions"]
-    STORY_INVESTIGATE --> STORY_GAPS{"Unasked product<br/>questions remain?"}
-    STORY_GAPS -->|Yes| STORY_ASK["AskUserQuestion:<br/>Conflicts, adjacencies, assumptions"]
-    STORY_ASK --> STORY_SCOPE{"Answers expanded scope?"}
-    STORY_SCOPE -->|Yes| STORY_RESEND["SendMessage to same agent<br/>Investigate implications"]
-    STORY_RESEND --> STORY_GAPS
-    STORY_SCOPE -->|No| STORY_GAPS
+    STORY_SPARK --> STORY_CONTENT["3b: content-spark per story<br/>(inline-via-reference)"]
+    STORY_CONTENT --> STORY_PATH{"Creative or smart?"}
+    STORY_PATH -->|Creative| STORY_CREATIVE["creative-spark per story<br/>(inline-via-reference)<br/>visual direction included"]
+    STORY_PATH -->|Smart| STORY_DECIDE["Quick technical decisions"]
+    STORY_CREATIVE --> STORY_LOCK
+    STORY_DECIDE --> STORY_LOCK["lock-decision (typed keys)"]
+    STORY_LOCK --> STORY_ALIGN["3c: Codebase Alignment Check<br/>(commands/references/alignment-check.md)"]
+    STORY_ALIGN --> STORY_GAPS{"Unasked product<br/>questions remain?"}
+    STORY_GAPS -->|Yes| STORY_ASK["AskUserQuestion +<br/>SendMessage loop"]
+    STORY_ASK --> STORY_GAPS
     STORY_GAPS -->|No| STORY_ALIGNED["Set alignment: complete"]
     STORY_ALIGNED --> STORY_ACCEPT["3d: Define acceptance"]
-    STORY_ACCEPT --> STORY_CHUNKS["3e: Invoke plan-chunks"]
-
-    STORY_CHUNKS --> SAVE_STORY["Write story file immediately<br/>.craft/cycles/[name]/stories/"]
-
+    STORY_ACCEPT --> SAVE_STORY["Write story file immediately<br/>.craft/cycles/[name]/stories/<br/>status: planning"]
     SAVE_STORY --> MORE_STORIES{"More stories?"}
-
     MORE_STORIES -->|Yes| FOR_EACH
-    MORE_STORIES -->|No| REVIEW["Step 5: Cycle review"]
+    MORE_STORIES -->|No| VIBE["Step 7: design-vibe<br/>(CYCLE-LEVEL cohesion check<br/>across all UI stories — once per cycle)"]
+    VIBE --> CHUNKS_BATCH["Invoke plan-chunks MODE=batch<br/>(parallel planning across stories)"]
+    CHUNKS_BATCH --> REVIEW["Cycle review"]
 
     REVIEW --> CERTAINTY{"Right stories in right order?"}
     CERTAINTY -->|No| REVISIT["Edit/add/remove/reorder"]
     REVISIT --> REVIEW
+    CERTAINTY -->|Yes| ACTIVATE{"Activate now?"}
 
-    CERTAINTY -->|Yes| CREATE["Step 6: Create cycle.yaml, .state, .learnings.yaml<br/>(stories already saved)"]
-
-    CREATE --> ACTIVATE{"Activate now?"}
-    ACTIVATE -->|Yes| SET_ACTIVE["Clear PLANNING_CYCLE<br/>Set ACTIVE_CYCLE<br/>Route to /craft:cycle-start"]
+    ACTIVATE -->|Yes| SET_ACTIVE["Clear PLANNING_CYCLE<br/>Route to /craft:cycle-start"]
     ACTIVATE -->|No| KEEP_READY["Clear PLANNING_CYCLE<br/>Cycle stays in ready state"]
+
+    ROADMAP --> ROADMAP_DONE["Story titles sketched.<br/>Detail later via<br/>/craft:cycle-design [name]<br/>(re-enters via Detailing Mode)"]
 ```
 
 ---
@@ -381,12 +387,14 @@ flowchart TD
     TYPE -->|UX| UX["Spawn: ux-analyzer agent"]
     TYPE -->|Creative| CREATIVE["Spawn: creative-analyzer agent"]
     TYPE -->|Style| STYLE["Spawn: style-analyzer agent"]
+    TYPE -->|Walkthrough| WALK["Spawn: walkthrough-analyzer agent<br/>(browser, first-time-user simulation)"]
     TYPE -->|Full| ALL["Run all sequentially"]
 
     QA --> SCOPE["Step 3: Select scope"]
     UX --> SCOPE
     CREATIVE --> SCOPE
     STYLE --> SCOPE
+    WALK --> SCOPE
     ALL --> SCOPE
 
     SCOPE --> CHECK_MCP{"chrome-devtools MCP available?"}
