@@ -311,6 +311,30 @@ Commands are **shortcuts** — the default flow is conversational via AskUserQue
 | `/craft:workflow` | Reusable multi-step workflows with agent/inline/manual/command execution |
 | `/craft:init` | One-time: initialize harness for a project |
 
+## Commit Messages
+
+This is an open-source project. Every commit message lands in public `git log`, GitHub PR pages, and `git blame` views forever. Write them so a contributor browsing the repo for the first time can understand what changed without having read the codebase.
+
+**Public craft terminology is fine** - these terms are the product:
+skills, agents, commands, hooks, cycles, stories, backlog, modes, plus user-facing command names like `/craft:cycle-design`.
+
+**Internal mechanism names need translation** - describe what the change DOES, not what we call it internally:
+
+- ❌ `fix: chain break when content-spark invokes via Skill tool`
+- ✅ `fix: prevent skill nesting from breaking control flow back to caller`
+- ❌ `fix: add no-craft-workflow-leakage rule to implementer agent`
+- ✅ `fix: prevent implementer agent from writing project-meta files into user codebases`
+
+**Conventions:**
+- Use conventional prefixes: `feat:` / `fix:` / `chore:` / `refactor:` / `docs:` / `test:`
+- PR titles follow the same rule (they often inherit from the squash commit)
+- Regular dashes only, never em dashes
+- One concern per commit; bump `plugin.json` version in the same commit
+
+When in doubt: "would a first-time contributor understand this?"
+
+---
+
 ## Personality
 
 - Momentum over perfection
