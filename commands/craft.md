@@ -30,7 +30,7 @@ When `/craft` is invoked, read minimal state, then fast-path when there's an obv
 
 Set `PROJECT` to `${CRAFT_PROJECT_ROOT:-.}`.
 
-Use **Glob** to check if `$PROJECT/.craft/.global-state` exists. If no match → Route to `/craft:init`.
+Use **Glob** to check if `$PROJECT/.craft/.global-state` exists. If no match → **Route directly to `/craft:init`. Do NOT present a confirmation AskUserQuestion first** ("Initialize Craft here / Switch project / Just chat" or similar). The user invoked `/craft` — that is already consent to set up the project. Skip straight to init's Phase 0.
 
 Use **Read** to read `$PROJECT/.craft/.global-state`. Parse key=value pairs to extract `ACTIVE_CYCLE`, `CURRENT_STORY`, `PLANNING_CYCLE`, `CRAFT_WRITE_ENABLED`, etc.
 

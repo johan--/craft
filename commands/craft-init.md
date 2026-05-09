@@ -16,13 +16,15 @@ Before scanning or asking questions, check what the user needs.
 Use **AskUserQuestion**:
 ```
 question: "What kind of setup do you need?"
-header: "Init mode"
+header: "Setup"
 options:
   - label: "Full setup (Recommended)"
     description: "Scan project, extract patterns, configure tokens/conventions"
   - label: "Quick setup"
     description: "Just the .craft/ directory structure — for projects with strong existing docs (CLAUDE.md, etc.)"
 ```
+
+**Use these exact option labels and the (Recommended) marker as written.** Do not reframe descriptions, swap the order, or move (Recommended) to a different option based on directory state. Quick setup is for users with a strong existing CLAUDE.md who explicitly want to skip scanning. Full setup is the default for everyone else, **including empty directories** — Phase 3 (the inspiration design session) is the project-DNA flow that runs regardless of whether code is present yet.
 
 **If "Quick setup":**
 
@@ -322,10 +324,10 @@ Use **AskUserQuestion**:
 question: "What's the energy?"
 header: "Energy"
 options:
+  - label: "Steady and solid (Recommended)"
+    description: "Production mode - thorough validation, careful work. Best default for new projects and first-time users."
   - label: "Move fast, break things"
     description: "Startup mode - momentum over perfection"
-  - label: "Steady and solid"
-    description: "Production mode - thorough validation"
   - label: "Learning/exploring"
     description: "Experimental mode - educational checkpoints"
 ```
