@@ -129,10 +129,10 @@ options:
     description: "Plan without content direction - chunks may make content assumptions"
 ```
 
-**If "Run content-spark first":** Invoke `Skill(craft:content-spark)` with the story file path. After it completes, continue to Phase 0.5.
-**If "Skip and plan anyway":** Continue to Phase 0.5.
+**If "Run content-spark first":** Invoke `Skill(craft:content-spark)` with the story file path. After it completes, continue to Phase 0.45.
+**If "Skip and plan anyway":** Continue to Phase 0.45.
 
-**If present:** Continue to Phase 0.5.
+**If present:** Continue to Phase 0.45.
 
 ---
 
@@ -154,7 +154,54 @@ Read `commands/references/alignment-check.md` and follow the alignment loop:
 
 **Batch mode (`MODE: batch`):** Flag stories with `alignment: pending` during triage. Ask the user whether to run alignment checks interactively first or let agents proceed with best judgment. See `commands/references/alignment-check.md` "Batch Planning" section.
 
-**If `alignment: complete`:** Continue to Phase 0.5.
+**If `alignment: complete`:** Continue to Phase 0.46.
+
+---
+
+## Phase 0.46: Creative Spark Prerequisite Check
+
+**Skip if:** Autonomous mode (invoked from `craft:story-implement-auto`).
+**Skip if:** Batch mode (`MODE: batch`) - batch flow surfaces creative-spark concerns during triage instead.
+**Skip if:** Story already has a `## Visual Direction` section with non-empty content (creative-spark already ran).
+
+Read the story file's frontmatter `type` field. Smart-default the prompt based on type:
+
+**For `type: ui`** — Recommend running creative-spark (UI stories benefit from visual riffing before chunks lock the implementation):
+
+```
+question: "Want to riff visual options before planning chunks?"
+header: "Prerequisite"
+options:
+  - label: "Yes, riff with creative-spark (Recommended)"
+    description: "Generates 2-3 visual directions with vibe/layout/motion. Grounds chunk planning in a chosen direction."
+  - label: "Skip - I know what I want"
+    description: "Plan straight to chunks. Creative-spark is still reachable later at chunk-approval time."
+```
+
+**For `type: technical`, `type: content`, or any non-UI type (or missing type)** — Default to Skip:
+
+```
+question: "Want to riff visual options before planning chunks?"
+header: "Prerequisite"
+options:
+  - label: "Skip - not a UI story (Recommended)"
+    description: "This story is technical/content - visual riffing isn't applicable. Plan straight to chunks."
+  - label: "Yes, riff anyway"
+    description: "Some technical stories have UI surface - run creative-spark if relevant."
+```
+
+**If "Yes" (either path):**
+
+⛔ **DO NOT invoke creative-spark via the Skill tool (chain-break risk).** Instead, Read and execute the inline reference:
+
+```
+Read "${CLAUDE_PLUGIN_ROOT}/commands/references/creative-spark-inline.md"
+Execute the creative-spark logic against the current story file.
+```
+
+After creative-spark completes, the story will have a `## Visual Direction` section with the chosen direction's vibe, feel, inspiration, key tokens, and motion. Continue to Phase 0.5.
+
+**If "Skip":** Continue to Phase 0.5.
 
 ---
 
