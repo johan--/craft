@@ -78,6 +78,49 @@ Skip Phase 0, 0a, 0b, 1, 2, and 2b entirely - the session file already has all c
 
 Before asking any questions, understand the project by scanning it.
 
+**Empty-directory pre-check (early skip):**
+
+Before invoking the scanner, check if the directory has any source-relevant files. If empty, the scanner has nothing to extract — skip the agent invocation, write the empty confidence signals directly, and route to Phase 0b for project-type selection.
+
+Use **Glob** at the project root (`${CRAFT_PROJECT_ROOT:-.}`) with these patterns, excluding `.git/**`, `node_modules/**`, and `.craft/**`:
+- `**/*.tsx`, `**/*.jsx`, `**/*.vue`, `**/*.svelte`
+- `**/*.css`, `**/*.scss`, `**/*.sass`, `**/*.less`
+- `**/*.ts`, `**/*.js`, `**/*.mjs`, `**/*.cjs`
+- `**/*.json`, `**/*.yaml`, `**/*.yml`
+- `**/*.md`, `**/*.sh`, `**/*.py`
+
+Sum the matches across all patterns → `total_files`.
+
+**If `total_files == 0`** (truly empty repo):
+
+> "This directory is empty - no code to scan yet. Setting up a fresh scaffold."
+
+Create `.craft/design/` if it doesn't exist:
+
+```bash
+mkdir -p "${CRAFT_PROJECT_ROOT:-.}/.craft/design"
+```
+
+Write `.craft/design/.confidence-signals.yaml` directly using the Write tool with this content (replace `[ISO timestamp]` with the current UTC timestamp in the form `YYYY-MM-DDTHH:MM:SSZ`):
+
+```yaml
+visual_file_count: 0
+scanned_at: "[ISO timestamp]"
+patterns: []
+```
+
+Set the in-memory state for the rest of init:
+- `PROJECT_TYPE` is undetermined (will be asked in Phase 0b)
+- `TECH_STACK` is empty
+- `PATTERNS` is empty
+- `visual_file_count = 0`
+
+Skip Phase 1 entirely (nothing to confirm) and skip directly to Phase 0b for project-type selection. Phase 0b normally serves as fallback when the agent fails — here it serves as the primary path because we know the directory is empty without needing to invoke the agent.
+
+**If `total_files > 0`:** Continue to the scanner agent invocation below (existing flow).
+
+---
+
 **Launch the project-scanner agent:**
 
 > "Let me analyze your project..."
@@ -120,9 +163,9 @@ If the section is missing (agent failed, non-UI project), skip this step. The fi
 
 ---
 
-### Phase 0b: Manual Detection (Fallback Only)
+### Phase 0b: Manual Detection
 
-Only run this if the agent fails. Otherwise skip to Phase 1.
+Reached either when the empty-directory pre-check (Phase 0a) routed here directly, or when the project-scanner agent fails. In both cases the orchestrator needs basic facts about the project type before continuing. When reached from the empty pre-check, the file counts below will all be zero — skip the inference logic and ask the user directly for project type, language, and framework.
 
 Quick detection via file presence:
 
