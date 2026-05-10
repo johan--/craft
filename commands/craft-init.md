@@ -74,6 +74,57 @@ Skip Phase 0, 0a, 0b, 1, 2, and 2b entirely - the session file already has all c
 
 ---
 
+### Phase 0.5: Project Intent (Optional)
+
+Before scanning the codebase, capture the user's project intent in their own words. This becomes substrate for the muse session in Phase 5b and surfaces the user's voice in `project.md`. Skipping is fine — projects that just want structure can move on; the muse session in Phase 5b will also be skipped.
+
+This phase only fires on the Full setup path (Quick setup routes directly to setup script + Phase 6, bypassing everything in between).
+
+Use **AskUserQuestion**:
+```
+question: "Want to capture your project intent now? Two short questions about what you're building."
+header: "Intent"
+options:
+  - label: "Yes, capture intent (Recommended)"
+    description: "Two prompts about what this app does for people - takes 30 seconds"
+  - label: "Skip - just scaffold"
+    description: "No intent capture - skip the muse session later too"
+```
+
+**If "Skip":** Set `INTENT_CAPTURED=false`. Continue to Phase 0a. Phase 5b will skip muse session.
+
+**If "Yes":** Set `INTENT_CAPTURED=true` and ask the two intent prompts:
+
+Use **AskUserQuestion**:
+```
+question: "What's the one thing this app helps people do?"
+header: "What it does"
+options:
+  - label: "Type your answer"
+    description: "Free-text - one sentence is enough"
+```
+
+Capture the free-text response as `PROJECT_INTENT_Q1`. If the user types whitespace-only or empty text, treat as Skip — set `INTENT_CAPTURED=false` and continue.
+
+Use **AskUserQuestion**:
+```
+question: "What's the moment in the app you're most excited to build?"
+header: "Killer moment"
+options:
+  - label: "Type your answer"
+    description: "Free-text - the feature, screen, or interaction you can't stop thinking about"
+```
+
+Capture the free-text response as `PROJECT_INTENT_Q2`. Same whitespace-handling rule.
+
+Both answers will be:
+1. Written verbatim into `project.md` as a `## Project Intent` section in Phase 5
+2. Used as substrate for the muse session in Phase 5b (which generates the Emotional Core)
+
+Continue to Phase 0a.
+
+---
+
 ### Phase 0a: Project Scan
 
 Before asking any questions, understand the project by scanning it.
@@ -962,6 +1013,23 @@ deploy_target: [DEPLOY_TARGET from Phase 1b, or 'unknown' if user picked Not sur
 
 [If DEPLOY_TARGET is known: "This value is a hint for downstream orchestration. When cycle planning offers framework, library, or tooling choices, options compatible with [DEPLOY_TARGET] are marked (Recommended). The user can override at any prompt."]
 
+[If INTENT_CAPTURED=true, include the next two sections. If INTENT_CAPTURED=false, omit both entirely - they get added later if the user re-runs init with intent capture enabled.]
+
+## Project Intent
+
+**What it does for people:** [PROJECT_INTENT_Q1 verbatim]
+
+**Killer moment to build:** [PROJECT_INTENT_Q2 verbatim]
+
+## Emotional Core
+
+[Phase 5 writes the section heading only. Phase 5b's muse session fills in the four fields below.]
+
+**Emotional Job:** [filled by muse session]
+**Identity Question:** [filled by muse session]
+**Killer Moment:** [filled by muse session]
+**Share Trigger:** [filled by muse session]
+
 ## Tech Stack
 
 - **Runtime:** [Node.js/Python/etc]
@@ -1079,6 +1147,37 @@ Otherwise, provide a template for future use.
 #### settings.yaml and .learnings.yaml
 
 These are standard templates — no customization needed from agent findings.
+
+---
+
+### Phase 5b: Muse Session (Optional)
+
+If `INTENT_CAPTURED=true` from Phase 0.5, run a muse session now to capture the Emotional Core. The user has just seen Phase 5 generate project.md, tokens.yaml is locked (if Full setup with inspiration), and PROJECT_INTENT_Q1/Q2 are in memory. This is the moment with maximum substrate for muse.
+
+If `INTENT_CAPTURED=false`, skip this phase entirely and continue to Phase 6.
+
+**If `INTENT_CAPTURED=true`:**
+
+⛔ **DO NOT invoke muse via the Skill tool (chain break - no return-to-caller).** Instead, Read and execute the logic inline:
+
+```
+Read "${CLAUDE_PLUGIN_ROOT}/commands/references/muse-inline.md"
+Execute the muse interrogation logic against:
+  - PROJECT_INTENT_Q1 (from Phase 0.5)
+  - PROJECT_INTENT_Q2 (from Phase 0.5)
+  - .craft/project.md (just generated)
+  - .craft/design/tokens.yaml (if Full setup with inspiration)
+```
+
+The muse-inline reference handles:
+- 4-turn capped session (cannot extend beyond turn 4)
+- Pushing past surface answers toward emotional substrate
+- Synthesizing into a four-field Emotional Core (Emotional Job / Identity Question / Killer Moment / Share Trigger)
+- Writing the `## Emotional Core` section into project.md
+
+After muse completes, continue to Phase 6 (First Cycle Kickoff). The first cycle's planning will have access to the Emotional Core via project.md.
+
+**Skip option mid-session:** If the user signals "wrap" before turn 4, muse synthesizes from what's available and locks early. This is normal — not all projects need 4 turns.
 
 ---
 
