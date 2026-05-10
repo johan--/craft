@@ -113,15 +113,20 @@ if [ -f "$DESIGN_TEMPLATES/schemas.md" ]; then
 fi
 
 # Inspiration files (UI projects only)
+# SKIP_INSPIRATION=1 means Phase 3 inspiration session captured custom sources - don't overwrite
 if [ "$PROJECT_TYPE" != "cli" ]; then
-  if [ -f "$TEMPLATES_DIR/craft/inspiration/sites.md" ]; then
-    sed "s/{{DATE}}/$DATE/g" "$TEMPLATES_DIR/craft/inspiration/sites.md" > .craft/inspiration/sites.md
-    echo -e "  ${GREEN}✓${NC} Created inspiration/sites.md"
-  fi
+  if [ "${SKIP_INSPIRATION:-0}" != "1" ]; then
+    if [ -f "$TEMPLATES_DIR/craft/inspiration/sites.md" ]; then
+      sed "s/{{DATE}}/$DATE/g" "$TEMPLATES_DIR/craft/inspiration/sites.md" > .craft/inspiration/sites.md
+      echo -e "  ${GREEN}✓${NC} Created inspiration/sites.md"
+    fi
 
-  if [ -f "$TEMPLATES_DIR/craft/inspiration/patterns.md" ]; then
-    sed "s/{{DATE}}/$DATE/g" "$TEMPLATES_DIR/craft/inspiration/patterns.md" > .craft/inspiration/patterns.md
-    echo -e "  ${GREEN}✓${NC} Created inspiration/patterns.md"
+    if [ -f "$TEMPLATES_DIR/craft/inspiration/patterns.md" ]; then
+      sed "s/{{DATE}}/$DATE/g" "$TEMPLATES_DIR/craft/inspiration/patterns.md" > .craft/inspiration/patterns.md
+      echo -e "  ${GREEN}✓${NC} Created inspiration/patterns.md"
+    fi
+  else
+    echo -e "  ${GREEN}✓${NC} Skipped inspiration files (Phase 3 captured custom sources)"
   fi
 fi
 

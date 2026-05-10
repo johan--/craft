@@ -801,14 +801,18 @@ Proceed to Phase 4.
 
 Run the setup script with detected project type:
 
-Export `SKIP_TOKENS` before calling the setup script. If the inspiration session already wrote tokens.yaml, prevent the setup script from overwriting it:
+Export `SKIP_TOKENS` and `SKIP_INSPIRATION` before calling the setup script. If Phase 3's inspiration session wrote `tokens.yaml` or captured `inspiration/sites.md`, those flags prevent the setup script from overwriting them:
 
 ```bash
 # If inspiration session already wrote tokens.yaml, tell setup to skip
 if [ -f "${CRAFT_PROJECT_ROOT:-.}/.craft/design/tokens.yaml" ]; then
   SKIP_TOKENS=1
 fi
-SKIP_TOKENS=${SKIP_TOKENS:-0} ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/setup-craft.sh [PROJECT_TYPE]
+# If inspiration session already wrote sites.md, tell setup to skip the inspiration files block
+if [ -f "${CRAFT_PROJECT_ROOT:-.}/.craft/inspiration/sites.md" ]; then
+  SKIP_INSPIRATION=1
+fi
+SKIP_TOKENS=${SKIP_TOKENS:-0} SKIP_INSPIRATION=${SKIP_INSPIRATION:-0} ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/setup-craft.sh [PROJECT_TYPE]
 # PROJECT_TYPE is "ui" or "cli" from Phase 1
 ```
 
