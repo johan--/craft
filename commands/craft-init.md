@@ -236,6 +236,80 @@ options:
 
 ---
 
+### Phase 1b: Deploy Target
+
+Where the user plans to deploy informs downstream stack recommendations. Ask now so cycle planning can reference this hint when offering framework / hosting / tooling choices later.
+
+This is a HINT, not a constraint. The answer is stored in `project.md` as `deploy_target` and read by orchestration prompts to compute (Recommended) markers. The user retains override authority at every downstream prompt.
+
+Use **AskUserQuestion** with options scoped to `PROJECT_TYPE`:
+
+**If `PROJECT_TYPE` is `ui`:**
+```
+question: "Where do you intend to deploy this?"
+header: "Deploy"
+options:
+  - label: "Vercel (Recommended)"
+    description: "Next.js, serverless functions, edge runtime, image optimization"
+  - label: "Netlify"
+    description: "Static sites, Netlify Functions, JAMstack-friendly"
+  - label: "Cloudflare Pages"
+    description: "Edge-first, Workers, KV/D1 for state"
+  - label: "Self-hosted"
+    description: "Docker/VPS/your own infrastructure"
+  - label: "Not sure yet"
+    description: "Decide later - I'll skip stack-specific recommendations"
+```
+
+**If `PROJECT_TYPE` is `cli`:**
+```
+question: "Where do you intend to publish this CLI tool?"
+header: "Distribute"
+options:
+  - label: "npm (Recommended for Node.js)"
+    description: "Standard JavaScript/TypeScript package distribution"
+  - label: "PyPI"
+    description: "Python Package Index"
+  - label: "GitHub Releases"
+    description: "Pre-built binaries via GitHub"
+  - label: "Homebrew"
+    description: "macOS/Linux package manager"
+  - label: "Not sure yet"
+    description: "Decide later"
+```
+
+**If `PROJECT_TYPE` is `api`:**
+```
+question: "Where do you intend to deploy this service?"
+header: "Deploy"
+options:
+  - label: "Fly.io (Recommended)"
+    description: "Edge VMs, simple deploy, generous free tier"
+  - label: "Railway"
+    description: "Git-push deploys, integrated databases"
+  - label: "Render"
+    description: "Managed services, good for full-stack"
+  - label: "Cloud Run / AWS / GCP"
+    description: "Major cloud providers - more setup, more control"
+  - label: "Self-hosted"
+    description: "Docker/VPS/your own infrastructure"
+  - label: "Not sure yet"
+    description: "Decide later"
+```
+
+**For `hybrid`** (UI + backend in one project): Ask the UI question first, then the API question. Capture both answers — typically a hybrid project deploys frontend and backend to different targets (e.g., Vercel + Fly.io). Store as `DEPLOY_TARGET_UI` and `DEPLOY_TARGET_API` separately, then combine into `deploy_target: "vercel + fly-io"` style string in project.md.
+
+**If user picks "Other":** Capture the free-text answer. Slugify (lowercase, spaces → hyphens) before storing.
+
+**If user picks "Not sure yet":** Set `DEPLOY_TARGET=unknown`. Downstream prompts will skip the Recommended-marker influence.
+
+Store the answer:
+- `DEPLOY_TARGET` = chosen option in slug form (e.g., `vercel`, `netlify`, `cloudflare-pages`, `self-hosted`, `npm`, `pypi`, `github-releases`, `homebrew`, `fly-io`, `railway`, `render`, `cloud-run-aws-gcp`, `unknown`, or a free-text slug for "Other")
+
+This value is written to `project.md` in Phase 5 and read by orchestration prompts (cycle-design, story-new, plan-chunks-agent) when offering stack-related options.
+
+---
+
 ### Phase 2: Project-State Matrix
 
 Route the init flow based on what the scanner found. For UI projects, this replaces the old "What are we working with?" question - the visual file count tells us what we're working with.
@@ -873,11 +947,20 @@ This is the key improvement — files are populated from actual project analysis
 name: [project-name from package.json or directory]
 type: [ui/cli/api]
 package_manager: [detected]
+deploy_target: [DEPLOY_TARGET from Phase 1b, or 'unknown' if user picked Not sure yet]
 ---
 
 # [Project Name]
 
 [Brief description from README or inferred from structure]
+
+## Deployment
+
+**Target:** [DEPLOY_TARGET human-readable form]
+
+[If DEPLOY_TARGET is unknown: "Deploy target not specified at init. Stack recommendations will be neutral. Re-run `/craft:init` or edit `deploy_target` in this file's frontmatter when you're ready to commit to a target."]
+
+[If DEPLOY_TARGET is known: "This value is a hint for downstream orchestration. When cycle planning offers framework, library, or tooling choices, options compatible with [DEPLOY_TARGET] are marked (Recommended). The user can override at any prompt."]
 
 ## Tech Stack
 
