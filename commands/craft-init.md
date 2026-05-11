@@ -301,7 +301,7 @@ Use **AskUserQuestion** with options scoped to `PROJECT_TYPE`:
 
 **If `PROJECT_TYPE` is `ui`:**
 ```
-question: "Where do you intend to deploy this?"
+question: "Where do you intend to deploy this? (Type 'not sure' if you haven't decided yet.)"
 header: "Deploy"
 options:
   - label: "Vercel (Recommended)"
@@ -312,15 +312,11 @@ options:
     description: "Edge-first, Workers, KV/D1 for state"
   - label: "Self-hosted"
     description: "Docker/VPS/your own infrastructure"
-  - label: "Other"
-    description: "Type a different target - free-text"
-  - label: "Not sure yet"
-    description: "Decide later - I'll skip stack-specific recommendations"
 ```
 
 **If `PROJECT_TYPE` is `cli`:**
 ```
-question: "Where do you intend to publish this CLI tool?"
+question: "Where do you intend to publish this CLI tool? (Type 'not sure' if you haven't decided yet.)"
 header: "Distribute"
 options:
   - label: "npm (Recommended for Node.js)"
@@ -331,15 +327,11 @@ options:
     description: "Pre-built binaries via GitHub"
   - label: "Homebrew"
     description: "macOS/Linux package manager"
-  - label: "Other"
-    description: "Type a different distribution channel - free-text"
-  - label: "Not sure yet"
-    description: "Decide later"
 ```
 
 **If `PROJECT_TYPE` is `api`:**
 ```
-question: "Where do you intend to deploy this service?"
+question: "Where do you intend to deploy this service? (Type 'not sure' if you haven't decided yet.)"
 header: "Deploy"
 options:
   - label: "Fly.io (Recommended)"
@@ -348,24 +340,26 @@ options:
     description: "Git-push deploys, integrated databases"
   - label: "Render"
     description: "Managed services, good for full-stack"
-  - label: "Cloud Run / AWS / GCP"
-    description: "Major cloud providers - more setup, more control"
   - label: "Self-hosted"
-    description: "Docker/VPS/your own infrastructure"
-  - label: "Other"
-    description: "Type a different deploy target - free-text"
-  - label: "Not sure yet"
-    description: "Decide later"
+    description: "Docker/VPS/k8s/your own infrastructure"
 ```
 
 **For `hybrid`** (UI + backend in one project): Ask the UI question first, then the API question. Capture both answers — typically a hybrid project deploys frontend and backend to different targets (e.g., Vercel + Fly.io). Store as `DEPLOY_TARGET_UI` and `DEPLOY_TARGET_API` separately, then combine into `deploy_target: "vercel + fly-io"` style string in project.md.
 
-**If user picks "Other":** Capture the free-text answer. Slugify (lowercase, spaces → hyphens) before storing.
+**If the user picks an explicit option:** Store the slug form of the label (e.g., `vercel`, `cloudflare-pages`, `self-hosted`, `fly-io`).
 
-**If user picks "Not sure yet":** Set `DEPLOY_TARGET=unknown`. Downstream prompts will skip the Recommended-marker influence.
+**If the user types a free-text response (option 5: "Type something") or routes through option 6 ("Chat about this"):**
+
+Parse the response against three buckets:
+
+1. **Indecision signal** — response matches `not sure`, `tbd`, `skip`, `decide later`, `haven't decided`, `idk`, `unknown`, or any close paraphrase. Set `DEPLOY_TARGET=unknown`. Downstream prompts will skip Recommended-marker influence.
+2. **Recognized free-text target** — response names a deploy target (e.g., `fly.io`, `cloud run`, `aws lambda`, `digital ocean`, `coolify`, `cargo`, `apt`, `winget`). Slugify (lowercase, spaces → hyphens) and store as `DEPLOY_TARGET`.
+3. **Ambiguous** — response doesn't clearly fit either bucket. Ask one clarifying AskUserQuestion: "Want me to record `[their input]` as your deploy target, or leave it as Not sure yet?" Capture their final answer.
+
+This applies to all three blocks above (UI / CLI / API).
 
 Store the answer:
-- `DEPLOY_TARGET` = chosen option in slug form (e.g., `vercel`, `netlify`, `cloudflare-pages`, `self-hosted`, `npm`, `pypi`, `github-releases`, `homebrew`, `fly-io`, `railway`, `render`, `cloud-run-aws-gcp`, `unknown`, or a free-text slug for "Other")
+- `DEPLOY_TARGET` = chosen option in slug form (e.g., `vercel`, `netlify`, `cloudflare-pages`, `self-hosted`, `npm`, `pypi`, `github-releases`, `homebrew`, `fly-io`, `railway`, `render`, `cloud-run-aws-gcp`, `unknown`, or a free-text slug from the parser above)
 
 This value is written to `project.md` in Phase 5 and read by orchestration prompts (cycle-design, story-new, plan-chunks-agent) when offering stack-related options.
 
@@ -548,7 +542,7 @@ Ask which aspects to capture from this source:
 
 Use **AskUserQuestion**:
 ```
-question: "What should I capture from [URL]?"
+question: "What should I capture from [URL]? (Or type which aspects to combine, e.g., 'colors and typography'.)"
 header: "Aspects"
 options:
   - label: "Whole vibe"
@@ -559,11 +553,19 @@ options:
     description: "Font families, sizes, weights"
   - label: "Spacing & layout"
     description: "Spacing scale, component gaps, section padding"
-  - label: "Pick specific aspects"
-    description: "I'll tell you exactly what"
 ```
 
-**If "Pick specific aspects":** Follow up with a free-text prompt: "Which aspects? (e.g., colors and shadows, typography and radius)". Parse the response into aspect categories.
+**If the user types a free-text response (option 5: "Type something") or routes through option 6 ("Chat about this"):**
+
+Parse the response directly against the aspect category enum (`colors`, `typography`, `spacing`, `shadows`, `radius`, `borders`, `whole-vibe`). Common patterns:
+
+- `"colors and typography"` → `[colors, typography]`
+- `"shadows + radius"` → `[shadows, radius]`
+- `"everything except spacing"` → `[colors, typography, shadows, radius, borders]`
+- `"just borders"` → `[borders]`
+- `"whole vibe"` / `"everything"` → `[whole-vibe]` (expands to all categories)
+
+If the response is unparseable or mentions an aspect not in the enum, ask one clarifying AskUserQuestion with the enum members as picks. Don't loop on free-text refinement.
 
 **Aspect categories** (enum used throughout): `colors`, `typography`, `spacing`, `shadows`, `radius`, `borders`, `whole-vibe` (expands to all categories).
 
