@@ -241,7 +241,11 @@ Glob "**/*.md" → count → MD_COUNT
 Glob "**/*.sh" → count → SH_COUNT
 ```
 
-Use these counts to infer project type and stack. Continue to Phase 1 with partial findings.
+Use these counts to infer project type and stack.
+
+**If reached from empty-directory pre-check (Phase 0a):** Skip Phase 1 (nothing to confirm — directory is empty). Ask the user directly for project type, then continue to Phase 1b.
+
+**If reached from agent failure:** Continue to Phase 1 with partial findings.
 
 ---
 
@@ -281,7 +285,7 @@ options:
 **If "Needs significant changes":** Fall back to asking key questions (project type, language, framework). Don't ask about things that are verifiable from files.
 
 **Store confirmed values:**
-- `PROJECT_TYPE` = `ui` | `cli` (API uses cli templates)
+- `PROJECT_TYPE` = `ui` | `cli` | `api` | `hybrid` — preserve through the phase chain so Phase 1b can route by type. When calling `setup-craft.sh` in Phase 4, pass `cli` for `api` and `hybrid` types (they share the CLI scaffolding templates).
 - `TECH_STACK` = agent findings or user corrections
 - `PATTERNS` = discovered patterns for locked.md
 
@@ -308,6 +312,8 @@ options:
     description: "Edge-first, Workers, KV/D1 for state"
   - label: "Self-hosted"
     description: "Docker/VPS/your own infrastructure"
+  - label: "Other"
+    description: "Type a different target - free-text"
   - label: "Not sure yet"
     description: "Decide later - I'll skip stack-specific recommendations"
 ```
@@ -325,6 +331,8 @@ options:
     description: "Pre-built binaries via GitHub"
   - label: "Homebrew"
     description: "macOS/Linux package manager"
+  - label: "Other"
+    description: "Type a different distribution channel - free-text"
   - label: "Not sure yet"
     description: "Decide later"
 ```
@@ -344,6 +352,8 @@ options:
     description: "Major cloud providers - more setup, more control"
   - label: "Self-hosted"
     description: "Docker/VPS/your own infrastructure"
+  - label: "Other"
+    description: "Type a different deploy target - free-text"
   - label: "Not sure yet"
     description: "Decide later"
 ```

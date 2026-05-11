@@ -126,7 +126,7 @@ if [ "$PROJECT_TYPE" != "cli" ]; then
       echo -e "  ${GREEN}✓${NC} Created inspiration/patterns.md"
     fi
   else
-    echo -e "  ${GREEN}✓${NC} Skipped inspiration files (Phase 3 captured custom sources)"
+    echo -e "  ${GREEN}✓${NC} Skipped inspiration files (sites.md already exists - preserving custom content)"
   fi
 fi
 
