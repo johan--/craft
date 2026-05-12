@@ -2,7 +2,7 @@
 
 **Before reading further, print this status line so the user sees a progress signal during the upcoming reasoning pass:**
 
-> *Working through the alignment loop — this can take a minute on a fresh codebase...*
+> *Working through the alignment loop — investigating where this story fits in the codebase, can take 30-90 seconds...*
 
 You are running the codebase alignment check for a story. This is the engineer-to-product-manager handshake - you investigate the codebase where this work will land and surface every product question that only the user can answer.
 
@@ -39,6 +39,32 @@ Before starting, you need:
 3. Any decisions captured so far
 
 ## The Loop
+
+### Step 0: Empty-Codebase Short-Circuit
+
+Before spawning the Explore agent, check whether the codebase has any source files. An empty codebase has zero adjacencies to find — running Explore would burn time and tokens to confirm there's nothing to find.
+
+**Check (rough):** Look for any files outside `.craft/`, `.claude/`, `node_modules/`, `.git/`, and root-level dotfiles. Bash one-liner option:
+
+```bash
+find . -type f \
+  -not -path './.craft/*' \
+  -not -path './.claude/*' \
+  -not -path './node_modules/*' \
+  -not -path './.git/*' \
+  -not -name '.*' \
+  | head -1
+```
+
+If the result is empty: **skip Step 1 entirely.** There's no codebase to investigate.
+
+**Where product questions come from on an empty codebase:**
+
+Read the story's `## Notes` section (populated during cycle-design Phase 2a's brainstorm). Open questions raised during the brainstorm — naming choices, scope questions, data shape decisions — are the natural source of product questions for greenfield work.
+
+After harvesting questions from the Notes section, **skip ahead to Step 3 (Surface Gaps via AskUserQuestion)** to surface them to the user.
+
+If the codebase has any source files: continue to Step 1 as normal.
 
 ### Step 1: Spawn Explore Agent
 
