@@ -233,9 +233,32 @@ Glob "**/*.sh" → count → SH_COUNT
 
 Use these counts to infer project type and stack.
 
-**If reached from empty-directory pre-check (Phase 0a):** Skip Phase 1 (nothing to confirm — directory is empty). Ask the user directly for project type, then continue to Phase 1b.
+**If reached from empty-directory pre-check (Phase 0a):** Skip Phase 1 (nothing to confirm — directory is empty). Ask the user the project-type question below directly, then continue to Phase 1b.
 
 **If reached from agent failure:** Continue to Phase 1 with partial findings.
+
+**Project-type question (used when Phase 1's findings are unavailable):**
+
+Use **AskUserQuestion**:
+```
+question: "What kind of project is this?"
+header: "Project type"
+options:
+  - label: "UI / Web app"
+    description: "Frontend application with screens and user interaction"
+  - label: "CLI tool"
+    description: "Command-line tool installed and run from a terminal"
+  - label: "API / Backend service"
+    description: "Server, API, or backend service - no UI"
+  - label: "Hybrid (UI + backend)"
+    description: "Full-stack app with both frontend and backend in one project"
+```
+
+**Do NOT** add a `(Recommended)` marker or inference suffix based on Phase 0.5's intent answers. Project type is a structural decision; word-matching from free-text intent is unreliable signal and biases a foundational choice. Let the user pick fresh.
+
+Store the chosen option as `PROJECT_TYPE` in slug form: `ui`, `cli`, `api`, or `hybrid`.
+
+If the user types a free-text response (option 5: "Type something") naming a different shape (e.g., "library", "static site", "documentation"), capture it as a free-text slug and proceed. Downstream phases that branch on `PROJECT_TYPE` will fall through to their default paths.
 
 ---
 
