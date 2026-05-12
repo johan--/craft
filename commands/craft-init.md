@@ -366,7 +366,7 @@ Route the init flow based on what the scanner found. For UI projects, this repla
 > "This is a CLI/backend project - I'll set up Project Conventions (naming, structure, code style) and enforce them immediately."
 
 Set `SKIP_TOKENS=0` (CLI tokens are conventions, always generated).
-Skip to Phase 2b (Energy question).
+Continue to Phase 2b.
 
 **If PROJECT_TYPE is `ui` or `hybrid`:** Route by visual file count:
 
@@ -375,14 +375,14 @@ Skip to Phase 2b (Energy question).
 > "Fresh start! I won't guess at design tokens - I'll learn your visual language from what you build. No design tokens yet. When you're ready to establish a design system, re-run `/craft:init` with inspiration or add tokens.yaml manually."
 
 Set `SKIP_TOKENS=1`.
-Skip Phase 3 entirely.
+Continue to Phase 2b.
 
 **Branch: UI existing early (< 5 visual files)**
 
 > "Your project has [N] visual files - not quite enough signal to extract confident design tokens yet. I'll defer tokens and learn from what you build next. When you have more visual code, run `/craft:update-docs` and I'll extract patterns."
 
 Set `SKIP_TOKENS=1`.
-Skip Phase 3 entirely.
+Continue to Phase 2b.
 
 **Branch: UI existing mid (5-20 visual files)**
 
@@ -412,7 +412,7 @@ options:
 If "Yes": Set `SKIP_TOKENS=0`. The scanner findings feed into Phase 5 file generation (tokens.yaml gets populated from extracted values, not the generic template).
 If "Skip": Set `SKIP_TOKENS=1`.
 
-Skip Phase 3 (no inspiration needed - working from existing code).
+Continue to Phase 2b.
 
 **Branch: UI existing mature (20+ visual files)**
 
@@ -450,34 +450,15 @@ If "Lock all": Write all to tokens.yaml. Set `SKIP_TOKENS=0`.
 If "Review each": Walk through each pattern with individual AskUserQuestion. Set `SKIP_TOKENS=0` if any approved, `1` if all skipped.
 If "Skip all": Set `SKIP_TOKENS=1`.
 
-Skip Phase 3 (no inspiration needed).
-
-**Branch: UI with inspiration**
-
-This branch fires when the user explicitly wants inspiration-driven design. Since the matrix auto-routes based on visual file count, the inspiration path needs a user signal. After the matrix routing above, if the project is a UI project (any visual file count), offer the inspiration option:
-
-Use **AskUserQuestion**:
-```
-question: "Do you have design inspiration to draw from?"
-header: "Inspiration"
-options:
-  - label: "Yes, I have reference sites"
-    description: "Pull colors, typography, spacing from sites I admire"
-  - label: "No, continue with what we have"
-    description: "Use the token decision from above"
-```
-
-**If "Yes":**
-
-> "Let's build your design from inspiration. You can pull colors from one site, typography from another, spacing from a third - and iterate until it feels right."
-
-Proceed to Phase 3 (Inspiration Design Session). Do NOT skip Phase 3 for this branch.
-
-**If "No":** Continue to Phase 2b.
+Continue to Phase 2b.
 
 ---
 
-### Phase 2b: Energy
+### Phase 2b: Energy + Path Selection
+
+Phase 2b runs unconditionally after Phase 2's matrix routing, regardless of project type or visual file count. It captures the project's energy (required by Phase 5's `project.md` template) and then routes UI projects through an inspiration question.
+
+**Step 1 — Energy question (all project types):**
 
 > "What's the energy?"
 
@@ -495,6 +476,33 @@ options:
 ```
 
 **If user provides custom text:** Ask a clarifying AskUserQuestion.
+
+Store the captured energy as `ENERGY_LEVEL`.
+
+**Step 2 — Path selection:**
+
+**If PROJECT_TYPE is `cli` or `api`:** Skip to Phase 4 (setup-craft.sh). No inspiration session for CLI/backend projects.
+
+**If PROJECT_TYPE is `ui` or `hybrid`:** Ask the inspiration question.
+
+Use **AskUserQuestion**:
+```
+question: "Do you have design inspiration to draw from?"
+header: "Inspiration"
+options:
+  - label: "Yes, I have reference sites"
+    description: "Pull colors, typography, spacing from sites I admire"
+  - label: "No, continue with what we have"
+    description: "Use the token decision from Phase 2"
+```
+
+**If "Yes":**
+
+> "Let's build your design from inspiration. You can pull colors from one site, typography from another, spacing from a third - and iterate until it feels right."
+
+Proceed to Phase 3 (Inspiration Design Session).
+
+**If "No":** Skip Phase 3. Continue to Phase 4 (setup-craft.sh).
 
 ---
 
