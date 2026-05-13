@@ -57,9 +57,53 @@ options:
     description: "Speed, reliability, code quality"
 ```
 
-**If user provides custom text:** Use their clarification and proceed to Step 3.
+**If user provides custom text:** Use their clarification and proceed to Step 2.5.
 
-**If idea is already clear:** Skip directly to Step 3.
+**If idea is already clear:** Skip directly to Step 2.5.
+
+### Step 2.5: Planning Source Detection
+
+Before asking "How deep do you want to go?" (Step 3), check whether this project has planning docs that the story could be built from.
+
+**Detection logic:**
+
+Use **Bash**:
+
+```bash
+# Glob planning files and check for concept/initiative frontmatter
+find "$CRAFT_PROJECT_ROOT/.craft/planning" -maxdepth 3 -type f -name "*.md" 2>/dev/null \
+  | xargs grep -l "^concept:\|^initiative:" 2>/dev/null \
+  | head -20
+```
+
+**If zero matches:** skip this step entirely and continue to Step 3. No AskUserQuestion shown. Users who have never used craft planning see zero behavior change.
+
+**If one or more matches:** present the choice via **AskUserQuestion**:
+
+```
+question: "Is this story from planning, or freeform? (I see [N] concepts in .craft/planning/.)"
+header: "Source"
+options:
+  - label: "From planning"
+    description: "Build this story from existing planning docs. I'll walk the concept(s) and produce a thorough story with Reference Materials."
+  - label: "Freeform"
+    description: "Build a fresh story without planning context. Continue with the standard flow."
+```
+
+**If "From planning":**
+
+⛔ **DO NOT invoke story-from-planning via the Skill tool (chain break - no return-to-caller).** Instead, Read and execute the logic inline:
+
+```
+Read "${CLAUDE_PLUGIN_ROOT}/commands/references/story-from-planning.md"
+Execute the phases (1, 2, 3a, 3b, 4, 5, 6, 7) described in that file against the planning corpus.
+```
+
+The reference file owns the entire planning-to-story transformation: concept selection, Explore-agent extraction, gap-fill, file write with all canonical sections including `## Reference Materials`, and mandatory forward-linking to active.md + consumed concepts. When it completes Phase 7, the parent flow is DONE.
+
+**Do NOT continue to Step 3 (Choose Your Path) or Step 3b (Content Check)** after the From planning branch completes. The story file is fully written with `alignment: pending` - the existing alignment-check fires when `/craft:story-implement` runs later.
+
+**If "Freeform":** continue to Step 3 (Choose Your Path) unchanged.
 
 ### Step 3: Choose Your Path
 

@@ -64,7 +64,71 @@ Read the story's `## Notes` section (populated during cycle-design Phase 2a's br
 
 After harvesting questions from the Notes section, **skip ahead to Step 3 (Surface Gaps via AskUserQuestion)** to surface them to the user.
 
-If the codebase has any source files: continue to Step 1 as normal.
+If the codebase has any source files: continue to Step 0.5 as normal.
+
+### Step 0.5: Planning Context Injection (Planning-Sourced Stories Only)
+
+Before spawning the Explore agent, check whether this story was created from a planning concept. If so, build a Planning Context block from the story's Reference Materials so the agent doesn't surface false-positive product questions for decisions already captured in planning.
+
+**Detection:** Read the story frontmatter. If `source_concept:` is populated, this is a planning-sourced story - continue with the injection. If not, skip directly to Step 1 with the existing prompt unchanged.
+
+**Build the Planning Context block (orchestrator-level work, NOT delegated to the Explore agent):**
+
+1. Read the story's `## Reference Materials` section.
+
+2. Parse each citation: extract the file path + anchor(s). Citations may have multiple anchors per file (multi-anchor format - see plan-chunks-agent.md section 1.3.5 for the contract).
+
+3. For each cited file + anchor, use **Read** with the anchor to extract the excerpt. Apply the same anchor-aware reading rules from plan-chunks-agent's Reference Materials contract:
+   - Planning files: locate `## Section` + `### Subheading` / `Decision #N` / dated entry, read that section only
+   - Mockups: read the cited line range or HTML id
+   - locked.md: read Pattern N's section
+   - tokens.yaml: look up the token name
+   - active.md: read the dated entry within `## Recent state changes`
+   - Code files: read the cited function/class or line range
+
+4. **Stale-anchor handling during injection (MANDATORY):** If a cited anchor cannot be resolved (section heading no longer exists, line range out of bounds, Pattern N missing from locked.md), do NOT silently omit. Surface the stale anchor BEFORE spawning the Explore agent via **AskUserQuestion**:
+
+   ```
+   question: "Reference Materials cites '[file path] -> [anchor]' but the anchor doesn't resolve in the current file. The story may have been written against an older version. How should we proceed?"
+   header: "Stale Anchor"
+   options:
+     - label: "Skip this citation"
+       description: "Proceed with alignment-check using the resolved citations only. This citation's content won't reach the agent."
+     - label: "Re-extract from current planning"
+       description: "Restart story creation flow (re-run /craft:story-new From planning) to refresh citations - alignment-check will run afterward."
+     - label: "Provide replacement anchor"
+       description: "Type the correct section/subheading/range manually."
+   ```
+
+   "Skip" -> proceed without that excerpt; "Re-extract" -> exit alignment-check with instruction to re-run story-from-planning; "Provide replacement anchor" -> capture user's input, retry the Read, continue.
+
+5. Concatenate resolved excerpts into the Planning Context block.
+
+6. **Hard 2000-token cap.** If excerpts would exceed 2000 tokens, prioritize in this order and drop lowest-priority until under cap:
+   1. active.md dated entries (highest authority - current state)
+   2. Concept Locked Decisions sections
+   3. Sibling story precedents
+   4. Mockups (visual contracts, less critical for product-question evaluation)
+   
+   If citations are dropped, note this in the Planning Context block so the agent knows content was elided.
+
+**Format of the Planning Context block:**
+
+```
+PLANNING CONTEXT (from story Reference Materials, capped at 2000 tokens):
+
+=== From [file basename] ([anchor]) ===
+[excerpt text]
+
+=== From [next file basename] ([anchor]) ===
+[excerpt text]
+
+...
+
+[If cap was reached: "NOTE: [N] citation(s) dropped due to token cap: [list]. The agent may flag a CONCERN to re-run with narrower Reference Materials."]
+```
+
+Pass this Planning Context block into the Explore agent's prompt in Step 1 (see updated prompt template below).
 
 ### Step 1: Spawn Explore Agent
 
@@ -83,6 +147,11 @@ Agent tool:
     SCOPE: [paste scope if exists]
     DECISIONS: [paste decisions if exist]
     LIKELY FILES: [paste likely files if exist]
+
+    [PLANNING-SOURCED STORIES ONLY - include the Planning Context block built in Step 0.5 here, BEFORE the Investigate instructions:]
+    [PLANNING CONTEXT block from Step 0.5]
+
+    **When evaluating whether the story specifies a product question, FIRST check the Planning Context above (if present). Decisions captured in planning are NOT product questions - do NOT surface them. If the Planning Context note says citations were dropped due to token cap, you may flag a CONCERN that some planning content wasn't injected - the user can address by re-running with narrower Reference Materials.**
 
     Investigate:
     1. Read the files this story will touch and their surrounding context

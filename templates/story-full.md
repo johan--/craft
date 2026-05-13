@@ -74,6 +74,22 @@ risk_tags: []
 
 ```
 
+## Likely Files
+<!-- Scanned at story creation: file paths with create/modify/read-only action tags.
+     Format: `path/to/file.ext` - [action] - [reason]
+     Action tags: modify, create, read-only. Only modify/create count for dependency overlap detection.
+     Read-only entries are how shipped sibling files reach plan-chunks-agent without nesting. -->
+
+## Reference Materials
+<!-- Pinpoint citations for files plan-chunks-agent must read. Anchors by file type:
+     - Planning files: `## Section` + `### Subheading` or `Decision #N` or `[YYYY-MM-DD entry]` (NEVER line numbers)
+     - Mockups: line ranges OR HTML id/data-section attributes
+     - locked.md: Pattern N
+     - tokens.yaml: token name
+     - Code: function/class name preferred over line numbers
+     - active.md dated entries: `## Recent state changes -> [YYYY-MM-DD entry]`
+     Multi-anchor per file is the norm. Absolute paths only (wrapper-vs-nested rule). -->
+
 ## Chunks
 <!-- Implementation chunks -->
 

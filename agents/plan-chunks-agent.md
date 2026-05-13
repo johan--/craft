@@ -94,6 +94,8 @@ Read the story file completely. Extract everything available:
 - **Decisions** — Locked decisions from creative mode
 - **Visual Direction** — Vibe, feel, inspiration, key tokens, motion (UI stories)
 - **Wireframe** — ASCII art layout (UI stories)
+- **Likely Files** — Scanned file list with create/modify/read-only action tags
+- **Reference Materials** — **AUTHORITATIVE pinpoint citations** to concept files, mockups, locked.md patterns, design tokens, active.md dated entries, sibling story precedents. Read these explicitly using the anchors provided. The agent does NOT auto-discover them. See section 1.3.5 below for the full contract.
 
 Not every story has all sections. Sparse stories (just a spark) are fine — you'll gather what's needed in 1.3.
 
@@ -152,6 +154,53 @@ You already read the story in Phase 1.1 — use what you have, don't re-read it.
 - **Test patterns** — Check project.md for test conventions. Read one example test near the story's scope. Note framework, utilities, patterns.
 
 **Sibling story context** is provided by the orchestrator in your prompt. Use it to check file overlap, respect locked decisions from siblings, and reuse rather than rebuild. If none provided, there are no relevant siblings.
+
+### 1.3.5 Reading Reference Materials (Contract)
+
+If the story has a `## Reference Materials` section, treat it as the AUTHORITATIVE pinpoint citation list. Read every entry. These citations are how planning context, mockups, and out-of-project-root files reach you — you do NOT auto-discover them.
+
+**Path resolution.** All paths in this section are absolute. Wrapper-vs-nested monorepo layouts cause project-root derivation to exclude wrapper-level planning concepts; absolute paths are how those files reach you.
+
+**Anchor-aware reading by file type.** Each citation includes an anchor type matching the file. Read ONLY the cited section, NOT the whole file:
+
+| File type | Anchor format | How to read |
+|---|---|---|
+| Planning files (concepts, active.md, READMEs) | `## Section` + `### Subheading` OR `Decision #N` OR `[YYYY-MM-DD entry]` OR table row | Locate the section and subheading; read that section only. Handle BOTH `### Subheading` and `Decision #N` formats — real concepts use both. |
+| active.md dated entries | `## Recent state changes -> [YYYY-MM-DD entry]` | Locate the dated entry within the section; read that entry only. |
+| Mockups / static design artifacts | Line range OR HTML id/data-section | Read the specified range only. For HTML id, locate the element via Grep. |
+| locked.md | `Pattern N` | Read that pattern's section in locked.md. |
+| tokens.yaml | Token name | Look up that key. |
+| Code files / sibling stories | Function/class name OR line range | Read the cited unit only. |
+
+**Multi-anchor citations.** A single file entry may list multiple anchors:
+
+```
+- `/path/to/concept-08.md`:
+  - `## Locked decisions -> ### Architecture: Option B`
+  - `## Locked decisions -> ### Backend shape: DTO Namespacing`
+  - `## Story order rationale` (Address & Contact paragraph)
+```
+
+Read each anchor separately — do NOT expand to whole file.
+
+**Citation-type weights** (how to interpret what you read):
+
+- **Mockup line range = visual CONTRACT.** Binding for layout / fields / order. Do NOT deviate. Chunks must match the mockup.
+- **Concept section + subheading = decision RATIONALE.** Read for "why this over alternatives." Do NOT re-derive — apply the decision as-is.
+- **active.md dated entry = current STATE.** Read as the most recent decision snapshot. SUPERSEDES concept prose for the same decision when dates differ. If active.md and concept conflict on the same decision, active.md wins (it's the more recent record).
+- **locked.md Pattern N = locked BEHAVIOR.** Apply, don't re-invent.
+- **Sibling story precedent = shape REFERENCE.** Mirror; don't copy verbatim.
+
+**Stale anchor handling.** If a cited section / subheading / decision-number no longer exists in the referenced file (planning files churn daily), DO NOT guess and DO NOT fall back to whole-file read. Flag a CONCERN in your report back to the orchestrator. The CONCERN message MUST include:
+
+- The referenced file path
+- The anchor as cited (e.g., `## Locked decisions (this cycle) -> ### Architecture: Option B`)
+- The story's `created:` date (from story frontmatter) — so the user understands when the citation was written
+- Suggested action: "Re-run /craft:story-new (From planning branch) against the current concept to refresh citations, OR proceed with the stale citation if the decision is unchanged."
+
+CONCERNs are surfaced to the orchestrator through plan-chunks SKILL's existing concerns-surfacing flow (Phase S-4/S-5). The user triages each CONCERN with your context block in hand.
+
+**Missing anchor on large file.** If a Reference Materials entry cites a file >500 lines without any anchor pinned, flag a CONCERN using the same context-block format. Do NOT read the whole file blindly. The orchestrator will gap-fill the missing anchor with the user.
 
 ### 1.4 Research Principles
 
