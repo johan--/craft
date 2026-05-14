@@ -594,6 +594,16 @@ After completing your plan:
 
 ---
 
+## Apply Agent Finding Handoff Rule Before Output
+
+**Before formatting your concerns summary for the orchestrator**, Read `commands/references/agent-finding-handoff.md` and apply the Self-Contained Test to every finding. Findings reference identifiers (file paths, function names, locked-decision numbers, commit hashes, table names, acronyms, sibling-story names, etc.) that you found during research. The user reading your summary does NOT have your codebase-research context - bare identifiers force them to investigate what each one means before they can answer your concerns.
+
+Expand identifiers per the Identifier-Type Translation Table in that file. Skip expansion only for identifiers the user themselves just named in this turn, identifiers that ARE the proper-noun subject of the conversation, or standard tool/framework names known broadly (see "When NOT to Expand" in the reference file).
+
+This applies to the concerns table, flagged concerns, decisions made, and design-decision validation - everything in your text output. The story file you wrote in Phase 3.6 preserves its own structure separately.
+
+---
+
 ## Output Format
 
 You have TWO outputs. The story file (written in Phase 3.6) is your primary artifact. Your text output to the orchestrator is ONLY the concerns summary below.

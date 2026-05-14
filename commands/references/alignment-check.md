@@ -189,6 +189,8 @@ Filter to only genuine product questions.
 
 ### Step 3: Surface Gaps via AskUserQuestion
 
+**Before constructing the AskUserQuestion(s)**, Read `commands/references/agent-finding-handoff.md` and apply the Self-Contained Test to each finding the Explore agent surfaced. The user does NOT have the Explore agent's codebase-research context. A finding that names a file path, function, locked-decision number, or pattern identifier without semantic context will force the user to re-investigate what the finding means before answering. Expand identifiers per the Translation Table in that file, then construct the question(s) with expanded content.
+
 **Group related findings in a single message.** Don't pepper the user with one-at-a-time questions. Present them conversationally:
 
 > "Before I plan the chunks, I looked at the codebase where this work lands. A few things came up:"
