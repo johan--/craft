@@ -73,6 +73,8 @@ Stories land in the backlog. Work on them when ready.
 /craft:cycle-assign
 ```
 
+**Planning-sourced cycles:** If you have planning docs in `.craft/planning/` (files with `concept:` or `initiative:` frontmatter), cycle-design detects them. When you mention a specific planning doc in conversation before invoking the command, the orchestrator confirms via a safety gate, captures the source on `cycle.yaml`, and routes story creation through the From planning protocol so each story's spark draws from the planning content. Cycles created without planning sources work exactly as before.
+
 ### Implement
 
 ```

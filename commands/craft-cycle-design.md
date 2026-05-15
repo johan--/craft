@@ -1,6 +1,6 @@
 ---
 name: craft:cycle-design
-description: "Design a cycle — create new cycles with planned stories, detail existing planning cycles, or quick-sketch a roadmap."
+description: "Design a cycle — create new cycles with planned stories, detail existing planning cycles, or quick-sketch a roadmap. Detects planning docs in .craft/planning/ and sources the cycle from them when relevant."
 ---
 
 # Cycle Design
@@ -176,17 +176,53 @@ This ensures nothing gets lost in translation.
 
 ### Step 1: Name & Goal
 
+**Before asking the user anything**, check the conversation that triggered this skill against the **verbatim-quote rule**:
+
+> Can I quote a specific cycle name AND a specific cycle goal verbatim from the conversation that led to invoking cycle-design? Vague references ("a cycle for the auth stuff") don't count - specifics do ("Cycle for the magic-link invite flow, goal: ship token issuance + accept-invite page").
+
+**Path B (orchestrator-held context):** If yes - both name and goal can be quoted verbatim from prior conversation - use those values. Skip the prompts below.
+
+**Path A (cold start / vague context):** If no, or if either is vague, ask the user:
+
 > "What's this cycle about?"
 > [User provides name/theme]
 
 > "What's the goal? What will be true when this cycle is done?"
 > [User describes goal]
 
-**Once the cycle name is confirmed, immediately create the cycle directory and set the planning state:**
+**Additionally, check for planning-source intent.** Scan the conversation for explicit references to specific planning doc paths (e.g., `04-company-onboarding.md`, `planning/feature-X.md`) AND verify those files exist in `.craft/planning/`. If one or more match, prepare them as `source_concept(s)` for the cycle (comma-separated list of paths relative to project root, e.g. `planning/04-company-onboarding.md`). If no planning was referenced, prepare an empty source.
+
+**Safety gate (MANDATORY before `create-cycle.sh` runs):**
+
+Use **AskUserQuestion** to confirm the inferred values before any file write:
+
+```
+question: "I'm about to create cycle '[name]' with goal '[goal]' sourced from [source_concept paths, or 'no planning docs']. Confirm?"
+header: "Confirm cycle"
+options:
+  - label: "Confirm and proceed"
+    description: "Run create-cycle.sh with these values"
+  - label: "Change the source"
+    description: "Different planning doc(s), or remove source"
+  - label: "Change the name or goal"
+    description: "Adjust before creating"
+  - label: "Actually this is freeform"
+    description: "No source_concept, normal flow"
+```
+
+- **Confirm and proceed:** invoke the script with the values shown.
+- **Change the source:** ask the user which planning doc(s) (or none), then re-present the gate.
+- **Change the name or goal:** ask the user for revised values, then re-present the gate.
+- **Actually this is freeform:** clear `source_concept`, then re-present the gate.
+
+The safety gate runs every time, on every path - it cannot be skipped. The user always sees `source_concept` in the question text before it gets written to cycle.yaml.
+
+**After confirmation, create the cycle directory and set the planning state:**
 
 ```bash
 # Create cycle directory with proper auto-numbering, cycle.yaml, and .state
-cycle_dir=$(${CLAUDE_PLUGIN_ROOT}/hooks/scripts/create-cycle.sh "[cycle-slug]" "[Cycle Title]" "[Goal]")
+# 5th arg is comma-separated planning doc paths (empty string for no source)
+cycle_dir=$(${CLAUDE_PLUGIN_ROOT}/hooks/scripts/create-cycle.sh "[cycle-slug]" "[Cycle Title]" "[Goal]" "." "[source-concept-paths]")
 
 # Set planning state
 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/update-global-state.sh PLANNING_CYCLE "$(basename $cycle_dir)"
@@ -194,6 +230,7 @@ ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/update-global-state.sh PLANNING_CYCLE "$(bas
 
 - **`cycle-slug`** = kebab-case slug (e.g., `auth-flow`). The script auto-numbers it (creates `11-auth-flow/` if cycles 1-10 exist).
 - **`Cycle Title`** = human-readable name (e.g., `"Auth Flow"`). Always provide this.
+- **`source-concept-paths`** = comma-separated planning doc paths, or empty string. The script writes the value to `cycle.yaml`'s `source_concept` field (empty becomes `[]`).
 - The script creates `cycle.yaml` and `.state` immediately — no orphaned directories if the session interrupts later.
 - Store the returned `cycle_dir` path — use it for all story file writes in Step 3e.
 

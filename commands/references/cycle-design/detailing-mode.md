@@ -15,15 +15,17 @@ Entered when `/craft` routes here with an existing cycle directory name as arg. 
 If args are provided:
 1. Check if `.craft/cycles/[arg]/` exists
 2. Check if `cycle.yaml` has `status: planning`
-3. If valid: set PLANNING_CYCLE and proceed to Step D1
+3. If valid: set PLANNING_CYCLE, **capture cycle.yaml's `source_concept`** into context, and proceed to Step D1
 4. If invalid: show error and offer cycle picker
 
-Use **Read** to read `.craft/cycles/[arg]/cycle.yaml`. Parse `status:` value.
+Use **Read** to read `.craft/cycles/[arg]/cycle.yaml`. Parse `status:` AND `source_concept:` values.
 
 If the file exists and `status == "planning"`:
 ```bash
 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/update-global-state.sh PLANNING_CYCLE "[arg]"
 ```
+
+Remember the cycle's `source_concept` for the rest of this session - it determines routing for any NEW stories added during detailing (see Step D2b).
 
 If the file doesn't exist or status is not `planning` → show error and offer cycle picker.
 
@@ -94,7 +96,13 @@ options:
 
 ### Step D2: Capture Sparks
 
-For each story that needs a spark, reuse the existing **Step 3** flow (Capture Each Story):
+**Planning-source routing applies when cycle.yaml has `source_concept` set (captured in Pre-check).** For each story that needs a spark, apply the action-moment framing:
+
+- **Planning-extraction moment** (the spark for this story should be drawn from the cycle's planning concept): Read `${CLAUDE_PLUGIN_ROOT}/commands/references/story-from-planning.md` and execute its phases against the cycle's source_concept. The protocol writes the spark content from the planning doc and adds `source_concept` + `source_concept_last_updated` to the story's frontmatter. Phase 1's auto-resolve uses cycle.yaml's value.
+
+- **Add-a-separate-story moment / fleshing out a non-planning-sourced story**: Use the existing Step 3 flow below.
+
+For a freeform story (or when cycle.yaml has no source_concept), reuse the existing **Step 3** flow (Capture Each Story):
 
 - **3a. Choose Your Path** — "Let's get creative" or "I know what I want" (with recommendation for `type: ui` stories)
 - **3b. Spark** — Capture the essence
@@ -103,6 +111,8 @@ For each story that needs a spark, reuse the existing **Step 3** flow (Capture E
 - **3e. Save Story** — Update the existing story file with spark content (including `type` in frontmatter)
 
 Stories that already have sparks are skipped unless user explicitly asks to revisit.
+
+**Existing stories without source_concept are NOT retroactively stamped during detailing.** If an existing story is being detailed and the user signals that it's actually planning-sourced ("this one is from the company-onboarding concept"), the orchestrator MAY ask whether to populate source_concept retroactively - but never silently. Recovery affordance, not default behavior.
 
 ### Step D2b: Creative Tool Checks (After Each Story's Spark Is Captured)
 

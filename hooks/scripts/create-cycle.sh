@@ -1,6 +1,10 @@
 #!/bin/bash
 # Create-cycle: Create a new cycle directory and files
-# Usage: create-cycle.sh <cycle-name> [cycle-title] [cycle-target] [project-root]
+# Usage: create-cycle.sh <cycle-name> [cycle-title] [cycle-target] [project-root] [source-concepts]
+#   source-concepts: optional comma-separated planning doc paths (e.g.,
+#                    "planning/04-company-onboarding.md" or
+#                    "planning/a.md,planning/b.md"). Written to cycle.yaml
+#                    as source_concept field. Empty -> source_concept: [].
 
 set -e
 
@@ -12,6 +16,7 @@ CYCLE_NAME="$1"
 CYCLE_TITLE="${2:-$CYCLE_NAME}"
 CYCLE_TARGET="${3:-TBD}"
 PROJECT_ROOT="${4:-.}"
+SOURCE_CONCEPTS="${5:-}"
 
 # Normalize PROJECT_ROOT
 PROJECT_ROOT="${PROJECT_ROOT%/}"
@@ -21,8 +26,16 @@ fi
 
 if [ -z "$CYCLE_NAME" ]; then
   echo "Error: Cycle name required"
-  echo "Usage: create-cycle.sh <cycle-name> [cycle-title] [cycle-target] [project-root]"
+  echo "Usage: create-cycle.sh <cycle-name> [cycle-title] [cycle-target] [project-root] [source-concepts]"
   exit 1
+fi
+
+# Build source_concept YAML value (flow list notation, sed-friendly single line)
+# Empty -> "[]"; comma-separated paths -> "[path1, path2]"
+if [ -n "$SOURCE_CONCEPTS" ]; then
+  SOURCE_CONCEPT_YAML="[${SOURCE_CONCEPTS}]"
+else
+  SOURCE_CONCEPT_YAML="[]"
 fi
 
 # Ensure .craft exists
@@ -50,6 +63,7 @@ escape_sed() { printf '%s' "$1" | sed 's/[&\\]/\\&/g'; }
 CYCLE_NAME_ESC=$(escape_sed "$CYCLE_NAME")
 CYCLE_TITLE_ESC=$(escape_sed "$CYCLE_TITLE")
 CYCLE_TARGET_ESC=$(escape_sed "$CYCLE_TARGET")
+SOURCE_CONCEPT_YAML_ESC=$(escape_sed "$SOURCE_CONCEPT_YAML")
 
 # Create cycle.yaml from template
 if [ -f "$TEMPLATES_DIR/cycle.yaml" ]; then
@@ -59,6 +73,7 @@ if [ -f "$TEMPLATES_DIR/cycle.yaml" ]; then
       -e "s|{{CYCLE_TARGET}}|$CYCLE_TARGET_ESC|g" \
       -e "s|{{CYCLE_FOCUS}}|TBD|g" \
       -e "s|{{GOAL_1}}|TBD|g" \
+      -e "s|{{SOURCE_CONCEPT}}|$SOURCE_CONCEPT_YAML_ESC|g" \
     "$TEMPLATES_DIR/cycle.yaml" > "$cycle_dir/cycle.yaml"
 else
   # Fallback: create minimal cycle.yaml
@@ -70,6 +85,7 @@ created: $DATE
 updated: $DATE
 target: $CYCLE_TARGET
 focus: TBD
+source_concept: $SOURCE_CONCEPT_YAML
 
 goals:
   - TBD

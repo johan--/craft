@@ -6,14 +6,34 @@ This file is read by `/craft:story-new` when the user picks "From planning" at t
 
 ## When This Runs
 
-After `/craft:story-new` Step 2.5 has:
+This protocol is invoked from two parent flows:
+
+**A. `/craft:story-new` Step 2.5** has:
 1. Detected `.craft/planning/` contains at least one file with `concept:` or `initiative:` frontmatter
 2. Asked the user "From planning, or freeform?"
 3. The user picked "From planning"
 
 The parent command jumps here instead of continuing to Step 3 (Choose Your Path).
 
+**B. `/craft:cycle-design`** invokes this protocol when:
+1. The active or planning cycle's `cycle.yaml` has `source_concept` populated (one or more planning doc paths)
+2. The orchestrator is in the **planning-extraction moment** during default-mode, roadmap-mode, or detailing-mode story creation (see `commands/references/cycle-design/default-mode.md` action-moment framing for the distinction)
+
+In this case, **Phase 1's concept-picker auto-resolves** to the cycle's `source_concept` value(s) - the user already confirmed the planning source at cycle creation, so re-asking is redundant. See Phase 1 below for the auto-resolve behavior.
+
 ## Phase 1: Confirm Concept Source
+
+**Cycle-design invocation - auto-resolve from cycle.yaml:**
+
+If this protocol was invoked from cycle-design (default-mode, roadmap-mode, or detailing-mode) AND the active cycle's `cycle.yaml` has `source_concept` populated:
+
+1. Read `${CRAFT_PROJECT_ROOT}/.craft/cycles/${ACTIVE_CYCLE}/cycle.yaml` to get the `source_concept` value (list of planning doc paths).
+2. **If cycle.yaml has exactly one source_concept path:** auto-resolve. Skip the picker. Set that path as the selected concept. Proceed directly to Phase 2.
+3. **If cycle.yaml has multiple source_concept paths:** ask the user which specific concept THIS story is from, using the cycle's `source_concept` list as the option set (not the full planning corpus). Skip directly to Phase 3a after answer.
+
+This auto-resolve only applies when invoked from cycle-design. For `/craft:story-new` Step 2.5 invocation, follow the normal corpus-scan flow below.
+
+**Story-new invocation - corpus scan:**
 
 Glob the planning corpus:
 
@@ -409,6 +429,7 @@ updated: [today YYYY-MM-DD]
 cycle: [cycle name without leading number - ONLY if in cycle]
 story_number: [N - ONLY if in cycle]
 source_concept: [ABSOLUTE path to concept file]
+source_concept_last_updated: [SNAPSHOT of concept file's last_updated frontmatter value AT TIME OF STORY CREATION - omit if the concept has no last_updated field]
 alignment: pending
 chunks_total: 0
 chunks_complete: 0
@@ -417,6 +438,8 @@ current_chunk: 0
 ```
 
 `source_concept` is the ABSOLUTE path, consistent with Reference Materials. Not relative.
+
+**`source_concept_last_updated` snapshot:** Read the planning concept file's frontmatter `last_updated:` field and copy that value verbatim into the story's frontmatter. This captures "the version of the planning the story was created against" - a downstream consume-time check can later compare this snapshot to the planning concept's current `last_updated` and flag content staleness if they diverge. If the planning concept file has no `last_updated:` field, omit `source_concept_last_updated:` from the story frontmatter entirely (do not substitute another date).
 
 ### Body sections (canonical order per LD14)
 

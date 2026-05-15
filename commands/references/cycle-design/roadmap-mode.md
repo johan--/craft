@@ -35,14 +35,23 @@ options:
 
 ### Step R2: Create Cycle and Story Files
 
-1. **Create cycle** using `create-cycle.sh`:
+1. **Create cycle** using `create-cycle.sh`. If the cycle was inferred from a planning concept (verbatim-quote rule per craft-cycle-design.md Step 1), pass the planning doc path(s) as the 5th positional arg:
 ```bash
-${CLAUDE_PLUGIN_ROOT}/hooks/scripts/create-cycle.sh "[cycle-slug]" "[Cycle Title]" "[Goal]"
+${CLAUDE_PLUGIN_ROOT}/hooks/scripts/create-cycle.sh "[cycle-slug]" "[Cycle Title]" "[Goal]" "." "[source-concept-paths]"
 ```
    - **`cycle-slug`** = kebab-case slug for the directory (e.g., `auth-flow`). The script auto-numbers it (creates `3-auth-flow/`).
    - **`Cycle Title`** = human-readable name shown in status line and context (e.g., `"Auth Flow"`). Always provide this.
+   - **`source-concept-paths`** = comma-separated planning doc paths, or empty string. Written to cycle.yaml's `source_concept` field.
 
-2. **Create story files** with the spark descriptions from the conversation. The orchestrator generated these sparks during the story breakdown — they MUST be written into the files, not discarded.
+2. **Before writing story files, apply planning-source routing.** Read cycle.yaml. If `source_concept` is populated, apply the **action-moment framing** per story:
+
+   - **Planning-extraction moment** (story is being sketched from the planning concept's content): Read `${CLAUDE_PLUGIN_ROOT}/commands/references/story-from-planning.md` and execute its phases against the cycle's source_concept for that story. The protocol writes the story file with planning-derived spark + `source_concept` + `source_concept_last_updated` frontmatter. Phase 1's auto-resolve uses cycle.yaml's value without re-asking.
+
+   - **Add-a-separate-story moment** (story is freeform, not from the planning): Continue with the roadmap-mode flow below - title + spark from conversation, no source_concept fields.
+
+   ⛔ Use the Read tool, not the Skill tool, when invoking story-from-planning.md inline.
+
+3. **Create story files** (for freeform stories, after planning-extracted stories have been handled by the protocol above). The orchestrator generated sparks during the story breakdown — they MUST be written into the files, not discarded.
 
 Write to `.craft/cycles/[cycle-dir]/stories/[N]-[slug].md`:
 ```markdown

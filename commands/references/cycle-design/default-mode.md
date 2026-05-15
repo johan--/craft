@@ -76,22 +76,68 @@ options:
 
 **If "Flesh out individually":** Continue to Step 3 (per-story flow).
 
+### Step 2.7: Planning-Source Routing (Per Story, Before Step 3 or Step 3-Fast)
+
+**Before doing per-story work in Step 3 or Step 3-Fast**, read `cycle.yaml` to check whether this cycle has `source_concept` set.
+
+```bash
+ACTIVE_CYCLE=$(grep "^ACTIVE_CYCLE=" "${CRAFT_PROJECT_ROOT}/.craft/.global-state" | cut -d= -f2)
+CYCLE_SOURCE_CONCEPT=$(grep "^source_concept:" "${CRAFT_PROJECT_ROOT}/.craft/cycles/${ACTIVE_CYCLE}/cycle.yaml" | sed 's/^source_concept: //')
+```
+
+If `source_concept` is `[]` or empty: this cycle is freeform. Skip the rest of this step and proceed to Step 3 / Step 3-Fast as usual.
+
+If `source_concept` is populated (e.g., `[planning/04-company-onboarding.md]`): the cycle is planning-sourced. For each story being created, apply the **action-moment framing**:
+
+- **Planning-extraction moment** ("I'm producing this story from the planning concept's content"):
+  Instead of running default-mode's normal Step 3 spark-capture flow for this story, **Read `${CLAUDE_PLUGIN_ROOT}/commands/references/story-from-planning.md` and execute its phases** against the cycle's source_concept. The protocol already:
+  - Reads the planning concept file
+  - Extracts content per the 9-section taxonomy
+  - Asks gap-fill AskUserQuestions where planning is silent
+  - Writes the story with `source_concept` AND `source_concept_last_updated` frontmatter
+  - Forward-links the story back to the planning doc
+
+  ⛔ **DO NOT invoke story-from-planning.md via the Skill tool** - Read it via the Read tool and execute its phases inline. The Phase 1 auto-resolve in story-from-planning.md picks up cycle.yaml's source_concept automatically.
+
+- **Add-a-separate-story moment** ("user asked for an additional story not from the planning"):
+  Run Step 3 / Step 3-Fast unchanged. The story gets no `source_concept` field - it's freeform within a planning-sourced cycle. Mixed cycles work natively because each story's moment is independently determined.
+
+**How to distinguish the two moments:** the orchestrator knows based on what just happened in the conversation. Did the user just initiate "walk this concept and produce stories" (planning-extraction) or "we also need a story for X" (add-a-separate-story)? The two are different conversational actions, not subjective scope decisions.
+
+**When ambiguous** - if the orchestrator cannot confidently distinguish the moments using the litmus test "Could a stranger reading the conversation that produced this story tell which moment it was?", ask via AskUserQuestion before writing:
+
+```
+question: "Is this story ([title]) sourced from [cycle's planning concept], or separate?"
+header: "Source"
+options:
+  - label: "From [concept name]"
+    description: "Treat as planning-extraction - run the From planning protocol"
+  - label: "Separate / freeform"
+    description: "Treat as add-a-separate-story - normal Step 3 flow, no source_concept"
+```
+
+Default toward asking when uncertain - one short question beats wrong-stamping a story's source.
+
 ### Step 3-Fast: Batch Save Stories
 
 The brainstorm already produced clear sparks. Write all story files at once using the descriptions from Step 2.
 
-For each story in the confirmed list:
+**First run Step 2.7 (Planning-Source Routing) per story above** - planning-extracted stories go through story-from-planning.md, freeform additions follow the batch flow below.
+
+For each freeform story in the confirmed list:
 1. Use the story description from Step 2 as the spark
 2. Use the confirmed type tag from Step 2 (`ui`, `technical`, or `content`) — write it into the `type` frontmatter field
 3. Extract dependencies from the brainstorm discussion (e.g., "parser feeds editors" → Story 3 blocked by Story 1). If dependencies were discussed, capture them accurately. If a specific story's dependencies weren't discussed, leave the Dependencies section empty for the user to fill later — do NOT default to "none".
 4. Write story file to `.craft/cycles/[cycle-name]/stories/[N]-[slug].md` with `status: planning`
-5. Use the story template format from Step 3e
+5. Use the story template format from Step 3e (no source_concept fields - those are for planning-extracted stories handled by story-from-planning.md)
 
-After writing all files, skip to **Step 5: Cycle Review**.
+After writing all files (both planning-extracted via the protocol and freeform via this loop), skip to **Step 5: Cycle Review**.
 
 ### Step 3: Capture Each Story (Spark Level Only)
 
 **Cycle planning is high-level.** Capture the spark for each story — detailed planning happens later via `plan-chunks`.
+
+**Before each story:** apply Step 2.7 (Planning-Source Routing) above. If the story is planning-extraction, Read `commands/references/story-from-planning.md` and execute its phases for that story instead of running Step 3a-3e below. The protocol writes the story file directly (including spark drawn from planning content). For freeform stories, continue with the Step 3 flow below.
 
 **CRITICAL: Questions vs Answers**
 

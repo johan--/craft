@@ -5,6 +5,7 @@ created: {{DATE}}
 updated: {{DATE}}
 target: {{CYCLE_TARGET}}
 focus: {{CYCLE_FOCUS}}
+source_concept: {{SOURCE_CONCEPT}}
 
 goals:
   - {{GOAL_1}}
