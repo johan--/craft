@@ -41,7 +41,6 @@ plugins/craft/
 │   ├── craft-docs.md          ← Documentation generation (two-pass: brief then generate)
 │   ├── craft-init.md
 │   ├── craft-status.md
-│   ├── craft-plan.md          ← Dedicated planning hub (3 modes: file, request keyword, bare)
 │   ├── craft-project.md
 │   ├── craft-review.md        ← PR-style review with standard and --maze modes
 │   ├── craft-research.md
@@ -177,7 +176,7 @@ Write access restricted to `.craft/` and `.claude/` only. All creative and plann
 
 **Included skills:** content-spark, creative-spark, design-vibe, lock-decision, plan-chunks, fix, approve, browser
 **Included agents:** plan-chunks-agent, project-scanner, muse, alchemist, conductor, doc-writer, product-anthropologist, pr-reviewer-expert, maze-architect, researcher, verifier, practitioner-reviewer, playwright-browser, become-researcher, crystallizer
-**Included commands:** craft, craft:init, craft:plan, craft:cycle-design, craft:cycle-start, craft:cycle-complete, craft:cycle-assign, craft:story-new, craft:story-archive, craft:story-delete, craft:status, craft:update-docs, craft:docs, craft:project, craft:review, craft:become, craft:ask, craft:workflow, craft:research, craft:research-verify, craft:fix
+**Included commands:** craft, craft:init, craft:cycle-design, craft:cycle-start, craft:cycle-complete, craft:cycle-assign, craft:story-new, craft:story-archive, craft:story-delete, craft:status, craft:update-docs, craft:docs, craft:project, craft:review, craft:become, craft:ask, craft:workflow, craft:research, craft:research-verify, craft:fix
 
 ### Implement Mode (`modes/implement.yaml`)
 

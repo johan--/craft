@@ -532,7 +532,6 @@ flowchart LR
 | `/craft` | Main entry point — routes based on context |
 | `/craft:init` | One-time setup for new projects |
 | `/craft:status` | Rich dashboard (cycles, stories, backlog) |
-| `/craft:plan` | Dedicated planning hub — plan requests, ideas, or backlog stories |
 | `/craft:story-new` | Create story → backlog (with alignment check) |
 | `/craft:story-implement` | Implement story with chunk loop |
 | `/craft:story-implement-auto` | Implement a story (autonomous, for implement mode) |

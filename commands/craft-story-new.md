@@ -531,8 +531,6 @@ Skill tool:
   DEPTH: [creative/smart/spark]"
 ```
 
-**If args contain `PLAN_ONLY: true`**, append `PLAN_ONLY: true` to the plan-chunks args string. This ensures planning-only callers (like craft:plan) suppress the implementation offer in plan-chunks S-6.
-
 Include the story file path AND a brief summary of what was discussed — decisions, constraints, creative direction chosen. This gives plan-chunks conversational context that may not be fully captured in the story file yet.
 
 This hands off to `plan-chunks` which reads the story file (including wireframe, visual direction, decisions) and produces detailed chunk-by-chunk implementation plans. Do NOT replicate this work inline.

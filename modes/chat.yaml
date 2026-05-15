@@ -35,7 +35,6 @@ include:
     - craft:story-new
     - craft:story-archive
     - craft:story-delete
-    - craft:plan
     - craft:status
     - craft:update-docs
     - craft:project

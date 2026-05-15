@@ -36,7 +36,6 @@ The orchestrator may pass enriched args with labeled fields. Parse these to skip
 - `DECISIONS:` key decisions from discussion — seed agent
 - `KEY_FILES:` important files from discussion — seed agent
 - `DEPTH:` planning depth (creative/smart/spark) — adjusts triage thoroughness
-- `PLAN_ONLY:` if `true`, skip S-6 (Offer Implementation) — planning ends at S-5 (Finalize Story)
 - `MODE:` `batch` triggers multi-story parallel planning
 
 **Fallback:** Args may be just a file path with no fields. All phases must work without enriched args.
@@ -511,10 +510,6 @@ Read the story file, discuss changes with the user, then make targeted edits bas
 Discuss splitting with the user. If splitting, create new story files and redistribute chunks across them.
 
 ### S-6: Offer Implementation
-
-**Skip if:** Args contain `PLAN_ONLY: true`. Planning ends here — acknowledge the story is ready and return control to the caller.
-
-> "[Story Name] is planned and ready. Returning to the planning flow."
 
 After the story is marked `ready`, offer to start implementation:
 

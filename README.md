@@ -93,7 +93,6 @@ Craft will guide you through:
 |---------|---------|
 | `/craft` | Main entry point — start here |
 | `/craft:status` | Dashboard view of progress |
-| `/craft:plan` | Dedicated planning hub — plan requests, ideas, or backlog stories (ends after planning, never offers implementation) |
 | `/craft:story-new` | Create story (lands in backlog) |
 | `/craft:story-implement` | Implement a story (interactive) |
 | `/craft:story-implement-auto` | Implement a story (autonomous) |
