@@ -11,17 +11,21 @@ __pycache__/
 # Maintainer-only Claude instructions (loaded alongside CLAUDE.md, not shared)
 CLAUDE.local.md
 
-# Craft ephemeral/runtime files
-.craft/.global-state
-.craft/.continuation
-.craft/.chunk-state
-.craft/.active-fix
-.craft/.pinned-project
-.craft/.exports/
-.craft/cycles/*/.state
-.craft/cycles/.state
-.craft/cycles/*/.events/
-.craft/cycles/*/.usage/
-.craft/cycles/*/.failures
-.craft/cycles/*/.craft/
-.craft/browser/snapshots/
+# Craft workspace - maintainer's local state, not distributed
+.craft/
+
+# (Previous fine-grained patterns below are now redundant under the blanket .craft/ rule.
+# Kept commented out for reference; remove during a follow-up cleanup if desired.)
+# .craft/.global-state
+# .craft/.continuation
+# .craft/.chunk-state
+# .craft/.active-fix
+# .craft/.pinned-project
+# .craft/.exports/
+# .craft/cycles/*/.state
+# .craft/cycles/.state
+# .craft/cycles/*/.events/
+# .craft/cycles/*/.usage/
+# .craft/cycles/*/.failures
+# .craft/cycles/*/.craft/
+# .craft/browser/snapshots/
