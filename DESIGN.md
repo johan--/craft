@@ -1,6 +1,8 @@
 # Craft — Design Reference
 
-> Supplementary to CLAUDE.md (which auto-loads every session). This file contains details that CLAUDE.md summarizes.
+> Architecture reference for `craft`, a Claude Code plugin that turns the CLI into a creative-first development harness. CLAUDE.md is the rules file Claude auto-loads each session; this file holds the architectural detail CLAUDE.md summarizes.
+
+For definitions of cycle, story, chunk, and the workshop concepts, see README.md. This file assumes that vocabulary.
 
 ---
 
@@ -40,6 +42,7 @@ plugins/craft/
 │   ├── craft-become.md        ← Agent crystallization (4-phase: research→checkpoint→crystallize→save)
 │   ├── craft-docs.md          ← Documentation generation (two-pass: brief then generate)
 │   ├── craft-init.md
+│   ├── craft-planning.md
 │   ├── craft-status.md
 │   ├── craft-project.md
 │   ├── craft-review.md        ← PR-style review with standard and --maze modes
@@ -95,7 +98,10 @@ plugins/craft/
 │   │   └── pending/           ← Analysis queue templates
 │   ├── cycle/
 │   │   └── learnings.yaml
+│   ├── cycle-state
 │   ├── cycle.yaml
+│   ├── planning/
+│   ├── request.md
 │   ├── story-backlog.md       ← Backlog story template
 │   ├── story-full.md          ← Full story template (with chunks)
 │   └── story-roadmap.md       ← Roadmap-only story template
@@ -105,7 +111,10 @@ plugins/craft/
 │   └── orchestration-index.min
 ├── docs/                      ← Generated documentation (informational, not auto-loaded)
 │   ├── agent-catalog.md
+│   ├── creative-workshop.md
 │   ├── design-philosophy.md
+│   ├── plan-tdd-enforcement.md
+│   ├── research-agentic-research-patterns.md
 │   └── workflow-reference.md
 ├── tests/                     ← Bash test suite (25+ tests)
 │   ├── run-all.sh
@@ -130,6 +139,7 @@ plugins/craft/
 | `blocked` | Waiting on dependency |
 | `complete` | 95% done, tests passing |
 | `verified` | Human reviewed & approved |
+| `reverted` | Story was started but reverted after a checkpoint; preserved for history |
 
 ## Parallelism
 
@@ -200,6 +210,9 @@ All hooks defined in `hooks/hooks.json`. Scripts in `hooks/scripts/`.
 ### PreToolUse (Write|Edit)
 - **`check-write-permission.py`** — Enforces write permission gating. Checks mode (chat vs implement), CRAFT_WRITE_ENABLED flag, and allowed paths.
 
+### PreToolUse (Bash)
+- **`auto-approve-plugin-scripts.sh`** — Auto-approves bash invocations of plugin scripts to reduce permission prompts.
+
 ### PostToolUse (Write|Edit)
 - **`update-progress.py`** (async) — Tracks which files were modified, updates story progress counts
 
@@ -228,14 +241,23 @@ All hooks defined in `hooks/hooks.json`. Scripts in `hooks/scripts/`.
 | `complete-chunk.sh` | Mark chunk done, update .state |
 | `complete-story.sh` | Mark story complete, disable writes |
 | `complete-cycle.sh` | Complete cycle, trigger learnings |
+| `start-workflow-session.sh` | Initialize a workflow session directory and state |
+| `complete-workflow-session.sh` | Mark a workflow session complete |
+| `complete-workflow-stage.sh` | Advance workflow to the next stage |
+| `get-latest-cycle.sh` | Resolve the most recent cycle directory path |
 | `update-global-state.sh` | Update .global-state key-value pairs |
 | `update-cycle-state.sh` | Update cycle .state file |
 | `update-story-status.sh` | Change story status in frontmatter |
 | `statusline.sh` | Generate status line display |
 | `find-project-root.sh` | Locate .craft/ directory |
 | `discover-projects.sh` | Find all craft projects |
+| `count-requests.sh` | Count pending items in requests queue |
+| `process-request.sh` | Route a request to a story or cycle |
 | `salvage-partial-work.sh` | Recover work from interrupted sessions |
 | `append-recovery-log.sh` | Log recovery events |
+| `read-events.sh` | Read from the event log |
+| `append-event.sh` | Append an entry to the event log |
+| `aggregate-failures.py` | Aggregate failure records for triage |
 | `run-gates.sh` | Run quality gate checks |
 | `check-polish.sh` | Check polish requirements |
 | `self-critique.sh` | Self-critique against locked patterns |
