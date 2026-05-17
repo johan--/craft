@@ -2,11 +2,13 @@
 
 > Creative-first, feedback-loop-driven development with a smart pairing partner
 
+For developers using Claude Code who want a pairing partner instead of a code generator.
+
 Craft is a Claude Code plugin that transforms how you build software. Instead of rigid spec-first processes, embrace the way great pairing actually works:
 
 - **Riff on ideas** together (Creative Mode)
 - **Lock decisions** as you go
-- **Execute with confidence** (Smart Mode)
+- **Execute with confidence** (Implement Mode)
 - **Analyze and inspire** next iteration (Analysis Mode)
 
 ## Philosophy
@@ -14,6 +16,8 @@ Craft is a Claude Code plugin that transforms how you build software. Instead of
 **Creativity as default. Smart execution follows.**
 
 Claude is smarter now. Trust it to run further. Checkpoint for safety, not for control.
+
+**Status:** v1.65.0 - MIT - actively developed
 
 ## Core Principles
 
@@ -84,7 +88,7 @@ Stories land in the backlog. Work on them when ready.
 Craft will guide you through:
 1. Creative Mode — flesh out the idea
 2. Chunk planning — break into implementable pieces
-3. Implementation — execute with quality gates
+3. Implement Mode — execute with quality gates
 4. Validation — ensure everything passes
 
 ## Commands
@@ -135,7 +139,7 @@ Craft will guide you through:
 
 ## Agents
 
-23 agents across four categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
+23 agents across five categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
 
 **Core Workflow** — run inside the implementation pipeline
 
@@ -188,13 +192,15 @@ Craft will guide you through:
 ## Modes
 
 ### Chat Mode
-Creative work — story creation, design, planning. Write access restricted to `.craft/` only. All creative skills available.
+Use when you're shaping ideas before committing to implementation. Creative work — story creation, design, planning. Write access restricted to `.craft/` only. All creative skills available.
 
 ### Implement Mode
-Autonomous story implementation. Full write access, gated by active story. Runs with `acceptEdits` permission.
+Use when a story is ready and you want autonomous execution. Autonomous story implementation. Full write access, gated by active story. Runs with `acceptEdits` permission.
 
 ### Analysis Mode
-Post-cycle analysis using MCP browser tools (QA, UX, Creative, Style passes).
+Use after a cycle ships to surface bugs, UX issues, and creative opportunities. Post-cycle analysis using MCP browser tools (QA, UX, Creative, Style passes).
+
+_Note: Analysis Mode is triggered by `/craft:analyze` and runs in the active session context, rather than being configured via a `modes/*.yaml` file like Chat and Implement modes._
 
 ## Directory Structure
 
@@ -271,7 +277,7 @@ Plus polish requirements:
 ./tests/run-all.sh
 ```
 
-25+ bash tests covering hook scripts, state management, and lifecycle operations.
+30+ bash tests covering hook scripts, state management, and lifecycle operations.
 
 ## MCP Integration
 
@@ -290,9 +296,13 @@ To use `/craft:browser`, install playwright-cli globally:
 npm install -g @playwright/cli && playwright-cli install-browser
 ```
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow.
+
 ## License
 
-MIT
+[MIT](LICENSE)
 
 ---
 
