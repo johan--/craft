@@ -19,42 +19,9 @@ This is different from a story + chunks. Stories are single-feature units of imp
 
 ---
 
-## Two Formats
+## Format
 
-Workflows exist in two formats. The format is detected automatically from the presence of a `stages/` directory.
-
-### Monolithic Format
-
-All stage definitions live in `definition.md`. Good for short workflows (3-5 stages) where the entire definition fits comfortably in one file.
-
-```
-.craft/workflows/
-  my-workflow/
-    definition.md    # All stages here
-    sessions/
-      2026-04-10-run1/
-        session.md
-```
-
-Stage metadata and prose are co-located in `definition.md`:
-
-```markdown
-## Stage 1: Research
-execution: agent
-agent: craft:researcher
-prompt: "Research {topic} focusing on {domain}"
-produces: .craft/research/{topic}/
-requires: []
-
-Description of what this stage does and why it matters.
-
-- [ ] Completion criterion 1
-- [ ] Completion criterion 2
-```
-
-### stages-v1 Format
-
-Each stage lives in its own file in `stages/`. The `definition.md` becomes a routing table. Good for longer workflows (6+ stages) and when stages have substantial per-stage documentation.
+Every workflow uses the stages-v1 format: each stage lives in its own file in `stages/`, and `definition.md` is a routing table. This supports per-stage documentation, cross-stage artifact handoff, and clean per-session checklists.
 
 ```
 .craft/workflows/

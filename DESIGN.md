@@ -154,7 +154,6 @@ plugins/craft/
 
 The workflow command supports two formats detected by checking for a `stages/` directory.
 
-**Monolithic** — all stages in `definition.md`. Good for 3-5 stage workflows.
 
 **stages-v1** — `definition.md` is a routing table; each stage is a self-contained file in `stages/`. Sessions get an `artifacts/` directory for cross-stage handoff. Stage files declare `consumes:` (artifact paths from prior stages) and `produces:` (output path). This is the preferred format for workflows with 6+ stages or substantial per-stage documentation.
 
@@ -306,7 +305,7 @@ project-root/
 │   │   └── .confidence-signals.yaml ← Token confidence scores (use_count, file_count, consistency_score, recency)
 │   ├── workflows/             ← Reusable multi-step workflows
 │   │   └── {workflow-slug}/
-│   │       ├── definition.md  ← Routing table (stages-v1) or full definition (monolithic)
+│   │       ├── definition.md  ← Routing table for stages
 │   │       ├── stages/        ← Per-stage self-contained briefs (stages-v1 format only)
 │   │       └── sessions/      ← Per-run instances with progress + artifacts
 │   ├── requests/              ← External feature requests

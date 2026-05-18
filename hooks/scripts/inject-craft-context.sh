@@ -112,14 +112,9 @@ if [ -n "$CURRENT_WORKFLOW_SESSION" ] && [ -d "$CURRENT_WORKFLOW_SESSION" ]; the
       wf_name=$(awk '/^name:/{gsub(/^name: */, ""); print; exit}' "$wf_session_file")
       wf_stage=$(awk '/^current_stage:/{gsub(/^current_stage: */, ""); print; exit}' "$wf_session_file")
       wf_workflow=$(awk '/^workflow:/{gsub(/^workflow: */, ""); print; exit}' "$wf_session_file")
-      # Detect format and count stages accordingly
-      WF_WORKFLOW_DIR="$(dirname "$(dirname "$CURRENT_WORKFLOW_SESSION")")"
-      if [ -d "$WF_WORKFLOW_DIR/stages" ] && [ -n "$(ls -A "$WF_WORKFLOW_DIR/stages" 2>/dev/null)" ]; then
-        wf_total=$(awk '/^\| [0-9]/' "$wf_session_file" 2>/dev/null | wc -l | tr -d ' ')
-        [ -z "$wf_total" ] || [ "$wf_total" = "0" ] && wf_total="?"
-      else
-        wf_total=$(grep -c '^## Stage' "$wf_session_file" 2>/dev/null || echo "?")
-      fi
+      # Count stages from Progress table (stages-v1 format)
+      wf_total=$(awk '/^\| [0-9]/' "$wf_session_file" 2>/dev/null | wc -l | tr -d ' ')
+      [ -z "$wf_total" ] || [ "$wf_total" = "0" ] && wf_total="?"
       context="${context:+$context
 }[Craft:Workflow '$wf_workflow' session '$wf_name' - stage $wf_stage/$wf_total - writes allowed (active session)]"
     fi

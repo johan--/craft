@@ -1,83 +1,12 @@
 # Workflow: Format References
 
-All definition and session format specifications - monolithic and stages-v1.
+Definition and session format specifications for stages-v1 (the single supported format).
 
 ---
 
-## Definition Format Reference (Monolithic)
+## Definition Format Reference
 
-```markdown
----
-name: {Workflow Name}
-description: {one-line description}
-created: {date}
-variables:
-  {var}: "{description}"
-stages: {count}
----
-
-# {Workflow Name}
-
-{Overview paragraph.}
-
-## Stage 1: {Name}
-execution: agent
-agent: craft:researcher
-prompt: "Research {topic} for {domain}"
-produces: .craft/research/{topic}-pedagogy/
-requires: []
-
-{Human-readable description of what this stage does, why it matters,
-and what principles apply. This IS the process documentation.}
-
-- [ ] {Completion criterion 1}
-- [ ] {Completion criterion 2}
-
-## Stage 2: {Name}
-execution: inline
-prompt: "Synthesize the research from Stage 1 into a landscape map for {topic}"
-produces: .craft/research/{topic}-landscape/
-requires: [stage-1]
-human_gate: "Review the landscape map before proceeding to domain mapping"
-
-{Description - orchestrator executes this directly with full workflow context.
-human_gate is optional - in interactive mode it pauses for review, in auto mode it is ignored.}
-
-- [ ] {Criterion 1}
-- [ ] {Criterion 2}
-
-## Stage 3: {Name}
-execution: manual
-requires: [stage-2]
-
-{Description - this stage is done by the human.}
-
-- [ ] {Criterion 1}
-
-## Stage 4: {Name}
-execution: command
-command: craft:research-verify
-args: "{topic}-domain-map"
-requires: [stage-3]
-
-{Description.}
-
-- [ ] {Criterion 1}
-```
-
-**Formatting rules:**
-- Execution metadata lines (`execution:`, `agent:`, `prompt:`, `produces:`, `requires:`, `human_gate:`, `command:`, `args:`) go immediately after the `##` heading, before any prose.
-- `human_gate:` is optional on any execution type. In interactive mode, the orchestrator presents it as an AskUserQuestion after the stage work completes. In auto mode, it is ignored.
-- The prose section is the human-readable process documentation, preserved from the source.
-- Checklist items (`- [ ]`) are the completion criteria.
-- `requires:` lists stage dependencies. Default is sequential (`[stage-N-1]`). No dependencies = `[]`.
-- Variable substitution uses `{variable}` syntax throughout prompts, produces, args, and checklist items.
-
----
-
-## New Definition Format Reference (Stage-File Format)
-
-When a workflow has a `stages/` directory, the definition.md is a routing table only:
+The `definition.md` is a routing table; each stage is a self-contained file in `stages/`:
 
 ```markdown
 ---
@@ -151,74 +80,15 @@ and pedagogical best practices.
 
 ---
 
-## Session Format Reference (Monolithic)
+## Session Format Reference (Hybrid)
 
-```markdown
----
-workflow: {workflow-slug}
-name: {Session Name}
-status: active
-mode: interactive
-started: {date}
-completed: {date, when done}
-current_stage: 4
-variables:
-  topic: mcp
-  domain: Model Context Protocol
-  project: slingshot
----
-
-# {Session Name} - {Workflow Name}
-
-## Stage 1: Pedagogy Research [complete]
-- [x] Research branches produced
-- [x] Expert agent crystallized
-completed: 2026-04-08
-artifacts: .craft/research/mcp-pedagogy/
-notes: "Crystallized at .claude/agents/evidence-based-practitioner-training-expert.md"
-
-## Stage 2: Education Landscape [complete]
-- [x] Landscape mapped
-- [x] Gaps identified
-completed: 2026-04-08
-artifacts: .craft/research/mcp-education-landscape/
-
-## Stage 3: Domain Map [complete]
-- [x] Concept inventory complete
-- [x] Prerequisite chains documented
-completed: 2026-04-09
-artifacts: .craft/research/mcp-domain-map/
-
-## Stage 4: Gap Analysis [active]
-- [x] Coverage table produced
-- [ ] Mermaid diagrams generated
-- [ ] Proposal reviewed
-
-## Validation
-status: passed-with-issues
-checked: 2026-04-10
-
-### Issues
-- [ ] Stages 3-7: checklist items not marked [x] despite stages marked [complete]
-- [x] Artifact verified: .craft/research/mcp-domain-map/ exists
-
-### Summary
-Stages: 4/4 complete, 0 skipped
-Checklist: 6/10 items checked
-Artifacts: 1/1 present
-```
+Sessions have a Progress table for routing plus per-stage checklists for step tracking. Prompts live in stage files only - never in the session.
 
 **Session status lifecycle:** `draft` -> `ready` -> `active` -> `complete`
 
 **Stage status tags:** `[pending]`, `[active]`, `[complete]`, `[skipped]`
 
 **Validation statuses:** `clean`, `passed-with-issues`
-
----
-
-## New Session Format Reference (Hybrid)
-
-When the parent workflow uses stage-file format, sessions have a Progress table for routing plus per-stage checklists for step tracking. Prompts live in stage files only - never in the session.
 
 **System variables** (auto-set, not user-defined):
 - `{session_dir}` - full path to this session's directory. Used in stage prompts to reference artifact files from prior stages.

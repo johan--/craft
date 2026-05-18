@@ -234,7 +234,7 @@ After initialization, your project will have:
 │   └── .confidence-signals.yaml  # Token confidence scores (written by project-scanner)
 ├── workflows/            # Reusable multi-step workflows
 │   └── {workflow-name}/
-│       ├── definition.md # Routing table (stages-v1) or full definition (monolithic)
+│       ├── definition.md # Routing table for stages
 │       ├── stages/       # Per-stage briefs (stages-v1 format only)
 │       └── sessions/     # Per-run instances with progress + artifacts
 ├── requests/             # External feature requests
