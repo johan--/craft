@@ -129,10 +129,10 @@ Craft will guide you through:
 | `creative-spark` | Creative | Generate creative options and ideas. Supports Creative Driver step (Step 1.5) with muse/alchemist interrogators |
 | `design-vibe` | Creative | Visual cohesion review across stories |
 | `lock-decision` | Creative | Formalize approved decisions |
-| `plan-chunks` | Smart | Transform stories into implementation plans. Supports parallel batch mode with file-based dependency verification |
-| `validate-chunk` | Smart | Quick validation after chunk implementation. Derives `FILES_CHANGED` from git diff, not spec file list |
-| `refine-chunk` | Smart | Targeted fixes for validation failures |
-| `test-fix` | Smart | Triage failing tests, fix the right thing |
+| `plan-chunks` | Creative | Transform stories into implementation plans. Supports parallel batch mode with file-based dependency verification |
+| `validate-chunk` | Implement | Quick validation after chunk implementation. Derives `FILES_CHANGED` from git diff, not spec file list |
+| `refine-chunk` | Implement | Targeted fixes for validation failures |
+| `test-fix` | Implement | Triage failing tests, fix the right thing |
 | `fix` | Any | Adhoc fix without story ceremony. Investigate → confidence check → apply → validate → commit |
 | `approve` | Any | Request scoped write permission from the user. Opens the write gate only after explicit AskUserQuestion approval |
 | `browser` | Any | Launch a persistent playwright-cli browser session. ~4x cheaper than Chrome DevTools MCP in token cost |

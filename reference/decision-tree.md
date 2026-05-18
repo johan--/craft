@@ -143,7 +143,7 @@ flowchart TD
     CHECK_STATUS -->|blocked| BLOCK_DEP["BLOCK: Blocked by [X].<br/>Resolve first?"]
     CHECK_STATUS -->|ready/active| CHECK_CHUNKS{"Has chunks?"}
 
-    CHECK_CHUNKS -->|No| ASK_PATH["AskUserQuestion:<br/>• Design it now (Creative)<br/>• Plan chunks (Smart)<br/>• Pick different story"]
+    CHECK_CHUNKS -->|No| ASK_PATH["AskUserQuestion:<br/>• Design it now (Creative)<br/>• Plan chunks directly<br/>• Pick different story"]
     CHECK_CHUNKS -->|Yes| CHECK_PARALLEL{"Parallel story active?"}
 
     CHECK_PARALLEL -->|Yes| CONFLICT_CHECK["Extract files from both stories"]
@@ -224,9 +224,9 @@ flowchart TD
 
     FOR_EACH --> STORY_SPARK["3a: Discuss spark"]
     STORY_SPARK --> STORY_CONTENT["3b: content-spark per story<br/>(inline-via-reference)"]
-    STORY_CONTENT --> STORY_PATH{"Creative or smart?"}
-    STORY_PATH -->|Creative| STORY_CREATIVE["creative-spark per story<br/>(inline-via-reference)<br/>visual direction included"]
-    STORY_PATH -->|Smart| STORY_DECIDE["Quick technical decisions"]
+    STORY_CONTENT --> STORY_PATH{"With creative-spark or skip?"}
+    STORY_PATH -->|With creative-spark| STORY_CREATIVE["creative-spark per story<br/>(inline-via-reference)<br/>visual direction included"]
+    STORY_PATH -->|Skip| STORY_DECIDE["Quick technical decisions"]
     STORY_CREATIVE --> STORY_LOCK
     STORY_DECIDE --> STORY_LOCK["lock-decision (typed keys)"]
     STORY_LOCK --> STORY_ALIGN["3c: Codebase Alignment Check<br/>(commands/references/alignment-check.md)"]
