@@ -2,7 +2,7 @@
 name: plan-chunks
 description: This skill should be used when the user asks to "plan chunks", "break this down", "plan the implementation", or when a story has status planning and needs implementation details before building. Required before any story can be implemented. Transforms story sparks into detailed chunk-by-chunk implementation plans with full technical specifics, file lists, and risk analysis. Supports parallel planning of multiple stories via batch mode.
 version: 3.0.0
-allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Task", "Skill"]
+allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Task", "Skill", "SendMessage"]
 ---
 
 # Plan Chunks Skill (Orchestrator)
