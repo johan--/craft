@@ -1,4 +1,4 @@
-# Craft — Design Reference
+# Craft - Design Reference
 
 > Architecture reference for `craft`, a Claude Code plugin that turns the CLI into a creative-first development harness. CLAUDE.md is the rules file Claude auto-loads each session; this file holds the architectural detail CLAUDE.md summarizes.
 
@@ -36,7 +36,7 @@ plugins/craft/
 │   ├── ux-analyzer.md         ← Nielsen heuristics, accessibility
 │   ├── verifier.md            ← Adversarial claim checker (primary sources only)
 │   └── walkthrough-analyzer.md ← First-time user simulation (chrome-devtools MCP)
-├── commands/                  ← Slash command definitions (25 commands)
+├── commands/                  ← Slash command definitions (27 commands)
 │   ├── craft.md               ← Main entry point
 │   ├── craft-ask.md           ← Consult a workshop agent (intelligent routing)
 │   ├── craft-become.md        ← Agent crystallization (4-phase: research→checkpoint→crystallize→save)
@@ -80,7 +80,7 @@ plugins/craft/
 │   └── test-fix/              ← Triage failing tests, fix the right thing
 ├── hooks/
 │   ├── hooks.json             ← Hook event definitions
-│   └── scripts/               ← 35+ bash/python hook scripts
+│   └── scripts/               ← 45+ bash/python hook scripts
 ├── templates/                 ← File templates for craft init and scaffolding
 │   ├── craft/                 ← .craft/ directory templates
 │   │   ├── design/            ← tokens.yaml, components.md, locked.md
@@ -110,7 +110,7 @@ plugins/craft/
 │   ├── plan-tdd-enforcement.md
 │   ├── research-agentic-research-patterns.md
 │   └── workflow-reference.md
-├── tests/                     ← Bash test suite (25+ tests)
+├── tests/                     ← Bash test suite (30+ bash tests)
 │   ├── run-all.sh
 │   ├── test_helper.sh
 │   ├── fixtures/
@@ -144,10 +144,10 @@ plugins/craft/
 ### Planning Parallelism
 - `plan-chunks` skill supports batch mode: plans all `status: planning` stories in a cycle in parallel
 - **Dual-mode orchestration:**
-  - Agent teams (primary) — when `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`. Teammates coordinate live (file overlap, dependency awareness)
-  - Task subagents (fallback) — isolated agents with post-hoc cohesion check by orchestrator
-- Batch size: determined by story dependency graph (topological levels — independent stories plan in parallel, dependent chains plan sequentially)
-- Pattern: **skill as orchestrator + agents as workers** — plan-chunks orchestrates, plan-chunks-agent does the heavy lifting per story
+  - Agent teams (primary) - when `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`. Teammates coordinate live (file overlap, dependency awareness)
+  - Task subagents (fallback) - isolated agents with post-hoc cohesion check by orchestrator
+- Batch size: determined by story dependency graph (topological levels - independent stories plan in parallel, dependent chains plan sequentially)
+- Pattern: **skill as orchestrator + agents as workers** - plan-chunks orchestrates, plan-chunks-agent does the heavy lifting per story
 - After agents complete → batch triage (BT-1 through BT-7) reviews all plans with user
 
 ## Workflow Formats
@@ -155,7 +155,7 @@ plugins/craft/
 The workflow command supports two formats detected by checking for a `stages/` directory.
 
 
-**stages-v1** — `definition.md` is a routing table; each stage is a self-contained file in `stages/`. Sessions get an `artifacts/` directory for cross-stage handoff. Stage files declare `consumes:` (artifact paths from prior stages) and `produces:` (output path). This is the preferred format for workflows with 6+ stages or substantial per-stage documentation.
+**stages-v1** - `definition.md` is a routing table; each stage is a self-contained file in `stages/`. Sessions get an `artifacts/` directory for cross-stage handoff. Stage files declare `consumes:` (artifact paths from prior stages) and `produces:` (output path). This is the preferred format for workflows with 6+ stages or substantial per-stage documentation.
 
 Artifact handoff replaces relying on conversation memory across compaction boundaries. Stage 5 can reliably read Stage 1's output by declaring it in `consumes:` - the orchestrator reads the artifact file at dispatch time regardless of whether the original context is still present.
 
@@ -204,29 +204,29 @@ Triggered by `/craft:analyze` after a cycle ships. No restricted write scope - r
 All hooks defined in `hooks/hooks.json`. Scripts in `hooks/scripts/`.
 
 ### SessionStart
-- **`session-start.sh`** (once) — Detects active cycle, sets status line, loads context
-- **`post-compact-reinject.sh`** (on compact) — Re-injects craft context after context compaction
+- **`session-start.sh`** (once) - Detects active cycle, sets status line, loads context
+- **`post-compact-reinject.sh`** (on compact) - Re-injects craft context after context compaction
 
 ### PreToolUse (Write|Edit)
-- **`check-write-permission.py`** — Enforces write permission gating. Checks for active story/cycle context, `CRAFT_WRITE_ENABLED` flag, active workflow session, and allowed paths. Uses hardcoded logic (no external config file).
+- **`check-write-permission.py`** - Enforces write permission gating. Checks for active story/cycle context, `CRAFT_WRITE_ENABLED` flag, active workflow session, and allowed paths. Uses hardcoded logic (no external config file).
 
 ### PreToolUse (Bash)
-- **`auto-approve-plugin-scripts.sh`** — Auto-approves bash invocations of plugin scripts to reduce permission prompts.
+- **`auto-approve-plugin-scripts.sh`** - Auto-approves bash invocations of plugin scripts to reduce permission prompts.
 
 ### PostToolUse (Write|Edit)
-- **`update-progress.py`** (async) — Tracks which files were modified, updates story progress counts
+- **`update-progress.py`** (async) - Tracks which files were modified, updates story progress counts
 
 ### PostToolUseFailure
-- **`handle-tool-failure.py`** (async) — Logs tool failures, appends to recovery log
+- **`handle-tool-failure.py`** (async) - Logs tool failures, appends to recovery log
 
 ### PreCompact
-- **`export-progress.sh`** — Exports current progress state before context window compaction
+- **`export-progress.sh`** - Exports current progress state before context window compaction
 
 ### UserPromptSubmit
-- **`inject-craft-context.sh`** — Injects active cycle/story context into every prompt
+- **`inject-craft-context.sh`** - Injects active cycle/story context into every prompt
 
 ### Stop
-- **`stop-hook-guard.sh`** — Guards against unclean session stops, ensures state consistency
+- **`stop-hook-guard.sh`** - Guards against unclean session stops, ensures state consistency
 
 ### Utility Scripts (called by hooks or commands)
 | Script | Purpose |
@@ -341,10 +341,10 @@ RUN_MODE=""
 ```
 
 Key fields:
-- `CRAFT_WRITE_ENABLED` — gates writes outside `.craft/`. Set to `"true"` by active stories, the `fix` skill, and the `approve` skill. Empty string means closed.
-- `CURRENT_WORKFLOW_SESSION` — active workflow session path (set when a workflow session is running).
-- `RUN_MODE` — `cruise` (chains stories automatically) or empty (interactive).
-- `CYCLE_STATUS` — current state of the active cycle.
+- `CRAFT_WRITE_ENABLED` - gates writes outside `.craft/`. Set to `"true"` by active stories, the `fix` skill, and the `approve` skill. Empty string means closed.
+- `CURRENT_WORKFLOW_SESSION` - active workflow session path (set when a workflow session is running).
+- `RUN_MODE` - `cruise` (chains stories automatically) or empty (interactive).
+- `CYCLE_STATUS` - current state of the active cycle.
 
 ### cycle.yaml Schema
 
@@ -363,7 +363,7 @@ goals:
   - Outcome 2
 ```
 
-**`source_concept`** — YAML flow list of planning doc paths (relative to project root) this cycle is sourced from. Empty list `[]` means the cycle is freeform (no planning source). When populated, cycle-design routes story-creation moments to the From planning protocol (`commands/references/story-from-planning.md`) so each planning-extracted story's spark draws from the planning content. Stories added during the add-a-separate-story moment within a planning-sourced cycle remain freeform and get no `source_concept` of their own. Captured at cycle creation via `create-cycle.sh`'s 5th positional arg, gated behind the Step 1 verbatim-quote rule + AskUserQuestion safety gate.
+**`source_concept`** - YAML flow list of planning doc paths (relative to project root) this cycle is sourced from. Empty list `[]` means the cycle is freeform (no planning source). When populated, cycle-design routes story-creation moments to the From planning protocol (`commands/references/story-from-planning.md`) so each planning-extracted story's spark draws from the planning content. Stories added during the add-a-separate-story moment within a planning-sourced cycle remain freeform and get no `source_concept` of their own. Captured at cycle creation via `create-cycle.sh`'s 5th positional arg, gated behind the Step 1 verbatim-quote rule + AskUserQuestion safety gate.
 
 ---
 
