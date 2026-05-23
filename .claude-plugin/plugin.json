@@ -1,7 +1,7 @@
 {
   "name": "craft",
-  "version": "1.76.0",
-  "description": "Creative-first, feedback-loop-driven development harness. Riff on ideas, lock decisions, execute with confidence.",
+  "version": "1.76.1",
+  "description": "A creative-first development harness for Claude Code - with a workshop where you build your own expert agents.",
   "author": {
     "name": "Darin Drobinski"
   },
