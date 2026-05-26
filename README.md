@@ -1,14 +1,21 @@
 # Craft
 
-> A creative-first development harness for Claude Code - with a workshop where you build your own expert agents.
+> Craft is a Claude Code plugin that runs your work through a creative → implement → review loop, with a workshop for building expert agents you consult along the way.
 
 ![version](https://img.shields.io/badge/version-1.75.1-blue)
-![agents](https://img.shields.io/badge/agents-23-6f42c1)
-![commands](https://img.shields.io/badge/commands-27-6f42c1)
-![skills](https://img.shields.io/badge/skills-11-6f42c1)
-![hook events](https://img.shields.io/badge/hook%20events-7-6f42c1)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![status](https://img.shields.io/badge/status-actively%20developed-brightgreen)
+![requires](https://img.shields.io/badge/requires-Claude%20Code%202.1%2B-orange)
+
+## Built with Craft
+
+Craft has shipped real, public products across different domains - click through and see working software:
+
+- **[darinbuilds.com](https://darinbuilds.com)** - an immersive single-page portfolio and marketing site (Next.js, GSAP scroll), built across 30+ craft cycles.
+- **[wodspark.com](https://wodspark.com)** - a free on-demand workout generator: pick a focus, equipment, and duration, and it builds a workout instantly.
+- **[throve.fit](https://throve.fit)** - a structured daily coaching app: week-view programming, curated workouts with real coach's notes, exercise alternatives, and completion tracking.
+
+Two of these are fitness apps, and they're genuinely different products - an instant generator versus a structured coaching tool. That's the point: the same harness shipped range, not one idea three times.
 
 ## What makes Craft different
 
@@ -33,16 +40,6 @@ Most agent frameworks treat the model as fixed and harden the harness around it:
 Craft is built with craft. This plugin and the projects shipped with it went through the same cycles, the same locked decisions, the same checkpoints you'll use. Craft does docs the way craft does code.
 
 **Creativity as default. Smart execution follows.**
-
-## Built with Craft
-
-Craft has shipped real, public products across different domains - click through and see working software:
-
-- **[darinbuilds.com](https://darinbuilds.com)** - an immersive single-page portfolio and marketing site (Next.js, GSAP scroll), built across 30+ craft cycles.
-- **[wodspark.com](https://wodspark.com)** - a free on-demand workout generator: pick a focus, equipment, and duration, and it builds a workout instantly.
-- **[throve.fit](https://throve.fit)** - a structured daily coaching app: week-view programming, curated workouts with real coach's notes, exercise alternatives, and completion tracking.
-
-Two of these are fitness apps, and they're genuinely different products - an instant generator versus a structured coaching tool. That's the point: the same harness shipped range, not one idea three times.
 
 ## How Craft compares
 
@@ -413,5 +410,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow.
 ## License
 
 [MIT](LICENSE)
-
----
