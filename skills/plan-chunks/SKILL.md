@@ -128,7 +128,14 @@ options:
     description: "Plan without content direction - chunks may make content assumptions"
 ```
 
-**If "Run content-spark first":** Invoke `Skill(craft:content-spark)` with the story file path. After it completes, continue to Phase 0.45.
+**If "Run content-spark first":** Read and execute the logic inline (same pattern story-new uses - avoids the chain-break that nested Skill invocation causes):
+
+```
+Read "${CLAUDE_PLUGIN_ROOT}/commands/references/content-spark-inline.md"
+Execute the phases described in that file against the current story.
+```
+
+After it completes, continue to Phase 0.45.
 **If "Skip and plan anyway":** Continue to Phase 0.45.
 
 **If present:** Continue to Phase 0.45.
@@ -566,7 +573,14 @@ This path is triggered when `MODE: batch` is in args. It plans all `status: plan
      - label: "Skip and plan anyway"
        description: "Plan without content direction - chunks may make content assumptions"
    ```
-   **If "Run content-spark first":** Invoke `Skill(craft:content-spark)` for each missing story sequentially. After all complete, continue.
+   **If "Run content-spark first":** Read and execute the logic inline for each missing story (same pattern story-new uses - avoids the chain-break that nested Skill invocation causes):
+
+   ```
+   Read "${CLAUDE_PLUGIN_ROOT}/commands/references/content-spark-inline.md"
+   Execute the phases described in that file against each missing story sequentially.
+   ```
+
+   After all complete, continue.
    **If "Skip":** Continue.
 7. Build sibling context: for each story, read first 30 lines (frontmatter + spark). Create a summary list: `[story-name]: [spark first sentence]`
 8. Read cycle goal from `cycle.yaml`
