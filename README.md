@@ -313,5 +313,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow.
 [MIT](LICENSE)
 
 ---
-
-Built with ❤️ using Claude Code
