@@ -128,7 +128,12 @@ The orchestrator will re-spawn the named researchers and re-invoke you. A partia
 
 **Hedge-language scan (AC10).** Producers are instructed to put conflicts in the dedicated Conflicts section, but over time they drift and bury conflicts in finding prose. Scan each finding's prose for hedge language - "however," "but," "some sources say," "others argue," "in contrast," "on the other hand." When you find it, treat it as an **undeclared conflict** and surface it in the `_plan.md` Conflicts section, even if the branch's own Conflicts section was empty. The conflict wasn't absent; it was misfiled.
 
-**Evidence respect.** Findings marked `INSUFFICIENT_EVIDENCE` are never promoted to convergence points or high-confidence. Surface them as low-confidence. A finding cleared by a single authoritative primary source is legitimate - do not penalize it for having one source.
+**Evidence-gate re-enforcement (AC2).** Do NOT trust the researcher to have tagged `INSUFFICIENT_EVIDENCE` correctly - haiku producers reliably apply the positive case (a primary source clears the gate) but under-enforce the negative case. So re-apply the gate yourself on every finding: count its independent sources and check their types in the branch's Sources list.
+- A finding with 2+ independent sources, OR 1 authoritative primary source (docs, source code, RFC/spec, API reference, local test) → cleared, leave as-is.
+- A finding with only 1 secondary source (blog, article, tutorial, community post, news) → tag it `INSUFFICIENT_EVIDENCE` in `_plan.md` even if the researcher did not. Two sources that trace to the same origin count as one.
+- Findings marked `INSUFFICIENT_EVIDENCE` (by the researcher or by you) are never promoted to convergence points or high-confidence - surface them as low-confidence. A finding cleared by a single authoritative primary source is legitimate; do not penalize it.
+
+Count every finding you re-tag and include it in the `insufficient_evidence_findings` frontmatter total.
 
 ## Conflict Preservation (the cardinal rule)
 

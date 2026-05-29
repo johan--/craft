@@ -63,7 +63,7 @@ Your assignment may also include the resolved path - use that if provided. The t
 1. Use **WebSearch** for 5-10 searches on your assigned question. Vary your search terms - don't just rephrase the same query. (If your assignment says `--quick`: limit to 3-5 searches, focus on the top 2-3 most authoritative sources.)
 2. Use **WebFetch** to read the most promising results fully. Read at least 5-8 sources. Prefer primary sources (official docs, source code, specs) - they clear the evidence gate alone.
 3. For each finding, capture: the claim, an **exact verbatim quote**, the **source URL**, and the **source type** (primary vs secondary).
-4. Apply the evidence gate (Rule 5). Mark any finding that doesn't clear it as `INSUFFICIENT_EVIDENCE`.
+4. **Apply the evidence gate to EVERY finding, explicitly.** Before writing, go finding by finding and count its independent sources: if a finding has exactly one source AND that source is secondary (blog, article, tutorial, community post, news), you MUST tag it `INSUFFICIENT_EVIDENCE`. Do not skip this because you found a quote - a quote plus a single secondary source still fails the gate. Only a primary source (docs, source code, spec, local test) clears the gate alone.
 5. Record conflicts verbatim in the Conflicts section. Do NOT resolve them.
 6. Write the branch file using the template format. Do NOT rank, summarize, or synthesize.
 
