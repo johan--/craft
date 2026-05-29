@@ -30,7 +30,8 @@ plugins/craft/
 │   ├── product-anthropologist.md ← Human-truth layer for product decisions
 │   ├── project-scanner.md     ← Full project analysis for documentation updates
 │   ├── qa-analyzer.md         ← Bug hunting via browser inspection
-│   ├── researcher.md          ← Research sub-question investigator
+│   ├── researcher.md          ← Research sub-question extractor (haiku)
+│   ├── research-synthesizer.md ← Cross-branch synthesis: writes _plan.md + _sources.md (sonnet)
 │   ├── style-analyzer.md      ← Token compliance, pattern consistency
 │   ├── tester.md              ← Integration tests, E2E, final validation
 │   ├── ux-analyzer.md         ← Nielsen heuristics, accessibility
@@ -178,7 +179,7 @@ See `docs/workflow-reference.md` for the full format spec and examples.
 Write access restricted to `.craft/` and `.claude/`. Used for story creation, design, planning, and locking decisions - no source-code edits.
 
 **Included skills:** content-spark, creative-spark, design-vibe, lock-decision, plan-chunks, fix, approve, browser
-**Included agents:** plan-chunks-agent, project-scanner, muse, alchemist, conductor, doc-writer, product-anthropologist, pr-reviewer-expert, maze-architect, researcher, verifier, practitioner-reviewer, playwright-browser, become-researcher, crystallizer
+**Included agents:** plan-chunks-agent, project-scanner, muse, alchemist, conductor, doc-writer, product-anthropologist, pr-reviewer-expert, maze-architect, researcher, research-synthesizer, verifier, practitioner-reviewer, playwright-browser, become-researcher, crystallizer
 **Included commands:** craft, craft:init, craft:cycle-design, craft:cycle-start, craft:cycle-complete, craft:cycle-assign, craft:story-new, craft:story-archive, craft:story-delete, craft:status, craft:update-docs, craft:docs, craft:project, craft:review, craft:become, craft:ask, craft:workflow, craft:workflow-run, craft:workflow-design, craft:research, craft:research-verify, craft:fix
 
 ### Implement Phase

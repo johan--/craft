@@ -388,8 +388,16 @@ Write to `.claude/agents/{topic-slug}-expert.md` following the template.
 
 ## Agent Configuration
 
-All research agents use the **researcher** agent type (`craft:researcher`):
-- **Model:** Sonnet (cost-efficient for retrieval + extraction)
+The research flow uses two agent types - haiku producers and a sonnet synthesizer:
+
+**`craft:researcher`** (extraction):
+- **Model:** Haiku (constrained extraction - verbatim quotes, source-backed findings, no synthesis)
 - **Tools:** WebSearch, WebFetch, Read, Glob, Grep, Bash, Write
-- **Writes directly to disk** - orchestrator context stays clean
-- **Returns lightweight summary only** (~200 tokens) to orchestrator
+- **Writes** its branch file directly to disk per the branch template; returns a lightweight summary (~150 tokens)
+
+**`craft:research-synthesizer`** (cross-branch synthesis):
+- **Model:** Sonnet (faithful routing at volume - preserves conflicts, re-enforces the evidence gate, quote-claim alignment; model is locked, see the agent's rationale block)
+- **Tools:** Read, Glob, Grep, Write, Bash (no web access - synthesizes only what the researchers found)
+- **Reads** every branch file, **writes** `_plan.md` + `_sources.md` directly to disk; returns a lightweight summary (~150 tokens)
+
+The orchestrator stays thin: it dispatches researchers, builds a manifest, spawns the synthesizer, and reads the resulting `_plan.md` - cross-branch synthesis no longer happens in the user's main conversation loop.

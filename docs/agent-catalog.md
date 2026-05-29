@@ -1,6 +1,6 @@
 # Agent Catalog
 
-> Reference for all 23 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
+> Reference for all 24 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
 
 Craft agents fall into four categories based on when you encounter them and what invokes them. The first question to ask is always: does this need to be an agent at all, or can a skill or hook do the job deterministically?
 
@@ -48,8 +48,9 @@ Agents that support code review, research, and verification workflows. Invoked b
 |-------|-------|---------|
 | `pr-reviewer-expert` | sonnet | PR review crystallized from CodeRabbit's architecture. Reads `locked.md` and `project.md` before forming any opinion. Two severity levels: issue (must fix) and suggestion (consider). Never comments on style if a linter exists. |
 | `maze-architect` | haiku | Generates 2-4 review questions from a raw diff with zero intent context. Never sees commit messages. Used by `/craft:review --maze` to create perpendicular review routes. Haiku model because the task is pattern recognition, not judgment. |
-| `researcher` | sonnet | Investigates one research sub-question, writes findings to a branch file, returns a lightweight summary. Used by `/craft:research`. |
-| `verifier` | sonnet | Adversarial claim checker for `/craft:research-verify`. Takes one finding and tries to disprove it using independent primary sources. Local evidence before web search. |
+| `researcher` | haiku | Constrained extraction for one research sub-question - verbatim quotes, source-backed findings, no synthesis. Writes a branch file, returns a lightweight summary. Used by `/craft:research`. |
+| `research-synthesizer` | sonnet | Reads all branch files in a research topic and writes `_plan.md` + `_sources.md`. Preserves conflicts verbatim, re-enforces the evidence gate, runs quote-claim alignment. Replaces the orchestrator-side synthesis that used to run in the main loop. Model locked - see its rationale block. |
+| `verifier` | haiku | Adversarial claim checker for `/craft:research-verify`. Takes one finding and tries to disprove it using independent primary sources. Local evidence before web search; guarded against premature UNVERIFIABLE. |
 | `practitioner-reviewer` | sonnet | Challenges verified claims from practical experience. Catches "true in docs, wrong in practice." No web search - relies on practitioner knowledge. Used by `/craft:research-verify` practitioner mode. |
 
 **Maze review flow:** `maze-architect` (haiku, no intent) generates questions → `pr-reviewer-expert` (sonnet, full context) answers them. The architect's naivety is the feature, not a limitation.

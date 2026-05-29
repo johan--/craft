@@ -285,10 +285,10 @@ Two agent types, used independently or together:
 ### Verifier (`craft:verifier`)
 Purpose-built adversarial agent that tries to disprove claims using independent primary sources.
 
-- **Model:** Sonnet
+- **Model:** Haiku (constrained scope - one claim, structured verdict; guarded against declaring UNVERIFIABLE before 3+ genuine search attempts)
 - **Tools:** Read, Glob, Grep, Bash, Write (plus WebSearch/WebFetch inherited)
 - **Posture:** Adversarial - tries to break claims, not confirm them
-- **Source rules:** Primary sources only, must be independent from original research sources
+- **Source rules:** Primary sources only, must be independent from original research sources - if the original quoted a source, re-fetch it rather than re-citing
 - **Local-first:** Tests locally (files, commands, APIs) before searching the web
 - **Spawning:** One per finding, all in parallel
 - **Output:** `verification-{slug}.md` per finding + lightweight verdict summary
