@@ -43,6 +43,7 @@ plugins/craft/
 │   ├── craft-become.md        ← Agent crystallization (4-phase: research→checkpoint→crystallize→save)
 │   ├── craft-docs.md          ← Documentation generation (two-pass: brief then generate)
 │   ├── craft-init.md
+│   ├── craft-notebook.md      ← Low-ceremony capture (ideas/todos); conversational graduate/done
 │   ├── craft-planning.md
 │   ├── craft-status.md
 │   ├── craft-project.md
@@ -298,6 +299,13 @@ project-root/
 │   │   ├── screenshots/
 │   │   ├── sites.md
 │   │   └── patterns.md
+│   ├── notebook/              ← Low-ceremony capture (created by /craft:notebook)
+│   │   ├── ideas/             ← Half-formed thoughts; graduated ideas stay in place with flag
+│   │   │   └── YYYY-MM-DD-slug.md
+│   │   └── todos/             ← Concrete actions
+│   │       ├── YYYY-MM-DD-slug.md
+│   │       └── done/          ← Archive for completed todos
+│   │           └── YYYY-MM-DD-slug.md
 │   ├── design/                ← Design system (enforced)
 │   │   ├── tokens.yaml        ← Design tokens
 │   │   ├── components.md      ← Component patterns

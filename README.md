@@ -135,6 +135,7 @@ This runs the story end-to-end. Craft flows through four beats: a creative pass 
 |---------|---------|
 | `/craft` | Main entry point - start here |
 | `/craft:status` | Dashboard view of progress |
+| `/craft:notebook` | Low-ceremony capture for ideas and todos. Graduate / mark done conversationally - no subcommands needed for lifecycle. |
 | `/craft:story-new` | Create story (lands in backlog) |
 | `/craft:story-implement` | Implement a story (interactive) |
 | `/craft:story-implement-auto` | Implement a story (autonomous) |
@@ -160,6 +161,78 @@ This runs the story end-to-end. Craft flows through four beats: a creative pass 
 | `/craft:fix` | Adhoc fix for small bugs without story ceremony. Creates permanent record in `.craft/fixes/` |
 | `/craft:project` | Switch projects or cross-project dashboard |
 | `/craft:init` | One-time project setup |
+
+## Notebook
+
+The notebook is the upstream of craft's compounding system. Catch thoughts that aren't story-shape yet, before they get lost or forced into premature stories.
+
+Three user-typed shapes:
+
+```
+/craft:notebook idea "compounding kb for decisions"
+/craft:notebook todo "rename verifier error wording"
+/craft:notebook                              # bare → list view
+```
+
+That's the whole user-typed surface. Capture is one-Enter past zero-ceremony: after you provide text, you get exactly one AskUserQuestion ("Anything to add for future-you, or skip?") and a single Enter to dismiss.
+
+### Inline tags
+
+Drop `#tag` tokens anywhere in the capture text. They're extracted into frontmatter, scrubbed from the body, and shown inline in the bare list view:
+
+```
+/craft:notebook idea "compounding kb for decisions #architecture #knowledge"
+```
+
+writes the body as just "compounding kb for decisions" and the frontmatter `tags: [architecture, knowledge]`.
+
+### Graduate and done are conversational
+
+You won't type `/craft:notebook graduate 3`. Just tell Claude what you want:
+
+> **You:** "Turn the compounding kb idea into a story."
+>
+> **Claude:** "Graduate 'compounding kb idea' to a story? I'll run /craft:craft-story-new with it as the spark."
+>
+> **You:** "Yes."
+>
+> **Claude:** *runs story-new, flags the source idea on success*
+> "Graduated 'compounding-kb-decisions' → story 'compounding-kb-decisions'."
+
+For done, Claude always confirms first - the file moves silently from active view to `todos/done/`, so the two-second confirmation prevents you from losing track of state:
+
+> **You:** "I took care of the verifier todo."
+>
+> **Claude:** "Mark 'rename verifier error wording' as done? [Yes / No]"
+>
+> **You:** "Yes."
+>
+> **Claude:** "Marked done: 'rename-verifier-error-wording'."
+
+Claude won't silently mark things done from passing mentions. If the trigger isn't clear, Claude does nothing.
+
+### When Claude offers notebook
+
+When you use deferral language ("later," "don't let me forget," "side note") in conversation, Claude may offer an inline mention as an ignorable closing line:
+
+> *"Worth dropping in /craft:notebook? I'd tag it #verifier #cycle-9. Otherwise I'll continue."*
+
+Ignore the line, the conversation flows on. Say "yes" or "do it" and Claude captures silently with the conversation as context - no follow-up AUQ.
+
+### Idea vs todo
+
+- **Idea** - half-formed, wants to mature into a story (or get pruned). Graduate when ready.
+- **Todo** - concrete action, wants to get done. Mark done when finished.
+
+Different lifecycles, different storage: ideas accumulate as history (graduated ones stay in place with a `graduated_to: <story-slug>` flag), todos clear as inbox (done ones move to `todos/done/`).
+
+### Not the same as TaskCreate
+
+`TaskCreate` is ephemeral (current conversation only); notebook todos persist across sessions and survive cycle completion. If the thought is "track this for the next 30 minutes," that's TaskCreate. If it's "don't lose this," that's the notebook.
+
+### Forward: backlinks (Story 23)
+
+A future story adds `[[wikilink]]` syntax and a craft-wide graph helper that resolves backlinks across `.craft/`. The notebook is the prove-it surface for that pattern. Until then, tags handle retrieval.
 
 ## Skills
 
