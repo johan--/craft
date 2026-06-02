@@ -26,7 +26,7 @@ description: >
   </commentary>
   </example>
 model: opus
-color: magenta
+color: purple
 tools: Read, Glob, Grep, Write, Bash
 crystallized_from: ".craft/research/expert-cognition-transfer/"
 crystallized_date: 2026-04-11
