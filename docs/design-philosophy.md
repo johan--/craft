@@ -1651,7 +1651,7 @@ Generate interactive craft dashboard and open in browser.
 
 - [x] Project init: What scaffolding approach? → Designed (see Project Init Design section)
 - [ ] Git worktrees for parallel stories? (Future enhancement)
-- [ ] Voice input for creative mode? (Superwhisper integration - future)
+- [ ] Voice input for creative phase? (Superwhisper integration - future)
 - [ ] Background agents while reviewing? (Future enhancement)
 
 ---

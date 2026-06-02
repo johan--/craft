@@ -2,6 +2,8 @@
 
 > Reference for all 24 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
 
+*Last reviewed: 2026-06-02 — current as of plugin v1.87.x.*
+
 Craft agents fall into four categories based on when you encounter them and what invokes them. The first question to ask is always: does this need to be an agent at all, or can a skill or hook do the job deterministically?
 
 ---

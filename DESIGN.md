@@ -154,6 +154,8 @@ plugins/craft/
 
 ## Workflow Formats
 
+*Full format reference: [docs/workflow-reference.md](docs/workflow-reference.md).*
+
 The workflow command supports two formats detected by checking for a `stages/` directory.
 
 
@@ -373,6 +375,32 @@ goals:
 ```
 
 **`source_concept`** - YAML flow list of planning doc paths (relative to project root) this cycle is sourced from. Empty list `[]` means the cycle is freeform (no planning source). When populated, cycle-design routes story-creation moments to the From planning protocol (`commands/references/story-from-planning.md`) so each planning-extracted story's spark draws from the planning content. Stories added during the add-a-separate-story moment within a planning-sourced cycle remain freeform and get no `source_concept` of their own. Captured at cycle creation via `create-cycle.sh`'s 5th positional arg, gated behind the Step 1 verbatim-quote rule + AskUserQuestion safety gate.
+
+---
+
+## Planning Alignment
+
+Concepts in `.craft/planning/` (managed by `/craft:planning`) have an alignment walkthrough that resolves a concept's strategic sub-decisions before stories get created. The architecture has three load-bearing parts:
+
+**TaskTool queue.** The orchestrator's speculative working list of sub-decisions for a concept lives in TaskTool — session-scoped, allowed to die. The model only sees one task at a time, so multi-decision AskUserQuestion bundles become structurally impossible. Re-derivation on session resume is correct behavior; not loss.
+
+**Three completion destinations.** Every sub-decision terminates in exactly one place: `## Locked decisions` (conversational resolution + explicit lock-confirmation ask — the orchestrator must ask "Want me to lock this as X?" before writing), `pending_decisions[]` frontmatter (user deferred — regenerates as a task on next session), or `## Open questions` with owner annotation (blocked on someone else — doesn't auto-nag).
+
+**Step 9 destination-coverage gate (intra-session).** Before story creation runs, the gate verifies every closed task landed in one of the three destinations. Tasks that closed without filing block story creation and route back to alignment with the unaccounted items named. Cross-session integrity is handled by the immediate-write rule (Locked entries hit disk at the moment of resolution), not by the gate.
+
+The depth ceiling is prose-enforced: planning is for strategic decisions (the ones that shape which stories come out of the concept), not implementation detail. If candidate extraction returns more than ~10 items, the orchestrator reframes some as story-new / plan-chunks work and defers them.
+
+---
+
+## Notebook Lifecycle
+
+The notebook (`/craft:notebook`, `.craft/notebook/`) is a capture surface for ideas and todos that sit below the backlog. State transitions are conversational, not subcommand-driven:
+
+- **Ideas** start in `ideas/YYYY-MM-DD-slug.md`. When an idea matures into story-shape, the user signals graduation; the orchestrator routes to `/craft:story-new` with the idea pre-filled and flags the idea in place (it stays, marked as graduated, for traceability).
+- **Todos** start in `todos/YYYY-MM-DD-slug.md`. When done, the orchestrator confirms via AskUserQuestion (always — asymmetric failure visibility for the destructive action) and moves the file to `todos/done/`.
+- **Deferral markers** in conversation ("later", "side note", "don't forget", "for next time", etc.) trigger an inline mention of `/craft:notebook` as a closing line. On accept the orchestrator captures silently with session context. No subcommands.
+
+The lifecycle deliberately keeps both states fast: capture is one line, graduate is one prompt, done is one AUQ. Power-user subcommand syntax is explicitly rejected in favor of conversational verbs.
 
 ---
 

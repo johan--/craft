@@ -119,6 +119,8 @@ A [**cycle**](#cycle) is a batch of related stories you ship together. Design it
 
 **Planning-sourced cycles:** If you have planning docs in `.craft/planning/` (files with `concept:` or `initiative:` frontmatter), `cycle-design` detects them. Mention a specific planning doc in conversation before invoking the command and the orchestrator confirms via a safety gate, captures the source on the cycle, and routes story creation through the From planning protocol so each story's spark draws from the planning content. Cycles created without planning sources work exactly as before.
 
+**Planning alignment (`/craft:planning`):** Concepts in `.craft/planning/` have their own alignment walkthrough — a structured way to resolve a concept's strategic sub-decisions before it becomes stories. Sub-decisions are walked one at a time via conversation (the orchestrator's TaskTool queue keeps it atomic — no bundled multi-decision questions). Each sub-decision resolves to one of three destinations: **Locked** (written to `## Locked decisions` only when the orchestrator asks "Want me to lock this as X?" and you give an explicit affirmative), **Deferred** (`pending_decisions[]` frontmatter — comes back next session), or **Blocked** (`## Open questions` with the owner annotated — doesn't auto-nag you). A destination-coverage gate at story-creation time blocks the next step if any task closed without filing. Depth ceiling is built in: planning is for strategic decisions, not implementation detail.
+
 ### Implement
 
 ```
@@ -153,7 +155,7 @@ This runs the story end-to-end. Craft flows through four beats: a creative pass 
 | `/craft:docs` | Generate or update docs using the crystallized doc-writer agent (two-pass: brief then generate) |
 | `/craft:become` | Crystallize a tool, role, or person into a portable 9-section agent with beliefs and scar tissue |
 | `/craft:ask` | Consult a workshop agent - routes your question to the best available mind |
-| `/craft:workflow` | Workflow router - dashboard, status, and dispatch to workflow-run or workflow-design |
+| `/craft:workflow` | Workflow router - dashboard, status, and dispatch to workflow-run or workflow-design. Full format reference: [docs/workflow-reference.md](docs/workflow-reference.md). |
 | `/craft:workflow-run` | Run a workflow session - start, continue, next, run-all, batch-create, mark ready |
 | `/craft:workflow-design` | Author workflow definitions - create new, edit existing, archive unused |
 | `/craft:research` | Ad-hoc research - discover, elaborate, synthesize with ranked branches |
@@ -471,10 +473,13 @@ The creative seed of a story before it's been researched or planned. Captured fi
 A decision that's been approved and is now enforced (by the validator, by analyzers, or by hooks). Locked decisions can be referenced; they can't be silently reversed.
 
 ### mode
-The harness's current operating context. The mode determines what writes are allowed, which agents run, and how transitions are gated.
+The harness's current operating context (permission/state model). Determines what writes are allowed, which agents run, and how transitions are gated. Distinct from **phase** below: mode is about what the system is configured to do right now, not which stage of a story you're in.
 
 ### phase
 The macro stage of a story or cycle. Creative Phase flows into Implement Phase flows into Analysis Phase.
+
+### notebook
+Low-ceremony capture below the backlog for ideas (half-formed thoughts that may mature into stories) and todos (concrete actions). Lifecycle is conversational: graduate to a story when ready, mark done when complete - no subcommands. Lives in `.craft/notebook/`.
 
 ## Quick fixes
 
