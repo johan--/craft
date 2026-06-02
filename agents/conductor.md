@@ -11,7 +11,7 @@ description: >
   agent?", "will this hold?", "how should I structure this?", "review my agent design",
   "what artifact type for this?", pre-design consultation, post-failure diagnosis.
 model: sonnet
-color: white
+color: purple
 tools: Read, Glob, Grep, Bash
 disallowedTools: Write, Edit, NotebookEdit
 crystallized_from: ".craft/research/conductor-become/"

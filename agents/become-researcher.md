@@ -24,7 +24,7 @@ description: |
   </commentary>
   </example>
 model: claude-haiku-4-5-20251001
-color: magenta
+color: purple
 tools: Read, Glob, Grep, Bash, Write, WebSearch, WebFetch
 disallowedTools: Edit, NotebookEdit
 permissionMode: bypassPermissions

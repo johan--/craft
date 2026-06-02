@@ -23,7 +23,7 @@ description: |
   assistant: "I'll use the creative-analyzer agent to perform a full creative audit."
   </example>
 model: sonnet
-color: magenta
+color: pink
 tools: Read, Glob, Grep, WebFetch, Bash
 disallowedTools: Write, Edit, NotebookEdit
 mcpServers:
