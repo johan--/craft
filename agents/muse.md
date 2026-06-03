@@ -10,8 +10,7 @@ description: >
   jobs, evaluating whether a mechanic carries feeling or just delivers function.
 model: sonnet
 color: blue
-tools: Read, Glob, Grep, Bash
-disallowedTools: Write, Edit, NotebookEdit
+tools: Read, Glob, Grep, Bash, Write, Edit, NotebookEdit
 crystallized_from: ".craft/research/product-intuition-become/"
 crystallized_date: 2026-04-11
 stale_signals:

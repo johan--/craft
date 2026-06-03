@@ -27,10 +27,9 @@ description: >
   </example>
 model: sonnet
 color: cyan
-tools: Read, Glob, Grep, Bash
+tools: Read, Glob, Grep, Bash, Write, Edit, NotebookEdit
 mcpServers:
   - chrome-devtools
-disallowedTools: Write, Edit, NotebookEdit
 crystallized_from: ".craft/research/css-interaction-alchemist-become/"
 crystallized_date: 2026-04-11
 stale_signals:

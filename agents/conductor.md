@@ -12,8 +12,7 @@ description: >
   "what artifact type for this?", pre-design consultation, post-failure diagnosis.
 model: sonnet
 color: purple
-tools: Read, Glob, Grep, Bash
-disallowedTools: Write, Edit, NotebookEdit
+tools: Read, Glob, Grep, Bash, Write, Edit, NotebookEdit
 crystallized_from: ".craft/research/conductor-become/"
 crystallized_date: 2026-04-12
 stale_signals:
