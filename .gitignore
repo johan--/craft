@@ -14,6 +14,9 @@ CLAUDE.local.md
 # Craft workspace - maintainer's local state, not distributed
 .craft/
 
+# Local research scratch - /craft:research output, not distributed
+research/
+
 # (Previous fine-grained patterns below are now redundant under the blanket .craft/ rule.
 # Kept commented out for reference; remove during a follow-up cleanup if desired.)
 # .craft/.global-state

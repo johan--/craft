@@ -297,6 +297,7 @@ A future story adds `[[wikilink]]` syntax and a craft-wide graph helper that res
 | Agent | Role |
 |-------|------|
 | `muse` | Emotional job translator - finds why anyone will care before exploring how to build |
+| `riff` | Creative riff partner - reads the room and throws, pulls, or builds on your idea; never lectures |
 | `alchemist` | CSS interaction physicist - sees the browser as a physics engine |
 | `conductor` | AI orchestration architect - knows which patterns hold under real conditions |
 | `doc-writer` | Documentation diagnostician - crystallized from Stripe/Linear-quality practitioners |
