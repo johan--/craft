@@ -161,7 +161,7 @@ flowchart TD
 
     LOOP --> CHECKPOINT["1. Git checkpoint<br/>Before chunk N"]
     CHECKPOINT --> DELEGATE["2. Spawn implementer agent<br/>Pass chunk details + context"]
-    DELEGATE --> VALIDATE["3. Invoke validate-chunk skill<br/>TypeScript, lint, tests"]
+    DELEGATE --> VALIDATE["3. Invoke chunk-validator agent via Task<br/>TypeScript, lint, tests"]
 
     VALIDATE --> LOG_ERRORS["Log errors to in-memory learnings"]
     LOG_ERRORS --> PASS{"Validation passed?"}
@@ -542,7 +542,13 @@ flowchart LR
 | `/craft:research` | Ad-hoc research — discover, elaborate, synthesize with ranked branches |
 | `/craft:research-verify` | Verify existing research findings against independent primary sources |
 | `/craft:fix` | Adhoc fix for small bugs without story ceremony. Creates record in `.craft/fixes/` |
+| `/craft:notebook` | Low-ceremony capture for ideas and todos before they harden into stories |
+| `/craft:planning` | Feature roadmap and planning - initiatives, concepts, open questions |
 | `/craft:project` | Switch projects or cross-project dashboard |
+| `/craft:browser` | Interactive browser session via playwright-cli (a skill invoked as a command) |
+
+<!-- skill-commands: fix, browser -->
+<!-- Commands Reference contract: this table lists every command file (commands/craft.md as /craft, plus commands/craft-*.md as /craft:<name>) PLUS skills invoked as /craft: commands (the skill-commands marker above: fix, browser). The doc-integrity check (Story 26) parses the marker to treat those two as skill-backed entry points, not command files. -->
 
 ## Skills Reference
 
@@ -591,6 +597,7 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 | `pr-reviewer-expert` | /craft:review | PR review crystallized from CodeRabbit |
 | `maze-architect` | /craft:review --maze | Perpendicular review questions from diff (haiku) |
 | `researcher` | /craft:research | Investigates one sub-question, writes branch file |
+| `research-synthesizer` | /craft:research | Reads all branch files, writes _plan.md + _sources.md |
 | `verifier` | /craft:research-verify | Adversarial claim checker |
 | `practitioner-reviewer` | /craft:research-verify | Challenges verified claims from experience |
 
@@ -605,6 +612,7 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 | Agent | Purpose |
 |-------|---------|
 | `muse` | Emotional job translator — interrogator for creative-spark Step 1.5 |
+| `riff` | Creative collaboration partner - a thinking companion, not an instructor |
 | `alchemist` | CSS interaction physicist — interrogator for creative-spark Step 1.5 |
 | `conductor` | AI orchestration architect |
 | `doc-writer` | Documentation diagnostician |
@@ -616,22 +624,28 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 
 | File | Purpose | Key Fields |
 |------|---------|------------|
-| `.craft/.global-state` | Global state | ACTIVE_CYCLE, PLANNING_CYCLE, CURRENT_STORY, RUN_MODE, HARNESS_CHECKED |
-| `.craft/settings.yaml` | User preferences | default_mode, certainty_threshold |
+| `.craft/.global-state` | Global state | ACTIVE_CYCLE, PLANNING_CYCLE, CURRENT_STORY, RUN_MODE, HARNESS_CHECKED, CRAFT_WRITE_ENABLED |
+| `.craft/.continuation` | Breadcrumb for a nested skill invocation (30-min TTL, one-shot) | caller path |
+| `.craft/.active-fix` | Safety marker for an in-progress adhoc fix (session-start clears orphans) | timestamp |
+| `.craft/settings.yaml` | User preferences | default_mode, parallel planning |
+| `.craft/requests/*.md` | Pending requests surfaced at the `/craft` entry (Step 2.5) | request files |
 | `.craft/cycles/[N]-[name]/.state` | Cycle runtime state | CURRENT_STORY, CURRENT_CHUNK, TOTAL_CHUNKS |
 | `.craft/cycles/[N]-[name]/.learnings.yaml` | Accumulated learnings | errors, corrections, patterns, conventions, automations |
 | `.craft/cycles/[N]-[name]/cycle.yaml` | Cycle metadata | status, goals, target, focus (no stories array) |
 | `.craft/cycles/[N]-[name]/stories/[N]-[name].md` | Story details | status, chunks, decisions (typed), acceptance |
 | `.craft/backlog/[name].md` | Backlog stories | status: ready, priority |
-| `.craft/analysis/pending/*.yaml` | Pending findings | QA, UX, Creative, Style queues |
+| `.craft/analysis/pending/*.yaml` | Pending findings | QA, UX, Creative, Style, Walkthrough queues |
 | `.craft/fixes/[name].md` | Adhoc fix records | Created by /craft:fix |
+| `.craft/workflows/` | Workflow session state | per-session state dirs |
+| `.craft/notebook/` | Low-ceremony captured ideas and todos | idea / todo entries |
+| `.craft/research/` | Research and become branch files | `{slug}/_plan.md`, `NN-branch.md` |
 
 ## Directory Structure Check Points
 
 ```
 .craft/                          ← EXISTS? → If no, route to /craft:init
 ├── .global-state                ← READ for ACTIVE_CYCLE, PLANNING_CYCLE, CURRENT_STORY, HARNESS_CHECKED
-├── settings.yaml                ← READ for default_mode, certainty_threshold
+├── settings.yaml                ← READ for default_mode, parallel planning
 ├── backlog/                     ← COUNT stories here
 │   └── *.md                     ← Each is a ready story
 ├── cycles/                      ← LIST available cycles
@@ -642,12 +656,17 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 │       └── stories/
 │           └── *.md             ← READ status, chunks
 ├── fixes/                       ← Adhoc fix records (permanent log)
+├── requests/                    ← Pending requests checked at /craft entry (Step 2.5)
+├── notebook/                    ← Low-ceremony idea/todo capture
+├── research/                    ← Research + become branch files
+├── workflows/                   ← Workflow session state
 ├── analysis/
 │   └── pending/
 │       ├── qa.yaml              ← CHECK for pending findings
 │       ├── ux.yaml
 │       ├── creative.yaml
-│       └── style.yaml
+│       ├── style.yaml
+│       └── walkthrough.yaml
 └── design/
     └── locked.md                ← READ locked patterns for validation
 ```

@@ -254,7 +254,7 @@ A future story adds `[[wikilink]]` syntax and a craft-wide graph helper that res
 
 ## Agents
 
-23 agents across five categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
+25 agents across five categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
 
 **Core Workflow** - run inside the implementation pipeline
 
@@ -283,6 +283,7 @@ A future story adds `[[wikilink]]` syntax and a craft-wide graph helper that res
 | `pr-reviewer-expert` | PR review crystallized from CodeRabbit - reads locked.md before any opinion |
 | `maze-architect` | Generates perpendicular review questions from a diff with zero intent context (haiku) |
 | `researcher` | Investigates one research sub-question, writes branch file to disk |
+| `research-synthesizer` | Reads all research branch files, writes the ranked synthesis (_plan.md) and citation index (_sources.md) |
 | `verifier` | Adversarial claim checker - tries to disprove findings using primary sources |
 | `practitioner-reviewer` | Challenges verified claims from practical experience |
 

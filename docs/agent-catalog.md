@@ -1,8 +1,8 @@
 # Agent Catalog
 
-> Reference for all 24 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
+> Reference for all 25 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
 
-*Last reviewed: 2026-06-02 — current as of plugin v1.87.x.*
+*Last reviewed: 2026-06-08 - current as of plugin v1.89.x.*
 
 Craft agents fall into four categories based on when you encounter them and what invokes them. The first question to ask is always: does this need to be an agent at all, or can a skill or hook do the job deterministically?
 
@@ -91,6 +91,7 @@ graph LR
 | Agent | Model | Crystallized From | Consult When |
 |-------|-------|-------------------|--------------|
 | `muse` | sonnet | `.craft/research/product-intuition-become/` | Evaluating whether a feature will generate word-of-mouth, translating user requests into emotional jobs, "nobody will tell their friend about this" gut checks |
+| `riff` | sonnet | `.craft/research/riff-become/` | Brainstorming, half-formed ideas, "is this stupid?" gut-checks - a thinking partner for the moment between draft 11 and draft 12, not an instructor |
 | `alchemist` | sonnet | `.craft/research/css-interaction-alchemist-become/` | Building UI that needs to feel alive - scroll-driven reveals, morphing transitions, spatial animation. Sees CSS as a physics engine, not a styling language. |
 | `conductor` | sonnet | `.craft/research/conductor-become/` | Designing agent workflows, choosing between skill/hook/agent/rule, diagnosing why an agentic system is failing silently |
 | `doc-writer` | sonnet | `.craft/research/technical-documentation-writer-become/` | Writing or reviewing any documentation - README files, architecture docs, API references, tutorials, decision records |
