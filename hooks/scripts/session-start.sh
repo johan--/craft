@@ -105,10 +105,12 @@ if [ -n "$ACTIVE_CYCLE" ]; then
       fi
     fi
   else
-    # Count stories in cycle
+    # Count stories in cycle by status
     story_count=$(ls -1 "${PROJECT_ROOT}.craft/cycles/$ACTIVE_CYCLE/stories/"*.md 2>/dev/null | wc -l | tr -d ' ')
+    complete_count=$(grep -l "^status: complete" "${PROJECT_ROOT}.craft/cycles/$ACTIVE_CYCLE/stories/"*.md 2>/dev/null | wc -l | tr -d ' ')
     ready_count=$(grep -l "^status: ready" "${PROJECT_ROOT}.craft/cycles/$ACTIVE_CYCLE/stories/"*.md 2>/dev/null | wc -l | tr -d ' ')
-    context="$context | Stories: $ready_count ready of $story_count total"
+    planning_count=$(grep -l "^status: planning" "${PROJECT_ROOT}.craft/cycles/$ACTIVE_CYCLE/stories/"*.md 2>/dev/null | wc -l | tr -d ' ')
+    context="$context | Stories: $complete_count done, $ready_count ready, $planning_count planning ($story_count total)"
   fi
 else
   # No active cycle - check backlog
