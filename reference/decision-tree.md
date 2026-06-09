@@ -543,7 +543,8 @@ flowchart LR
 | `/craft:research` | Ad-hoc research — discover, elaborate, synthesize with ranked branches |
 | `/craft:research-verify` | Verify existing research findings against independent primary sources |
 | `/craft:fix` | Adhoc fix for small bugs without story ceremony. Creates record in `.craft/fixes/` |
-| `/craft:notebook` | Low-ceremony capture for ideas and todos before they harden into stories |
+| `/craft:notebook` | Low-ceremony capture for ideas, todos, and notes (durable project facts) before they harden into stories |
+| `/craft:riff` | Two-gear thinking partner - senses the moment, runs a tight calibration loop in the main loop or hands open exploration to the riff agent |
 | `/craft:planning` | Feature roadmap and planning - initiatives, concepts, open questions |
 | `/craft:project` | Switch projects or cross-project dashboard |
 | `/craft:browser` | Interactive browser session via playwright-cli (a skill invoked as a command) |

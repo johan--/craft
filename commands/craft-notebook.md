@@ -8,6 +8,8 @@ when_to_use: |
 
   Absent a deferral marker, follow the conversation - do NOT mention notebook. Markers bound your judgment.
 
+  Reciprocal with riff: a future-leaning creative spark that falls out mid-task while the user is heads-down ("the onboarding could be special someday") is a notebook capture, not a riff-now moment - the /craft:riff focus gate routes such sparks here for later, rather than pulling the user into an exploration.
+
   OFFER via inline mention as an ignorable closing line: "Worth dropping in /craft:notebook? Otherwise I'll continue." NOT AskUserQuestion. On accept, invoke silently with session context.
 
   NOTE TRIGGER (distinct from the deferral-marker trigger): a durable, project/team-local FACT surfaces that I could not already know and that future-us would want recalled. Capture the distilled FACT, never the event that revealed it. ("Kevin ran the vercel CLI" -> note is "Project deploys on Vercel.")

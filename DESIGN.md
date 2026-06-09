@@ -37,13 +37,14 @@ plugins/craft/
 │   ├── ux-analyzer.md         ← Nielsen heuristics, accessibility
 │   ├── verifier.md            ← Adversarial claim checker (primary sources only)
 │   └── walkthrough-analyzer.md ← First-time user simulation (chrome-devtools MCP)
-├── commands/                  ← Slash command definitions (29 commands)
+├── commands/                  ← Slash command definitions (30 commands)
 │   ├── craft.md               ← Main entry point
 │   ├── craft-ask.md           ← Consult a workshop agent (intelligent routing)
 │   ├── craft-become.md        ← Agent crystallization (4-phase: research→checkpoint→crystallize→save)
 │   ├── craft-docs.md          ← Documentation generation (two-pass: brief then generate)
 │   ├── craft-init.md
 │   ├── craft-notebook.md      ← Low-ceremony capture (ideas/todos/notes); conversational graduate/done
+│   ├── craft-riff.md          ← Two-gear thinking partner (thin sensor/router); tight gear in-loop, wide gear → riff agent
 │   ├── craft-planning.md
 │   ├── craft-status.md
 │   ├── craft-project.md
@@ -403,6 +404,19 @@ The notebook (`/craft:notebook`, `.craft/notebook/`) is a capture surface for id
 - **Deferral markers** in conversation ("later", "side note", "don't forget", "for next time", etc.) trigger an inline mention of `/craft:notebook` as a closing line. On accept the orchestrator captures silently with session context. No subcommands.
 
 The lifecycle deliberately keeps every state fast: capture is one line, graduate is one prompt, done is one AUQ, and a note is captured silently on an accepted inline offer. Power-user subcommand syntax is explicitly rejected in favor of conversational verbs. Claude offers notes proactively only above a high durability bar (no built-in/vague expiry), mirroring the high-bar-for-Claude / low-bar-for-user discipline of the deferral-marker offer.
+
+---
+
+## Riff: skill and agent
+
+Riff exists as a **skill** and an **agent** that work as a pair, not as one replacing the other.
+
+- **The riff skill** (`commands/craft-riff.md`) is a thin sensor/router. It carries a `when_to_use` that does the gear-sensing from the main loop: a FOCUS GATE on top (heads-down user -> a future-leaning spark routes to `/craft:notebook`, not riff), four reads (tight gear, wide gear, presignal offer, silence), and a nag FLOOR on the bottom. It re-documents none of the riffing craft - it only decides WHEN riff engages or is offered. It runs the tight gear itself and hands the wide gear off.
+- **The riff agent** (`agents/riff.md`) is the crystallized partner that does the actual riffing (the throw/pull/catch/dislocate gears, the silence-vs-abandonment read, the exhausted-user restraint). It is the wide-gear destination, invoked via the Agent tool (`subagent_type: "craft:riff"`) and via `/craft:ask`. Skills and agents are separate registries, so the `craft:riff` skill and `craft:riff` agent coexist without collision.
+
+The skill mirrors the notebook trigger discipline exactly: ignorable inline offers (never AskUserQuestion), bounded triggers, silence as the default, and at most one inline offer per turn so riff never stacks nudges on notebook / creative-spark / design-vibe.
+
+The skill's **tight gear** runs the **calibration loop** (`reference/calibration-loop.md`) - a standalone, reusable boundary-elicitation technique (the "optometrist flip test") that converts a tacit "I know it when I see it" into an encodable rule. It is deliberately written skill-agnostic so content-spark, design-vibe, and lock-decision can point to it too.
 
 ---
 
