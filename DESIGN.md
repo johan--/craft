@@ -12,7 +12,7 @@ For definitions of cycle, story, chunk, and the workshop concepts, see README.md
 plugins/craft/
 ├── .claude-plugin/
 │   └── plugin.json            ← Plugin manifest (name, version)
-├── agents/                    ← Isolated-context specialist agents (25 agents)
+├── agents/                    ← Isolated-context specialist agents (26 agents)
 │   ├── alchemist.md           ← CSS interaction physicist (crystallized)
 │   ├── become-researcher.md   ← Psychological material collector for /craft:become
 │   ├── chunk-validator.md     ← Quality check executor (haiku model)
@@ -37,7 +37,7 @@ plugins/craft/
 │   ├── ux-analyzer.md         ← Nielsen heuristics, accessibility
 │   ├── verifier.md            ← Adversarial claim checker (primary sources only)
 │   └── walkthrough-analyzer.md ← First-time user simulation (chrome-devtools MCP)
-├── commands/                  ← Slash command definitions (28 commands)
+├── commands/                  ← Slash command definitions (29 commands)
 │   ├── craft.md               ← Main entry point
 │   ├── craft-ask.md           ← Consult a workshop agent (intelligent routing)
 │   ├── craft-become.md        ← Agent crystallization (4-phase: research→checkpoint→crystallize→save)
@@ -181,7 +181,7 @@ See `docs/workflow-reference.md` for the full format spec and examples.
 Write access restricted to `.craft/` and `.claude/`. Used for story creation, design, planning, and locking decisions - no source-code edits.
 
 **Included skills:** content-spark, creative-spark, design-vibe, lock-decision, plan-chunks, fix, approve, browser
-**Included agents:** plan-chunks-agent, project-scanner, muse, riff, alchemist, conductor, doc-writer, product-anthropologist, pr-reviewer-expert, maze-architect, researcher, research-synthesizer, verifier, practitioner-reviewer, playwright-browser, become-researcher, crystallizer
+**Included agents:** plan-chunks-agent, project-scanner, muse, riff, alchemist, conductor, doc-writer, product-anthropologist, pr-reviewer-expert, maze-architect, researcher, research-synthesizer, verifier, practitioner-reviewer, playwright-browser, become-researcher, crystallizer, guide
 **Included commands:** craft, craft:init, craft:cycle-design, craft:cycle-start, craft:cycle-complete, craft:cycle-assign, craft:story-new, craft:story-archive, craft:story-delete, craft:status, craft:update-docs, craft:docs, craft:project, craft:review, craft:become, craft:ask, craft:workflow, craft:workflow-run, craft:workflow-design, craft:research, craft:research-verify, craft:fix
 
 ### Implement Phase

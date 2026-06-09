@@ -1,6 +1,6 @@
 # Agent Catalog
 
-> Reference for all 25 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
+> Reference for all 26 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
 
 *Last reviewed: 2026-06-08 - current as of plugin v1.89.x.*
 
@@ -102,6 +102,16 @@ graph LR
 **Stale signals:** Each crystallized agent's frontmatter includes `stale_signals` - specific conditions that would make the agent's beliefs outdated. Check these before trusting the agent in changed environments.
 
 **Handbook references:** Some agents reference their research folder via `research_handbook:` in frontmatter. When you need citations or deeper context, the handbook points you to the raw branch files.
+
+---
+
+## The Craft Guide
+
+A standalone, read-only help agent - the analog of Claude Code's docs agent, for craft itself. Auto-triggers on craft how-to and diagnostic questions, or reach it explicitly via `/craft:guide`. Educated about craft (NOT crystallized): it reads craft's real source files and your `.craft/` state to explain how things work and diagnose your setup. Grounds behavioral answers in source (docs are a subordinate map). Read-only - it never changes anything.
+
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| `guide` | sonnet | Explains how craft works and how to use it on your project; diagnoses your `.craft/` state; hands off pure Claude Code questions to `claude-code-guide`. Read-only (Read / Glob / Grep). Reactive - answers when asked, never barges in. |
 
 ---
 

@@ -254,7 +254,7 @@ A future story adds `[[wikilink]]` syntax and a craft-wide graph helper that res
 
 ## Agents
 
-25 agents across five categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
+26 agents across six categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
 
 **Core Workflow** - run inside the implementation pipeline
 
@@ -305,6 +305,12 @@ A future story adds `[[wikilink]]` syntax and a craft-wide graph helper that res
 | `product-anthropologist` | Human-truth layer - diagnoses whether a product solves a real problem |
 | `crystallizer` | Psychological synthesizer that distills research into agent personas (opus model) |
 | `become-researcher` | Psychological material collector for `/craft:become` - gathers beliefs, not facts |
+
+**Guide** - understand and use craft itself
+
+| Agent | Role |
+|-------|------|
+| `guide` | Read-only help agent - explains how craft works and diagnoses your `.craft/` setup; the craft analog of Claude Code's docs agent. Auto-triggers, or reach it via `/craft:guide` |
 
 ## How craft work flows
 

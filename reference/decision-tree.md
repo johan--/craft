@@ -536,6 +536,7 @@ flowchart LR
 | `/craft:docs` | Generate or update docs using the crystallized doc-writer agent |
 | `/craft:become` | Crystallize a tool, role, or person into a portable 9-section agent |
 | `/craft:ask` | Consult a workshop agent — routes to the best available mind |
+| `/craft:guide` | Read-only help agent for using craft itself - explains and diagnoses, never changes anything |
 | `/craft:workflow` | Workflow router — dashboard, status, and dispatch to workflow-run or workflow-design |
 | `/craft:workflow-run` | Run a workflow session — start, continue, next, run-all, batch-create, mark ready |
 | `/craft:workflow-design` | Author workflow definitions — create new, edit existing, archive unused |
@@ -619,6 +620,12 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 | `product-anthropologist` | Human-truth layer — diagnoses real-problem fit |
 | `crystallizer` | Psychological synthesizer, distills research into agent personas (opus) |
 | `become-researcher` | Psychological material collector for `/craft:become` |
+
+**Guide**
+
+| Agent | Purpose |
+|-------|---------|
+| `guide` | Read-only craft help agent - explains how craft works, diagnoses your `.craft/` state; auto-triggers or via `/craft:guide` |
 
 ## State Files Reference
 
