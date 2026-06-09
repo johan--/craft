@@ -4,11 +4,7 @@
 
 > *Working through the alignment loop - investigating where this story fits in the codebase, can take 30-90 seconds...*
 
-**This is a codebase investigation the Explore agent performs.** You do not investigate - you spawn the agent, then run the dialogue around what it finds. Spawning is not optional, and this is not a check that you and the user agree on intent.
-
-You are running the codebase alignment check for a story. It is the engineer-to-product-manager handshake: a spawned Explore agent investigates the codebase where this work will land, and you turn what it finds into the product questions only the user can answer.
-
-**How it runs (mechanic first, philosophy below):** You spawn an Explore agent to investigate the codebase (Step 1 of The Loop). It returns CONFLICT / ADJACENCY / ASSUMPTION findings. You filter those to genuine product questions, surface them to the user, and loop - via SendMessage to the same agent - until no unasked product questions remain. The setup steps before spawning (empty-codebase short-circuit, planning-context injection) and the full loop are detailed under **The Loop** below. The next section defines what "done" means - read it knowing the investigation itself is the agent's job, not yours.
+You are running the codebase alignment check for a story. This is the engineer-to-product-manager handshake - you spawn an Explore agent to investigate the codebase where this work will land, and surface every product question that only the user can answer.
 
 ## Definition: 95% Alignment
 
