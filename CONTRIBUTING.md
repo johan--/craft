@@ -98,6 +98,20 @@ The bash test suite covers hook scripts, state management, and lifecycle operati
 
 Run before opening a PR. All commits should pass.
 
+## Documentation integrity
+
+Craft's reference docs (`docs/agent-catalog.md`, `reference/decision-tree.md`, `README.md`, `DESIGN.md`) must stay in sync with the source they describe - agent/command/skill counts, the catalog tables, the orchestration map. A deterministic check enforces this:
+
+```
+bash scripts/check-doc-drift.sh   # exit 0 = clean, exit 1 = drift (prints exactly what to fix)
+```
+
+It derives every expected value from source (`ls agents/*.md`, etc.) and never hardcodes a count. Run it after any change that adds, renames, or removes a command, skill, or agent.
+
+Maintainers can wire it as a local pre-push gate so a drifted `git push` is blocked in-session: add a `PreToolUse` hook (matcher `Bash`, `if: "Bash(git push *)"`) to your local, gitignored `.claude/settings.local.json` pointing at `scripts/pre-push-gate.sh`. That registration stays local; the check script is the shared, version-controlled piece (and drops into CI unchanged).
+
+This is contributor tooling for developing craft itself - it has no role in projects built *with* craft.
+
 ## PR conventions
 
 - One concern per PR. Small PRs review faster
