@@ -1,8 +1,9 @@
 #!/bin/bash
-# notebook-capture.sh — Write a notebook idea or todo file
-# Usage: notebook-capture.sh <type> "<text>" [--source="<source>"] [--tags="tag1,tag2"] [--body-paragraph2="<text>"]
-#   <type>: "idea" or "todo"
+# notebook-capture.sh - Write a notebook idea, todo, or note file
+# Usage: notebook-capture.sh <type> "<text>" [--facet="<facet>"] [--source="<source>"] [--tags="tag1,tag2"] [--body-paragraph2="<text>"]
+#   <type>: "idea", "todo", or "note"
 #   <text>: capture text (may contain inline #tags, which are extracted and scrubbed)
+#   --facet: optional recall lever for notes (infrastructure|tooling|ownership|process|convention|gotcha)
 #   --source: optional source string for frontmatter (e.g. "session 2026-05-30")
 #   --tags: optional ADDITIONAL tags (comma-separated) merged with parsed inline tags
 #           used by Claude-driven captures to add session-context tags beyond inline #tags
@@ -33,9 +34,14 @@ TEXT=""
 SOURCE=""
 EXTRA_TAGS=""
 BODY_PARAGRAPH2=""
+FACET=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
+    --facet=*)
+      FACET="${1#*=}"
+      shift
+      ;;
     --source=*)
       SOURCE="${1#*=}"
       shift
@@ -60,8 +66,8 @@ while [ $# -gt 0 ]; do
 done
 
 # Validate
-if [ "$TYPE" != "idea" ] && [ "$TYPE" != "todo" ]; then
-  echo "Error: type must be 'idea' or 'todo'" >&2
+if [ "$TYPE" != "idea" ] && [ "$TYPE" != "todo" ] && [ "$TYPE" != "note" ]; then
+  echo "Error: type must be 'idea', 'todo', or 'note'" >&2
   exit 1
 fi
 
@@ -141,6 +147,8 @@ fi
 NOTEBOOK_DIR="$ROOT/.craft/notebook"
 if [ "$TYPE" = "idea" ]; then
   TARGET_DIR="$NOTEBOOK_DIR/ideas"
+elif [ "$TYPE" = "note" ]; then
+  TARGET_DIR="$NOTEBOOK_DIR/notes"
 else
   TARGET_DIR="$NOTEBOOK_DIR/todos"
 fi
@@ -175,7 +183,12 @@ fi
   echo "type: $TYPE"
   echo "created: $DATE"
   echo "captured_at: $CAPTURED_AT"
-  echo "status: open"
+  if [ "$TYPE" = "note" ]; then
+    # Notes carry no lifecycle status (no graduate/done); facet is the recall lever.
+    [ -n "$FACET" ] && echo "facet: $FACET"
+  else
+    echo "status: open"
+  fi
   [ -n "$SOURCE_YAML" ] && echo "$SOURCE_YAML"
   [ -n "$TAGS_YAML" ] && echo "$TAGS_YAML"
   echo "---"

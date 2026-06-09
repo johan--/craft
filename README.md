@@ -137,7 +137,7 @@ This runs the story end-to-end. Craft flows through four beats: a creative pass 
 |---------|---------|
 | `/craft` | Main entry point - start here |
 | `/craft:status` | Dashboard view of progress |
-| `/craft:notebook` | Low-ceremony capture for ideas and todos. Graduate / mark done conversationally - no subcommands needed for lifecycle. |
+| `/craft:notebook` | Low-ceremony capture for ideas, todos, and notes (durable project facts). Graduate / mark done conversationally - no subcommands needed for lifecycle. |
 | `/craft:story-new` | Create story (lands in backlog) |
 | `/craft:story-implement` | Implement a story (interactive) |
 | `/craft:story-implement-auto` | Implement a story (autonomous) |
@@ -168,11 +168,12 @@ This runs the story end-to-end. Craft flows through four beats: a creative pass 
 
 The notebook is the upstream of craft's compounding system. Catch thoughts that aren't story-shape yet, before they get lost or forced into premature stories.
 
-Three user-typed shapes:
+User-typed shapes:
 
 ```
 /craft:notebook idea "compounding kb for decisions"
 /craft:notebook todo "rename verifier error wording"
+/craft:notebook note "project deploys on Vercel"
 /craft:notebook                              # bare → list view
 ```
 
@@ -221,12 +222,21 @@ When you use deferral language ("later," "don't let me forget," "side note") in 
 
 Ignore the line, the conversation flows on. Say "yes" or "do it" and Claude captures silently with the conversation as context - no follow-up AUQ.
 
-### Idea vs todo
+### Idea vs todo vs note
 
 - **Idea** - half-formed, wants to mature into a story (or get pruned). Graduate when ready.
 - **Todo** - concrete action, wants to get done. Mark done when finished.
+- **Note** - a durable, project/team-local fact ("project deploys on Vercel," "Sarah owns billing - loop her in before touching invoicing"). Its value is future recall, not action. Notes don't graduate and don't get "done" - they're reference, not work.
 
-Different lifecycles, different storage: ideas accumulate as history (graduated ones stay in place with a `graduated_to: <story-slug>` flag), todos clear as inbox (done ones move to `todos/done/`).
+Different lifecycles, different storage: ideas accumulate as history (graduated ones stay in place with a `graduated_to: <story-slug>` flag), todos clear as inbox (done ones move to `todos/done/`), and notes are permanent reference in `notebook/notes/` with no lifecycle at all.
+
+### Notes: durable facts you want recalled
+
+A note captures the **distilled standing fact**, never the event that revealed it. "Kevin ran the vercel CLI today" is the trigger; the note is "Project deploys on Vercel." Each note carries a `facet` (`infrastructure | tooling | ownership | process | convention | gotcha`) that tells Claude when to resurface it - an `infrastructure` note fires when you touch deploys, an `ownership` note fires when you touch that person's domain.
+
+Recall is hybrid: every session loads a lightweight one-line index of your notes, and Claude reads the full note on demand when the current work matches. Recalled notes are framed as "as of {date}" - true when written, verify before acting - so a note that has gone stale gets corrected, not blindly trusted. There's no expiry machinery; the dated filename plus the always-loaded index is the staleness defense (the same model Claude's own file memory uses).
+
+Claude offers a note proactively only for solidly durable facts with no built-in expiry - the same high-bar-for-Claude / low-bar-for-you discipline as the deferral-marker offer. Provisional or soft-timelined facts stay silent unless you capture them yourself.
 
 ### Not the same as TaskCreate
 

@@ -43,7 +43,7 @@ plugins/craft/
 │   ├── craft-become.md        ← Agent crystallization (4-phase: research→checkpoint→crystallize→save)
 │   ├── craft-docs.md          ← Documentation generation (two-pass: brief then generate)
 │   ├── craft-init.md
-│   ├── craft-notebook.md      ← Low-ceremony capture (ideas/todos); conversational graduate/done
+│   ├── craft-notebook.md      ← Low-ceremony capture (ideas/todos/notes); conversational graduate/done
 │   ├── craft-planning.md
 │   ├── craft-status.md
 │   ├── craft-project.md
@@ -303,10 +303,12 @@ project-root/
 │   ├── notebook/              ← Low-ceremony capture (created by /craft:notebook)
 │   │   ├── ideas/             ← Half-formed thoughts; graduated ideas stay in place with flag
 │   │   │   └── YYYY-MM-DD-slug.md
-│   │   └── todos/             ← Concrete actions
-│   │       ├── YYYY-MM-DD-slug.md
-│   │       └── done/          ← Archive for completed todos
-│   │           └── YYYY-MM-DD-slug.md
+│   │   ├── todos/             ← Concrete actions
+│   │   │   ├── YYYY-MM-DD-slug.md
+│   │   │   └── done/          ← Archive for completed todos
+│   │   │       └── YYYY-MM-DD-slug.md
+│   │   └── notes/             ← Durable project facts; no lifecycle, recalled by facet
+│   │       └── YYYY-MM-DD-slug.md
 │   ├── design/                ← Design system (enforced)
 │   │   ├── tokens.yaml        ← Design tokens
 │   │   ├── components.md      ← Component patterns
@@ -393,13 +395,14 @@ The depth ceiling is prose-enforced: planning is for strategic decisions (the on
 
 ## Notebook Lifecycle
 
-The notebook (`/craft:notebook`, `.craft/notebook/`) is a capture surface for ideas and todos that sit below the backlog. State transitions are conversational, not subcommand-driven:
+The notebook (`/craft:notebook`, `.craft/notebook/`) is a capture surface for ideas, todos, and notes that sit below the backlog. State transitions are conversational, not subcommand-driven:
 
 - **Ideas** start in `ideas/YYYY-MM-DD-slug.md`. When an idea matures into story-shape, the user signals graduation; the orchestrator routes to `/craft:story-new` with the idea pre-filled and flags the idea in place (it stays, marked as graduated, for traceability).
-- **Todos** start in `todos/YYYY-MM-DD-slug.md`. When done, the orchestrator confirms via AskUserQuestion (always — asymmetric failure visibility for the destructive action) and moves the file to `todos/done/`.
+- **Todos** start in `todos/YYYY-MM-DD-slug.md`. When done, the orchestrator confirms via AskUserQuestion (always - asymmetric failure visibility for the destructive action) and moves the file to `todos/done/`.
+- **Notes** start in `notes/YYYY-MM-DD-slug.md` and have NO lifecycle - they never graduate and never get "done." A note is a durable, project/team-local fact whose value is future recall (paragraph 1 = the distilled timeless fact, paragraph 2 = provenance). Each carries a `facet` (`infrastructure | tooling | ownership | process | convention | gotcha`) that keys WHEN it resurfaces. Recall is hybrid: `session-start.sh` injects a one-line-per-note index every session (via `notebook-notes-index.sh`), and the full body is read on demand when the current work matches the facet/topic. Staleness is handled the Claude-memory way - dated filenames + the always-loaded index + "as of {date}" recall framing - not a TTL.
 - **Deferral markers** in conversation ("later", "side note", "don't forget", "for next time", etc.) trigger an inline mention of `/craft:notebook` as a closing line. On accept the orchestrator captures silently with session context. No subcommands.
 
-The lifecycle deliberately keeps both states fast: capture is one line, graduate is one prompt, done is one AUQ. Power-user subcommand syntax is explicitly rejected in favor of conversational verbs.
+The lifecycle deliberately keeps every state fast: capture is one line, graduate is one prompt, done is one AUQ, and a note is captured silently on an accepted inline offer. Power-user subcommand syntax is explicitly rejected in favor of conversational verbs. Claude offers notes proactively only above a high durability bar (no built-in/vague expiry), mirroring the high-bar-for-Claude / low-bar-for-user discipline of the deferral-marker offer.
 
 ---
 

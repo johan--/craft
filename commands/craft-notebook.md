@@ -1,6 +1,6 @@
 ---
 name: craft:notebook
-description: "Low-ceremony capture for ideas (half-formed, want to mature into stories) and todos (concrete actions). One-line capture, conditional elaboration AUQ. Use BEFORE thoughts get forced into stories."
+description: "Low-ceremony capture for ideas (half-formed, want to mature into stories), todos (concrete actions), and notes (durable project/team facts for future recall). One-line capture, conditional elaboration AUQ. Use BEFORE thoughts get forced into stories."
 when_to_use: |
   TRIGGER: a DEFERRAL MARKER in user's utterance: "later," "at some point," "don't let me forget," "separately," "side note," "unrelated but," "before I forget," "for next time," "remember to."
 
@@ -9,6 +9,20 @@ when_to_use: |
   Absent a deferral marker, follow the conversation - do NOT mention notebook. Markers bound your judgment.
 
   OFFER via inline mention as an ignorable closing line: "Worth dropping in /craft:notebook? Otherwise I'll continue." NOT AskUserQuestion. On accept, invoke silently with session context.
+
+  NOTE TRIGGER (distinct from the deferral-marker trigger): a durable, project/team-local FACT surfaces that I could not already know and that future-us would want recalled. Capture the distilled FACT, never the event that revealed it. ("Kevin ran the vercel CLI" -> note is "Project deploys on Vercel.")
+
+  Layer 1 - what IS a note (eligible content): a settled, currently-true standing fact that is (a) durable, not a transient incident; (b) local to THIS project/team/environment, not general knowledge I already hold; (c) reusable when a matching situation returns. Spans technical AND social/ownership facts. "Already written in an unread repo doc" still qualifies - the value is putting it in the recall path.
+
+  NOT a note: a transient incident ("CI went red, got reverted" - distill only a reusable technique if one surfaced, never the incident); anything I already know from general training (git reflog, standard CLI flags); an undecided lean or drift ("we've been leaning toward X, not official").
+
+  Layer 2 - when I OFFER proactively (higher bar than eligibility): only when the fact is solidly durable with NO built-in or vague expiry, and I'm confident it's true and stable. Provisional / soft-timelined / expiry-baked facts ("legacy auth until ~Q3, no ticket or owner") - stay silent; the user captures those explicitly if they want them.
+
+  Event shapes that warrant the offer: a teammate's tool/command/process reveals how this project actually works; a non-obvious project fact stated in passing; ownership / "ask X before touching Y" guidance; an environment/setup constraint we just hit. Reaction phrases ("TIL," "good to know," "didn't know that," "huh") are a secondary signal.
+
+  OFFER via inline mention - an ignorable closing line naming the distilled fact: "Worth noting 'Project deploys on Vercel'? Otherwise I'll continue." NOT AskUserQuestion. On accept, capture silently: distilled fact (paragraph 1) + how-we-learned-it provenance (paragraph 2) + facet + tags.
+
+  Absent BOTH an eligible fact AND the Layer-2 bar, do NOT mention notes. Default is silence. (Same high-bar-for-Claude-initiated discipline as the deferral-marker rule.)
 
   Idea-vs-todo (AFTER capture intent): todos are imperative + concrete ("rename X," "fix Y"); ideas are speculative + abstract ("what if we," "the pattern we're seeing"). When ambiguous, ask.
 
@@ -33,6 +47,7 @@ Inspect the first token of `$ARGUMENTS`. Route as follows:
 | (empty) | Go to **Step 1: List View** |
 | `idea` | Go to **Step 2: Capture Flow** with TYPE=idea |
 | `todo` | Go to **Step 2: Capture Flow** with TYPE=todo |
+| `note` | Go to **Step 2: Capture Flow** with TYPE=note |
 | Anything else that looks like prose (no recognized subcommand) | Go to **Step 3: Disambiguate Idea-or-Todo** |
 | `graduate` / `done` / unknown single-token verbs | Output hint, return |
 
@@ -63,11 +78,12 @@ Notebook empty.
 
 Add an idea:  /craft:notebook idea "your idea"
 Add a todo:   /craft:notebook todo "your todo"
+Add a note:   /craft:notebook note "a durable project fact"
 ```
 
 Do NOT fire any AskUserQuestion (AC12). Return.
 
-**If output has entries:** Parse the records and render two groups:
+**If output has entries:** Parse the records and render three groups:
 
 ```
 Ideas
@@ -80,16 +96,20 @@ Todos
   [1] {DATE} {SLUG} {tags-section}
       {PREVIEW}
 
-Commands: idea "text" / todo "text"
+Notes
+  [1] {DATE} {SLUG} {tags-section}
+      {PREVIEW}
+
+Commands: idea "text" / todo "text" / note "text"
 ```
 
 `{tags-section}` rendering rule (AC19):
 - If `TAGS` is non-empty, split on `;` and render as space-separated `#tag1 #tag2 #tag3` after one space.
 - If `TAGS` is empty, render nothing (no trailing space, no `#`).
 
-Render only sections where the corresponding group has entries. Suppress the "Ideas" or "Todos" header if its group is empty.
+Render only sections where the corresponding group has entries. Suppress the "Ideas," "Todos," or "Notes" header if its group is empty.
 
-Footer hint always shows `idea "text" / todo "text"` even when only one group has entries. Footer does NOT mention `graduate` or `done` (those are conversational; teaching the typed-subcommand surface would mislead per AC21).
+Footer hint always shows `idea "text" / todo "text" / note "text"` even when only one group has entries. Footer does NOT mention `graduate` or `done` (those are conversational; teaching the typed-subcommand surface would mislead per AC21). Notes never show a `graduate` or `done` affordance at all - they have no lifecycle (see Lifecycle suppression below).
 
 ## Step 2: Capture Flow
 
@@ -232,9 +252,65 @@ Captured {TYPE}: {SLUG}
 
 Return to the prior conversation focus. The user gets a notification, not an interruption.
 
+## Notes: capture and recall (the third type)
+
+Notes are durable, project/team-local facts whose value is future **recall** - not action. They do NOT graduate and do NOT get "done" (see the Lifecycle suppression note below). The trigger that decides WHEN to offer a note lives in `when_to_use` (the NOTE TRIGGER block, with its two layers and the 7 calibration cases below). This section covers what happens after the offer is accepted (capture) and how a captured note is resurfaced (recall).
+
+### Capturing a note (on accept)
+
+When the user accepts a note offer (or types `/craft:notebook note "..."`), construct the body the same two-paragraph way as Step 4, then call the helper with `note` and a `--facet`:
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/notebook-capture.sh note "{DISTILLED_FACT}" \
+  --facet={facet} \
+  --body-paragraph2="{PROVENANCE}" \
+  --tags="{tag1},{tag2}" \
+  --source="observed - {how we learned it}, {today-date}"
+```
+
+- **Paragraph 1 (`DISTILLED_FACT`)** = the timeless standing fact, present tense, no actor, no date ("Project deploys on Vercel"). NEVER the triggering event.
+- **Paragraph 2 (`PROVENANCE`)** = actor + event + date, for verifiability ("Surfaced when Kevin ran the vercel CLI on {date}...").
+- **`--facet`** is the recall lever. Pick ONE from the enum: `infrastructure | tooling | ownership | process | convention | gotcha`.
+- No elaboration AUQ fires for the Claude-driven accept (mirrors Step 4 / AC17). Print one line: `Noted: {SLUG}`.
+
+### Notes Recall (body on demand)
+
+The session-start hook injects the **notes index** (one line per note) each session - this is the "index in" half of hybrid recall. Treat every indexed line as **"true as of {date} - verify before acting,"** never as undated fact.
+
+When the current work matches a note's facet/topic/tags, READ the full note file from `.craft/notebook/notes/` on demand (the "body on demand" half) and surface it before acting:
+
+> "We have a note - as of {date}, {fact}."
+
+Then act on it. The facet says WHEN a note is relevant to the current moment:
+
+| facet | Resurface when the current work involves... |
+|-------|---------------------------------------------|
+| `infrastructure` | deploys, builds, env/CI config, hosting, the data layer |
+| `tooling` | running a CLI/script, package manager, local dev setup |
+| `ownership` | touching a domain a named person owns, or deciding who to loop in |
+| `process` | how this team ships/reviews/releases - the workflow around the work |
+| `convention` | code style, naming, file layout, "how we do X here" |
+| `gotcha` | the matching symptom recurs, or you're about to step on a known trap |
+
+If a recalled note appears **contradicted by current reality**, say so and offer to correct it - update the file in place, or mark it superseded inline (`SUPERSEDED {today}: ...`). Never silently trust a stale note, and never silently overwrite without surfacing the change.
+
+<!--
+Calibration ground truth (do not weaken on future edits) - the NOTE TRIGGER in
+when_to_use must resolve these 7 cases:
+  1. shared staging DB + destructive seed script -> OFFER (durable infra + danger)
+  2. "CI red, bad migration, reverting" -> NO note for the incident; note only a reusable technique if one surfaced
+  3. recovered a commit via git reflog -> NO note (general knowledge I already hold)
+  4. "Sarah is the only one who understands billing - loop her in" -> OFFER (ownership)
+  5. "drifting toward Tailwind, nobody made it official" -> NO note (not settled)
+  6. "needs Node 20, 22 breaks native deps" already in unread CONTRIBUTING.md -> OFFER (documented-in-repo does NOT disqualify; only already-known does)
+  7. "legacy auth until ~Q3, no ticket or owner" -> NO proactive offer (below Layer-2 bar: provisional/vague expiry)
+-->
+
 ## Lifecycle Trigger Framework (Conversational graduate / done)
 
 Lifecycle operations (`graduate`, `done`) are NOT user-typed subcommands in v1. They run conversationally: Claude detects intent in the user's utterance and runs the helper scripts directly. This section documents the trigger heuristics, confidence tiers, confirmation pattern, and disambiguation rules.
+
+**Lifecycle applies to ideas and todos ONLY - never notes.** `graduate` is an idea operation (idea -> story); `done` is a todo operation (todo -> done/). Notes are durable reference, not work: they have no `status`, never graduate, and never get marked done. Never offer or fire either operation against a note, at any confidence tier. The list view shows no lifecycle affordance for the Notes group. (Mirrors AC21's "no typed subcommand" discipline - notes simply have no lifecycle to invoke.)
 
 ### Graduate flow (AC5, AC22)
 

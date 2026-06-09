@@ -1,10 +1,10 @@
 #!/bin/bash
-# notebook-list.sh — Emit structured list of open notebook entries
+# notebook-list.sh - Emit structured list of notebook entries
 # Usage: notebook-list.sh [type]
-#   type: optional — "ideas", "todos", or empty for both
+#   type: optional - "ideas", "todos", "notes", or empty for all three
 #
 # Output (stdout): key=value records, one entry per block, separated by blank lines
-#   TYPE=idea|todo
+#   TYPE=idea|todo|note
 #   N=<sequence-number-within-group>
 #   FILE=<absolute-path>
 #   DATE=<YYYY-MM-DD from frontmatter>
@@ -12,7 +12,9 @@
 #   TAGS=<semicolon-separated tags, or empty>
 #   PREVIEW=<first non-blank line of body>
 #
-# Skips entries where status != "open"
+# Ideas and todos skip entries where status != "open". Notes carry no lifecycle
+# status, so the notes group lists every entry (emit_group is called with
+# "skip-status" for notes).
 # Exit: 0 always (empty output if no entries)
 
 set -e
@@ -95,7 +97,7 @@ PYEOF
     tags=$(printf '%s\n' "$parsed" | sed -n 's/^TAGS=//p' | head -1)
     preview=$(printf '%s\n' "$parsed" | sed -n 's/^PREVIEW=//p' | head -1)
 
-    if [ "$status" != "open" ]; then continue; fi
+    if [ "$3" != "skip-status" ] && [ "$status" != "open" ]; then continue; fi
 
     local base slug
     base=$(basename "$file" .md)
@@ -119,6 +121,10 @@ fi
 
 if [ -z "$FILTER" ] || [ "$FILTER" = "todos" ]; then
   emit_group "todo" "$NOTEBOOK_DIR/todos"
+fi
+
+if [ -z "$FILTER" ] || [ "$FILTER" = "notes" ]; then
+  emit_group "note" "$NOTEBOOK_DIR/notes" "skip-status"
 fi
 
 exit 0

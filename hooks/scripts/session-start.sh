@@ -204,4 +204,13 @@ if [ -n "$context" ]; then
   echo "Craft: $context"
 fi
 
+# Surface the durable-notes index (the "index in" half of hybrid recall).
+# The generator no-ops when there are no notes, so projects without notes see
+# zero added output. Full note bodies are read on demand at recall time.
+NOTES_INDEX=$("$SCRIPT_DIR/notebook-notes-index.sh" 2>/dev/null || true)
+if [ -n "$NOTES_INDEX" ]; then
+  echo ""
+  echo "$NOTES_INDEX"
+fi
+
 exit 0
