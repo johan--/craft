@@ -27,7 +27,7 @@ Create a new cycle or detail an existing one — this IS the planning phase. Sto
 
 The entire cycle should reach **95% alignment** before ANY story gets planned into chunks.
 
-**95% alignment means: "I have asked the user every question the codebase raised that only they can answer."** It's about capturing the user's intent - not about whether the solution approach is right. The orchestrator investigates the codebase, surfaces conflicts, adjacencies, and assumptions, and confirms the user's product decisions through dialogue. See `commands/references/alignment-check.md` for the full pattern.
+**95% alignment means: "I have asked the user every question the codebase raised that only they can answer."** It's about capturing the user's intent - not about whether the solution approach is right. A spawned Explore agent investigates the codebase and surfaces conflicts, adjacencies, and assumptions; the orchestrator turns those findings into product questions and confirms the user's decisions through dialogue. The orchestrator does not do the investigation itself - it spawns the agent. See `commands/references/alignment-check.md` for the full pattern.
 
 1. Discuss everything in conversation
 2. Lock decisions as you go
