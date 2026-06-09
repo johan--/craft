@@ -178,6 +178,8 @@ Agent tool:
 
 **Save the agent's ID** - you will use SendMessage for follow-up rounds.
 
+**Do not proceed to Step 2 until you have the Explore agent's findings in hand.**
+
 ### Step 2: Process Findings
 
 Read the Explore agent's findings. For each finding, decide:
