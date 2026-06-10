@@ -383,6 +383,8 @@ Produce FULL implementation details. Each chunk must be specific enough that an 
 
 **Infrastructure before features.** If a story needs new dependencies, test setup, or build config, put that in chunk 1. Don't plan "set up vitest" as chunk 4 when chunks 1-3 write code that needs testing.
 
+**Renames and removals are atomic.** Before chunking any rename or symbol removal, enumerate ALL references - including test projects, fixtures, and mock implementations. Every reference updates in the same chunk as the rename/removal; a chunk boundary must never sit between a rename and its reference updates. The 7-chunk limit is a ceiling, not a target: prefer fewer, larger chunks over many small ones that leave intermediate broken states. If a rename plus all its references cannot fit the chunk size limits, flag the story for splitting in your concerns summary rather than planning a broken boundary.
+
 ### 3.3 Chunk Format (REQUIRED)
 
 **Read the chunk format reference** at the skill's `references/chunk-format-guide.md` relative to the Craft plugin root. If you can locate the Craft plugin root from your context, read it for the full template, quality gate, and bad → mediocre → good examples.
@@ -571,6 +573,8 @@ ones. E.g., "Parser handles attribute selectors" becomes
 ### Testing Pattern
 
 Each chunk includes tests for what it implements. Every chunk must end with all tests passing.
+
+**Every chunk leaves a green tree.** Each chunk's Done When must include at least one criterion asserting the project compiles and all tests pass at that checkpoint (e.g. "Build passes and all tests pass"). Never plan a boundary that leaves the project non-compiling - if you find yourself writing "do not build between chunk N and N+1" or "treat two chunks as one compile unit", the boundary is wrong: merge or re-cut the chunks. Exempt: chunks that modify no source files (all Files entries `read-only`, or a Goal that touches only docs).
 
 **Do NOT create a separate "write tests" chunk.** Tests belong in the same chunk as the code they verify. A chunk is self-contained: implement + test + validate.
 

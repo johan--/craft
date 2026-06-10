@@ -307,6 +307,7 @@ Read the story file path from the `Story file:` field in the Overview. Run ALL c
 | 3 | `## Delivery` section has content | Grep for `^## Delivery` heading. Read lines until the next `##` heading. Verify at least one non-empty, non-comment line exists between them | "## Delivery section is missing or empty" |
 | 4 | `## Acceptance` section has detailed criteria | Grep for `^## Acceptance` heading. Read lines until the next `##` heading. Verify the section contains at least 3 bullet points (lines starting with `- `) - rough acceptance from the creative phase typically has 2-3 vague items; a properly refined section has 5+ specific items | "## Acceptance section appears unrefined - only [N] items found (expected 3+)" |
 | 5 | Each chunk has required sub-sections | For each `### Chunk N:` heading, verify the presence of `**Goal:**`, `**Files:**`, and `**Implementation Details:**` before the next `### Chunk` or end of file | "Chunk [N] is missing [Goal/Files/Implementation Details]" |
+| 6 | Each chunk's Done When asserts a green tree | For each `### Chunk N:` heading, read the `**Done When:**` checklist. At least one criterion must assert a compilable, test-passing state ("build passes", "all tests pass", "no compile errors"). Exempt: a chunk whose Files entries are all `read-only`, or whose Goal explicitly states no source files are modified (docs-only) | "Chunk [N] has no green-tree Done When criterion - every chunk must leave the project compiling with tests passing; a plan that defers compilation across chunk boundaries is invalid" |
 
 **Step 3 - Route based on validation result:**
 
@@ -314,7 +315,7 @@ Read the story file path from the `Story file:` field in the Overview. Run ALL c
 
 **Check 1 fails (no chunks at all):** The agent failed entirely. Fall back to manual planning: read the story file yourself, scan the codebase, and plan inline following the approach documented in the plan-chunks-agent's instructions. Do not block planning on agent failure.
 
-**Checks 2-5 fail (partial failure - agent wrote chunks but plan is structurally incomplete):** Report the specific failures to the user:
+**Checks 2-6 fail (partial failure - agent wrote chunks but plan is structurally incomplete):** Report the specific failures to the user:
 
 > "The planning agent produced a plan, but it has structural issues:
 >
@@ -335,7 +336,7 @@ options:
     description: "Accept the plan as-is and move to triage"
 ```
 
-**If "Retry planning":** Re-invoke the plan-chunks-agent (return to S-1). Include in the retry prompt: "Previous plan attempt had structural issues: [failure list]. Ensure the plan includes a ## Delivery section with content, refined ## Acceptance criteria (5+ specific items), chunks_total in 2-7 range, and every chunk has Goal, Files, and Implementation Details."
+**If "Retry planning":** Re-invoke the plan-chunks-agent (return to S-1). Include in the retry prompt: "Previous plan attempt had structural issues: [failure list]. Ensure the plan includes a ## Delivery section with content, refined ## Acceptance criteria (5+ specific items), chunks_total in 2-7 range, and every chunk has Goal, Files, and Implementation Details. Every chunk's Done When must assert the project builds and all tests pass at that checkpoint. Rename and removal work must update ALL call sites - including test files, mocks, and fixtures - within the same chunk; if that cannot fit the chunk limits, flag the story for splitting instead of planning chunks that leave the tree broken between boundaries."
 
 **If "Fix manually":** Acknowledge and end - the user will edit the story file directly and re-invoke planning when ready.
 
@@ -779,7 +780,7 @@ Validate each agent's output **one at a time** by reading from output files. Do 
 For each story in your output file registry:
 1. **Read the output file** using the Read tool (the path from M-2 step 4) — this is the concerns summary
 2. **Validate concerns summary:** non-empty, has `## Overview` section with `Story file:` path
-3. **Validate story file was written:** Read the story file path from the `Story file:` field. Use Read tool to check it has a `## Chunks` section and `chunks_total > 0` in frontmatter. If the story file wasn't updated (no `## Chunks` section), mark as failed — "agent didn't write story file"
+3. **Validate story file was written:** Read the story file path from the `Story file:` field. Use Read tool to check it has a `## Chunks` section and `chunks_total > 0` in frontmatter. If the story file wasn't updated (no `## Chunks` section), mark as failed — "agent didn't write story file". While the story file is open, run the S-2 Step 2 structural check table against it (one story at a time - do not hold multiple plans in context). A plan that fails any structural check (including check #6, the green-tree Done When criterion) is marked failed with the check's failure text
 4. **Extract lightweight metadata** from concerns summary — story name, chunk count, file count, concern count, and the `## File Impact` table. Do NOT hold the full plan in memory — you'll read the story file fresh in BT-5.
 5. Note any failures with reason
 6. Move to the next story

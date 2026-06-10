@@ -35,6 +35,7 @@ This is the required format for all chunk specs produced during Phase 4 (Detaile
 - [ ] Loading state disables submit button
 - [ ] Success clears form and shows toast
 - [ ] Error shows toast with message
+- [ ] Build passes and all tests pass
 ```
 
 ---
@@ -55,6 +56,16 @@ If the answer is no, the detail is too vague. Rewrite it.
 - Could an agent write the code from this bullet alone without guessing?
 
 If a detail describes a *category of work* ("handle edge cases", "parse the data", "extract values") instead of *specific instructions* ("strip CSS comments with `css.replace(/\/\*[\s\S]*?\*\//g, '')` before parsing", "capture property-value pairs with `/(--.+?):\s*(.+?);/g` applied to each :root block"), it's too vague.
+
+---
+
+## Green-Tree Requirement
+
+Every chunk's **Done When** must include at least one criterion asserting the project compiles and all tests pass at the end of the chunk ("Build passes and all tests pass"). Plan validation rejects any chunk whose Done When lacks one.
+
+This is a planning constraint, not a checkbox to append. Cut chunk boundaries so the criterion can actually be true: a rename or symbol removal and every reference to it - including test files, mocks, and fixtures - belong in the same chunk. A plan that defers compilation across a chunk boundary ("do not build between Chunk 1 and Chunk 2") is invalid; merge or re-cut the chunks, or flag the story for splitting.
+
+Exempt: chunks that modify no source files (all Files entries `read-only`, or a Goal that touches only docs).
 
 ---
 
