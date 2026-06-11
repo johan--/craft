@@ -1,11 +1,16 @@
 {
   "name": "craft",
-  "version": "1.90.2",
+  "version": "1.91.0",
   "description": "A creative-first development harness for Claude Code - with a workshop where you build your own expert agents.",
   "author": {
     "name": "Darin Drobinski"
   },
   "repository": "https://github.com/drobins25/craft",
   "license": "MIT",
-  "keywords": ["development", "workflow", "creative", "harness"]
+  "keywords": [
+    "development",
+    "workflow",
+    "creative",
+    "harness"
+  ]
 }
