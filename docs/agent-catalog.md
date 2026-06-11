@@ -17,10 +17,10 @@ These agents run inside the implementation pipeline. The orchestrator invokes th
 | `implementer` | sonnet | Owns the implement-validate-refine loop per chunk. Full write access within the active story scope. The workhorse of the pipeline. |
 | `tester` | sonnet | Integration tests and E2E after all chunks complete. Runs the full test suite, fixes failures. |
 | `chunk-validator` | haiku | Runs quality checks (typecheck, lint, no-any, build, tests, design tokens) and returns a structured validation report. Reports only - never fixes. Haiku keeps this fast and cheap. |
-| `plan-chunks-agent` | sonnet | Autonomous chunk planning for a single story. Used by `plan-chunks` skill in batch mode - one agent per story, runs in parallel. |
+| `plan-chunks-agent` | opus | Autonomous chunk planning for a single story - researches the codebase, writes receipted contracts + Investigation + Pitch into the story file. Used by `plan-chunks` for single and batch planning. |
 | `project-scanner` | sonnet | Full project analysis for documentation updates. Invoked by `/craft:update-docs`. |
 
-**Key constraint:** `implementer` and `tester` receive full write access. `chunk-validator` and `plan-chunks-agent` are read-only. `project-scanner` writes only to `.craft/`.
+**Key constraint:** `implementer` and `tester` receive full write access. `chunk-validator` is read-only. `plan-chunks-agent` writes only the story file it plans (never source code). `project-scanner` writes only to `.craft/`.
 
 ---
 

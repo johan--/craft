@@ -440,7 +440,7 @@ fi
    - **PM:** Package manager to use
    - **NO BACKGROUND COMMANDS:** NEVER use `run_in_background: true` for test, typecheck, lint, or build commands. All validation must run synchronously. Background runs become orphaned and spam the conversation.
 
-   **Do NOT paste chunk content (goal, files, implementation details) into the prompt.**
+   **Do NOT paste chunk content (goal, files, contracts, approach) into the prompt.**
    The implementer reads its chunk spec directly from the story file on disk. This ensures
    the spec is always authoritative - even after orchestrator context compaction.
 
@@ -482,6 +482,17 @@ fi
      [chunk_number] "implementer" [total_tokens] [tool_uses] [duration_ms]
    ```
    **Note:** If the agent reports "failed" due to `classifyHandoffIfNeeded` error, this is a known Claude Code bug — the work likely completed. Check the target files before assuming failure.
+
+   **Contract Mismatch routing:**
+
+   If the implementer's output contains `## CONTRACT MISMATCH` instead of a completion report, the PLAN — not the code — is wrong. Do NOT route to refine-chunk or test-fix (those fix code; this is a plan defect). Do NOT re-invoke the implementer to "make it work." A pulled tripwire is a caught planning bug — treat the report as a deliverable.
+
+   1. **Persist the report first**: write it verbatim to `.craft/checkpoints/[story]-chunk-[N]-mismatch.md`. The implementer's work state must survive the user-question gap and any session restart — orchestrator context is not durable. Then read it: contract, reality, reasoning impact, proposed amendment, work state.
+   2. **Interactive (default):** Surface via **AskUserQuestion**. The question text carries the contract-vs-reality delta and the reasoning impact (self-contained — the user judges from the dialog alone). Options: "Amend: [proposed amendment]" / "Different amendment" (discuss, then amend) / "Halt story" (replan needed).
+   3. **Autonomous (RUN_MODE=autonomous):** Do not guess. Park the story: emit a `contract_mismatch` event via append-event.sh, leave the story `active` at the current chunk, note it for the run summary, and continue to the next ready story. A graceful pause beats an unsupervised contract rewrite at 2am.
+   4. **On approved amendment, YOU make the edit — never the implementer.** Edit the story file: update the contract line AND append an `**Amendments:**` entry to the chunk (date, what changed, what the original receipt missed). The plan artifact belongs to planning; an implementer that can amend the contract it tripped over has no tripwire at all.
+   5. **Resume the SAME implementer via SendMessage** — it holds the chunk context and a green work state: "Amendment approved and recorded — the contract now reads [X]. Continue from your work state." Only if that agent is no longer reachable (session restart, compaction, or SendMessage unavailable in this environment): re-invoke a fresh implementer using the partial-chunk resume prompt from Resume Support, and include the persisted mismatch report (`.craft/checkpoints/[story]-chunk-[N]-mismatch.md`) in its prompt — a fresh agent has no other access to the prior work state.
+   6. **If "Halt story":** stop, leave the story `active`, report. The user decides whether to replan.
 
 3. **Validate the Chunk**
 
@@ -758,18 +769,20 @@ After all chunks:
 
 7. **Spark Verification**
 
-   Before marking complete, verify the Spark's intent was delivered. This is YOUR job — do not ask the user. The planning step (plan-chunks Phase 1.4 + Phase 7) already guaranteed every Spark requirement has a home in a chunk and wrote a `## Delivery` section explaining how.
+   Before marking complete, verify the Spark's intent was delivered. This is YOUR job — do not ask the user. The planning step already guaranteed every Spark requirement has a home in a chunk and wrote a `## The Pitch` section staking the plan's guarantee on named conditions.
 
    **Steps:**
-   1. Re-read the story's `## Delivery` section (written during planning).
-   2. Present it as a confident summary alongside the completion message.
+   1. Re-read the story's `## The Pitch` section (written during planning).
+   2. Verify the conditions table is fully cashed: every `unverifiable -> Chunk N's FIRST test` condition had its test written and passing (the chunk validations already enforced this — this is a final confirmation, not a re-run).
+   3. Present the pitch as a confident summary alongside the completion message.
 
    ```
-   Spark Delivered:
-   [Delivery section content]
+   Pitch Delivered:
+   [The Pitch sell]
+   Conditions: [all verified/cashed — note any Amendments recorded along the way]
    ```
 
-   **If the story has no `## Delivery` section** (older stories planned before this was added): Self-verify by re-reading the Spark, confirming each intention was addressed by a chunk, and present a brief summary. Do not ask the user.
+   **If the story has a `## Delivery` section instead** (older stories planned before the Pitch format): present that as the summary. **If it has neither:** Self-verify by re-reading the Spark, confirming each intention was addressed by a chunk, and present a brief summary. Do not ask the user.
 
    **If a Spark intention genuinely has no implementation** (should not happen if planning was correct): Stop. Flag the gap. Plan an additional chunk. Do not mark complete.
 

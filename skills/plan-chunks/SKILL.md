@@ -289,6 +289,13 @@ Include in the prompt:
 
 ### S-2: Receive & Validate Agent Output
 
+**Step 0 - PLAN FORK check:**
+
+If the agent's output is a `## PLAN FORK` report instead of a concerns summary, the agent hit a two-plans question only the user can answer. Do NOT validate or triage yet:
+1. Surface ONE **AskUserQuestion**: the fork question with both branches' consequences and the agent's recommendation first, labeled "(Recommended)". Self-contained — the user judges from the dialog alone.
+2. **SendMessage the answer back to the SAME planning agent**: "Fork resolved: [chosen branch]. Continue planning." Its investigation context is intact — do not spawn a fresh agent. (Only if the agent is unreachable or SendMessage is unavailable in this environment: re-launch S-1 with the fork resolution included in the prompt.)
+3. When the agent returns its concerns summary, proceed with Step 1 below as normal.
+
 The agent returns a lightweight concerns summary (~200-400 tokens) and has already written the story file with full planning detail. Run the full validation checklist on both artifacts before proceeding to triage.
 
 **Step 1 - Validate the concerns summary (agent's text output):**
@@ -304,9 +311,11 @@ Read the story file path from the `Story file:` field in the Overview. Run ALL c
 |---|-------|---------------|-------------|
 | 1 | `## Chunks` section exists | Grep for `^## Chunks` heading followed by at least one `### Chunk` sub-heading | "No ## Chunks section - agent did not write the plan" |
 | 2 | `chunks_total` in frontmatter is 2-7 | Read frontmatter, parse `chunks_total` as integer, verify `2 <= N <= 7` | "chunks_total is [N] - must be 2-7 (got [actual])" |
-| 3 | `## Delivery` section has content | Grep for `^## Delivery` heading. Read lines until the next `##` heading. Verify at least one non-empty, non-comment line exists between them | "## Delivery section is missing or empty" |
+| 3 | `## The Pitch` section has content + conditions table | Grep for `^## The Pitch` heading. Read lines until the next `##` heading. Verify a non-empty sell paragraph AND a conditions table (`| Condition | Secured by |`) with at least one row, every row tagged `verified`, `system-owned`, or `unverifiable` | "## The Pitch is missing, empty, or its conditions table is absent/untagged" |
+| 3b | `## Investigation` section has content | Grep for `^## Investigation` heading. Read lines until the next `##` heading. Verify at least 5 non-empty lines of narrative | "## Investigation section is missing or empty - the plan has no research narrative" |
 | 4 | `## Acceptance` section has detailed criteria | Grep for `^## Acceptance` heading. Read lines until the next `##` heading. Verify the section contains at least 3 bullet points (lines starting with `- `) - rough acceptance from the creative phase typically has 2-3 vague items; a properly refined section has 5+ specific items | "## Acceptance section appears unrefined - only [N] items found (expected 3+)" |
-| 5 | Each chunk has required sub-sections | For each `### Chunk N:` heading, verify the presence of `**Goal:**`, `**Files:**`, and `**Implementation Details:**` before the next `### Chunk` or end of file | "Chunk [N] is missing [Goal/Files/Implementation Details]" |
+| 5 | Each chunk has required sub-sections | For each `### Chunk N:` heading, verify the presence of `**Goal:**`, `**Files:**`, `**Contracts:**`, and `**Test cases:**` before the next `### Chunk` or end of file | "Chunk [N] is missing [Goal/Files/Contracts/Test cases]" |
+| 5b | Contract lines carry receipts | For each line under `**Contracts:**` (lines starting `- `), verify it contains a bracketed receipt: `[verified:`, `[owner:`, `[investigation:`, or `[defines]` | "Chunk [N] has receipt-less contract lines - every contract carries evidence or goes to the conditions table" |
 | 6 | Each chunk's Done When asserts a green tree | For each `### Chunk N:` heading, read the `**Done When:**` checklist. At least one criterion must assert a compilable, test-passing state ("build passes", "all tests pass", "no compile errors"). Exempt: a chunk whose Files entries are all `read-only`, or whose Goal explicitly states no source files are modified (docs-only) | "Chunk [N] has no green-tree Done When criterion - every chunk must leave the project compiling with tests passing; a plan that defers compilation across chunk boundaries is invalid" |
 
 **Step 3 - Route based on validation result:**
@@ -336,7 +345,7 @@ options:
     description: "Accept the plan as-is and move to triage"
 ```
 
-**If "Retry planning":** Re-invoke the plan-chunks-agent (return to S-1). Include in the retry prompt: "Previous plan attempt had structural issues: [failure list]. Ensure the plan includes a ## Delivery section with content, refined ## Acceptance criteria (5+ specific items), chunks_total in 2-7 range, and every chunk has Goal, Files, and Implementation Details. Every chunk's Done When must assert the project builds and all tests pass at that checkpoint. Rename and removal work must update ALL call sites - including test files, mocks, and fixtures - within the same chunk; if that cannot fit the chunk limits, flag the story for splitting instead of planning chunks that leave the tree broken between boundaries."
+**If "Retry planning":** Re-invoke the plan-chunks-agent (return to S-1). Include in the retry prompt: "Previous plan attempt had structural issues: [failure list]. Ensure the plan includes a ## The Pitch section (sell + conditions table using the exact headers `| Condition | Secured by |`, every row tagged verified / system-owned / unverifiable), a ## Investigation narrative, refined ## Acceptance criteria (5+ specific items), chunks_total in 2-7 range, and every chunk has Goal, Files, Contracts (every line receipted), and Test cases. Every chunk's Done When must assert the project builds and all tests pass at that checkpoint. Rename and removal work must update ALL call sites - including test files, mocks, and fixtures - within the same chunk; if that cannot fit the chunk limits, flag the story for splitting instead of planning chunks that leave the tree broken between boundaries."
 
 **If "Fix manually":** Acknowledge and end - the user will edit the story file directly and re-invoke planning when ready.
 
@@ -385,12 +394,14 @@ If all decisions validated as `valid` → proceed with no interaction.
 
 **Step 4 — Clarification Decisions:**
 
-Review the Decisions Made table from the concerns summary. For each decision with **confidence: low** — the agent made a call but isn't sure:
+Review the Decisions Made table from the concerns summary. Route by the **Product-stake** column (the agent already applied the low-confidence bump):
+
+- **ask** → individual AskUserQuestion per decision, regardless of the agent's confidence. The question text must be self-contained: what was decided, what it trades off for the user, the agent's reasoning.
 
 Use **AskUserQuestion**:
 
 ```
-question: "[Question the agent would have asked]"
+question: "[The decision and its user-facing consequence — self-contained]"
 options:
   - label: "[Agent's decision] (agent recommends)"
     description: "[Agent's reasoning]"
@@ -400,7 +411,10 @@ options:
     description: "I want to think about this more"
 ```
 
-For decisions with **confidence: medium** or **high** → proceed without asking. Medium-confidence decisions are mentioned in the plan presentation for visibility.
+- **mention** → no question. Collect into the "Decisions you'd want to know" block of the plan presentation (S-4) — the "cool, that's nice" tier.
+- **silent** → table only. No surfacing.
+
+(Old-format summaries without a Product-stake column: fall back to confidence routing — low asks, medium/high proceed.)
 
 **Step 5 — Cycle Impact:**
 
@@ -433,6 +447,9 @@ options:
 ## Implementation Plan: [Story Name]
 
 **Total:** [N] chunks, [M] files
+
+**Decisions you'd want to know:**
+[Mention-tier decisions from the Decisions Made table — what the agent did for the user beyond spec]
 
 **Risks Acknowledged:**
 [High-confidence concerns from triage]
@@ -729,7 +746,10 @@ Parse dependencies from each planning story to determine which can plan in paral
      Read the story, understand what it needs, then research the codebase and plan chunks.
      After planning, WRITE the updated story file directly using the Write tool.
      Keep status: planning — the orchestrator handles approval.
-     Then return ONLY your concerns summary as your final output — do NOT include the full plan report."
+     Then return ONLY your concerns summary as your final output — do NOT include the full plan report.
+
+     BATCH MODE: PLAN FORK is unavailable — decide down your recommended branch, set
+     product-stake 'ask', and record the fork as a Critical Blocker for triage."
    ```
 4. Each Task tool result includes an `output_file` path. **Record each path** in a simple registry: `{story-name: output_file_path}`. These paths are tiny (~50 bytes each) and survive compaction. The files themselves are on disk.
 5. Use `TaskOutput` to wait for each background agent to complete. **WAIT for all subagents in the current level to complete before launching the next level.** Level 1 stories depend on Level 0 plans for contract alignment.
@@ -743,7 +763,7 @@ Before launching Level N+1, build predecessor context for each story in that lev
 
 1. For each story in Level N+1, identify its in-set blockers (the stories it depends on)
 2. For each blocker, read the **completed story file** (not the concerns summary) using the Read tool
-3. Extract each chunk's **Goal**, **Files**, and **Implementation Details** sections only. Strip **What Could Break** and **Done When** - those are verification concerns, not contract decisions. Do NOT modify the story file - this is a read-and-extract operation for prompt building only.
+3. Extract each chunk's **Goal**, **Files**, and **Contracts** sections only. Strip **Approach**, **Test cases**, **What Could Break**, and **Done When** - contracts are the only cross-story binding surface; the rest is interior detail the next planner must not couple to. Do NOT modify the story file - this is a read-and-extract operation for prompt building only.
 4. Include ONLY the immediate predecessor's chunks - not the entire chain. Each plan already incorporates awareness of its own predecessors, so context is transitive.
 
 Add to the agent prompt for each Level N+1 story:
@@ -757,7 +777,7 @@ Status: planned (chunks written, not yet implemented)
 ### Chunk 1: [Name]
 **Goal:** [from predecessor]
 **Files:** [from predecessor]
-**Implementation Details:** [from predecessor]
+**Contracts:** [from predecessor]
 
 ### Chunk 2: [Name]
 ...
@@ -839,8 +859,8 @@ The batch triage flow (BT-1 through BT-7) reviews all plans with the user after 
 | Phase | What | Key Behavior |
 |-------|------|-------------|
 | **BT-1** | Overview | Count concerns by tier. Fast path if zero needs-review AND zero worth-noting. |
-| **BT-2** | Needs Review (low confidence) | Individual AskUserQuestion per item, grouped by story. |
-| **BT-3** | Worth Noting (medium confidence) | Same individual treatment as BT-2. Different template (adds "Recommended" and "Accept as-is"). |
+| **BT-2** | Needs Review (ask-tier product-stake, or low confidence) | Individual AskUserQuestion per item, grouped by story. |
+| **BT-3** | Worth Noting (mention-tier product-stake, or medium confidence) | Presented visibly per story; questions only where the user reacts. |
 | **BT-4** | Cohesion/Coordination | Surface file overlaps, component duplication, decision conflicts. AskUserQuestion per issue. |
 | **BT-5** | Per-Story Approval | Read story file fresh. Present ONE story at a time. Never hold two plans in context. Each gets Approve/Explore/Adjust/Reject. |
 | **BT-6** | Finalize | Apply triage adjustments, update status to ready. Queue adjusted stories for re-planning. |

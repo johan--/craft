@@ -270,18 +270,20 @@ BT-6 uses the same write logic as single-story S-5. For each approved story:
 
 ### What Gets Written
 
-1. **Delivery section** — Copied from the agent's plan report. Goes between `## Spark` and `## Acceptance Criteria` in the story file.
+1. **The Pitch** — sell + conditions table (every condition tagged `verified` / `system-owned` / `unverifiable -> Chunk N's FIRST test`). Goes between `## Spark` and `## Acceptance Criteria` in the story file. The `## Investigation` narrative (causal, dead ends kept) goes directly before `## Chunks`.
 
 2. **Acceptance criteria** — From the agent's plan + any additions from triage discussion. Replaces or augments existing acceptance criteria.
 
-3. **Chunks** — **Transcribe the agent's chunk details verbatim. Do NOT summarize.** Each chunk in the story file MUST include:
+3. **Chunks** — **Preserve the agent's chunk specs verbatim. Do NOT summarize.** Each chunk in the story file MUST include:
    - **Goal:** What the chunk accomplishes
    - **Files:** Every file created/modified with full paths
-   - **Implementation Details:** TypeScript interfaces with full prop definitions, component structure, specific CSS classes and Tailwind utilities, state management patterns, import paths. If the agent provided code snippets, interface definitions, mock patterns, or specific values — paste them. The implementer agent uses this as its build spec.
+   - **Contracts:** The receipted seams — every line carries `[verified: ...]`, `[owner: Chunk N]`, `[investigation: ...]`, or `[defines]`. The implementer holds these as law.
+   - **Approach:** Advisory prose — pattern pointers, ordering, gotchas. No code bodies (decision-code with a receipt is the rare exception).
+   - **Test cases:** Named assertions the implementer writes bodies for.
    - **Done When:** Checklist of specific, testable criteria (not vague summaries)
-   - **What Could Break:** Risk notes from the agent
+   - **What Could Break:** Every entry `[resolved]` or `[escalated to conditions]`
 
-   The quality bar: a chunk should contain enough detail that the implementer never has to guess. Compare against single-story plans — batch mode must produce the same depth.
+   The quality bar: seams locked with receipts, interiors left to the implementer. Compare against single-story plans — batch mode must produce the same depth.
 
    With concrete adjustments from triage:
    - **BT-2 decisions:** Find the chunk(s) affected by the resolved concern. Replace the agent's tentative approach with the user's chosen approach in the chunk description. Example: if the agent planned "use modal for confirmation (tentative)" and the user chose "use inline confirmation," update the chunk text to say "use inline confirmation."

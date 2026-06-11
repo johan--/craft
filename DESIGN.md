@@ -152,6 +152,18 @@ plugins/craft/
 - Pattern: **skill as orchestrator + agents as workers** - plan-chunks orchestrates, plan-chunks-agent does the heavy lifting per story
 - After agents complete → batch triage (BT-1 through BT-7) reviews all plans with user
 
+## Planned Story Format (contracts model)
+
+Chunk specs lock **seams, not interiors**. The planner pins contracts (signatures, shapes, routes, invariants - each line carrying a receipt: `[verified: attack evidence]`, `[owner: Chunk N]`, `[investigation: reason]`, `[defines]`); the implementer owns function bodies and test bodies. No copy-pasteable code in plans - code appears only when the code IS the decision.
+
+A planned story carries three planning artifacts (format reference: `skills/plan-chunks/references/chunk-format-guide.md`):
+
+- **`## The Pitch`** - the plan's guarantee plus a conditions table of every load-bearing assumption, tagged `verified` / `system-owned` / `unverifiable -> becomes Chunk N's first test`. Doubles as the implementer's tripwire watchlist.
+- **`## Investigation`** - the planner's causal research narrative, dead ends kept. Transfers the planner's headspace to the implementer and any future re-planner.
+- **`## Chunks`** - cut bottom-up at layer rungs; later chunks cite earlier chunks' real output via `[owner: Chunk N]`, which self-freshens the spec.
+
+Two escape valves keep the autonomy honest: the planner may stop mid-flight only for a **PLAN FORK** (a user-owned question whose answers produce two different plans); the implementer stops on **CONTRACT MISMATCH** (reality contradicts a receipted contract - the report is a deliverable, the orchestrator amends the plan, never the implementer). Lower-stakes decisions are made in flight and triaged by **product-stake** (silent / mention / ask, judged against a perfectionist product owner) rather than confidence alone.
+
 ## Workflow Formats
 
 *Full format reference: [docs/workflow-reference.md](docs/workflow-reference.md).*

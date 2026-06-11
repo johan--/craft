@@ -120,7 +120,7 @@ Task tool:
 
   [PREDECESSOR CONTEXT - if this story has in-set dependencies, include here.
   See SKILL.md M-2 'Predecessor Context Handoff' for the exact format:
-  Goal + Files + Implementation Details from each predecessor chunk,
+  Goal + Files + Contracts from each predecessor chunk,
   with CRITICAL alignment instructions.]
 
   Read the story, understand what it needs, then research the codebase and plan chunks.
@@ -129,5 +129,5 @@ Task tool:
 
 **Key differences from single-story:**
 - Batch mode provides ALL story names/sparks (not filtered by relevance) so the agent can detect file overlap and coordination needs with any sibling
-- **Dependent stories include predecessor context** - the Goal, Files, and Implementation Details from each chunk of the story they depend on, with explicit instructions to align contracts (IDs, file paths, exports, naming conventions). See SKILL.md M-2 Predecessor Context Handoff for the full format.
+- **Dependent stories include predecessor context** - the Goal, Files, and Contracts from each chunk of the story they depend on, with explicit instructions to align contracts (IDs, file paths, exports, naming conventions). See SKILL.md M-2 Predecessor Context Handoff for the full format.
 

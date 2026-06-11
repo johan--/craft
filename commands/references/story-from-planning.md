@@ -469,7 +469,8 @@ Write these sections IN THIS ORDER. Skip optional sections (Content Direction, V
 ### DO NOT WRITE these sections (added by downstream flows)
 
 - `## Chunks` - written by plan-chunks-agent when `/craft:story-implement` runs
-- `## Delivery` - written by plan-chunks-agent
+- `## The Pitch` - written by plan-chunks-agent (sell + conditions table; replaces the old `## Delivery`)
+- `## Investigation` - written by plan-chunks-agent (research narrative)
 - `## Risk Tags` - written by content-spark if it runs after story creation
 
 An implementer reading LD14 might assume the 14 sections are the complete list to write - they are. Do NOT write empty `## Chunks` placeholder sections "for consistency with the template" - the template has those placeholders, but the reference file MUST NOT duplicate them. Leave them for downstream flows.
@@ -602,4 +603,4 @@ The parent command (`/craft:story-new`) is done. Do NOT continue to Step 3 (Choo
 - **Idempotency in Phase 6.** Every forward-link operation checks for existing entries before appending. Safe to re-run on the same concept.
 - **The Explore agent does the heavy reading.** This file orchestrates; the agent extracts. Main context stays clean.
 - **Single-story scope.** The agent extracts only the slice relevant to the user's story title, not all stories from a multi-story concept. PARTIAL fallback when scope is unclear.
-- **DO NOT write `## Chunks`, `## Delivery`, or `## Risk Tags`.** Those are added by downstream flows (plan-chunks-agent, content-spark) when they run, not by story creation.
+- **DO NOT write `## Chunks`, `## The Pitch`, `## Investigation`, or `## Risk Tags`.** Those are added by downstream flows (plan-chunks-agent, content-spark) when they run, not by story creation.

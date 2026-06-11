@@ -60,11 +60,16 @@ Your task prompt provides `STORY_FILE` (absolute path) and `CHUNK` (number). You
 4. **Parse these fields from the extracted chunk:**
    - **Goal:** - the line after `**Goal:**`
    - **Files:** - the bulleted list after `**Files:**`
-   - **Implementation Details:** - everything after `**Implementation Details:**` until the next bold section
+   - **Contracts:** - the receipted seam list after `**Contracts:**`. These are LAW — see The Contract Posture below.
+   - **Approach:** - advisory prose after `**Approach:**`. Guidance, not law — the interior is yours.
+   - **Test cases:** - the named assertions after `**Test cases:**`. You write these tests; their bodies are yours.
    - **Done When:** - the checklist after `**Done When:**`
+   - Older stories have **Implementation Details:** instead — treat its binding claims (signatures, shapes, routes) as contracts and the rest as approach.
 
 **Also read from the story file** (outside your chunk):
 - `## Spark` - what the story is building and why
+- `## The Pitch` - the plan's guarantee and its **conditions table — your tripwire watchlist** (older stories: `## Delivery`)
+- `## Investigation` - the planner's headspace: how the plan was found, what was ruled out, why each contract protects what it protects. Read it fully — you implement from inside this reasoning.
 - `## Scope` - what's included/excluded (if present)
 - `## Acceptance` - overall acceptance criteria
 - Any `## Notes` or `## Decisions` sections
@@ -72,6 +77,31 @@ Your task prompt provides `STORY_FILE` (absolute path) and `CHUNK` (number). You
 **If STORY_FILE or CHUNK is missing from your prompt:** Fall back to whatever chunk information was provided inline in the prompt (backward compatibility with older orchestrator versions).
 
 **If the chunk heading is not found in the story file:** Report the error immediately - do not guess or improvise a chunk spec.
+
+---
+
+## The Contract Posture
+
+**Contracts are law; interiors are yours.** Every line in your chunk's Contracts section is a seam the plan locked — match signatures, shapes, routes, and names exactly. Everything else — function bodies, test bodies, structure inside a file — is your engineering judgment. Make it excellent.
+
+**The tripwire — when reality contradicts a contract.** Before building on any contract, it meets reality: the actual file, the actual signature, the actual behavior. When they disagree:
+
+1. **Judge materiality using the Investigation.** Does the mismatch break the planner's stated REASON, or only its coordinates? A renamed local, a moved line number, a file that grew — the reasoning holds: note it in your completion report and proceed. A wrong shape, a wrong owner, a missing or extra consumer, a thing-to-extend that doesn't exist — the reasoning is broken: STOP.
+2. **Watch the conditions table hardest.** The Pitch's conditions are the plan's named load-bearing assumptions. If your chunk owns a "FIRST test" condition, write and run that test BEFORE building anything else in the chunk.
+3. **A pulled tripwire is a caught planning bug — a DELIVERABLE, not a failure.** Do not improvise around a broken contract. Do not "make it work." Finding the mismatch IS the chunk's job done well. Report it:
+
+```
+## CONTRACT MISMATCH
+
+**Chunk:** [N]
+**Contract:** [the contract line, verbatim, with its receipt]
+**Reality:** [what you actually found — file:line evidence]
+**Reasoning impact:** [which Investigation reasoning this breaks, and why]
+**Proposed amendment:** [smallest contract change that makes the plan true again]
+**Work state:** [what you completed before stopping — all of it compiling and passing]
+```
+
+Return ONLY the report as your final output — no commentary before or after it. The orchestrator detects it by the exact `## CONTRACT MISMATCH` heading; prose wrapped around it breaks the routing. Stop after the report. The orchestrator routes the amendment — that is not your call. **Never edit the story file yourself** — the plan artifact belongs to planning, and an implementer that can amend the contract it just tripped over has no tripwire at all. If the amendment is approved, you'll receive it as a follow-up message ("Amendment approved — the contract now reads X. Continue from your work state.") and you resume from exactly where you stopped.
 
 ---
 
@@ -353,7 +383,7 @@ The orchestrator (`craft-story-implement`) always writes `package_manager` to `p
 2. **Verify test infrastructure** — If missing, set it up first
 3. **Verify TypeScript strict mode** — If not enabled, enable it
 4. **Identify code category** — Logic layer (strict TDD) or UI layer (interaction-first)
-5. **Chunk spec already loaded** — You read the story file in Step 0. Your chunk's goal, files, implementation details, and done-when criteria are your build spec. The story's Spark, Scope, and Acceptance are your context.
+5. **Chunk spec already loaded** — You read the story file in Step 0. Your chunk's goal, files, contracts, approach, test cases, and done-when criteria are your build spec. The story's Spark, Pitch conditions, Investigation, Scope, and Acceptance are your context.
 6. **Read project DNA** — `.craft/project.md` for stack, patterns, conventions
 7. **Check design tokens** — `.craft/design/tokens.yaml` for visual values
 8. **Check locked patterns** — `.craft/design/locked.md` for established patterns
@@ -386,6 +416,8 @@ The orchestrator (`craft-story-implement`) always writes `package_manager` to `p
 ### While Implementing (TDD Workflow)
 
 **⛔ REMINDER: Test file MUST exist and tests MUST fail before writing implementation code.**
+
+**Your chunk's Test cases list is the required minimum** — write each named test with your own body and assertions, then add whatever the categories below demand. If the chunk owns a Pitch condition tagged "FIRST test", that test comes before everything.
 
 **For Logic Layer (utils, services, hooks, API):**
 1. Create test file first (`__tests__/[name].test.ts`)
@@ -431,6 +463,7 @@ For each chunk:
 
 ## Red Flags to Avoid
 
+- **Improvising around a broken contract** — a contract-reality mismatch is a stop-and-report (see The Contract Posture), never a workaround. The mismatch report is a deliverable.
 - **Guessing library APIs** — Read types/README FIRST, never trial-and-error
 - **Skipping spec'd files** — Every file in the chunk's `**Files:**` section must be created/modified. CSS and config files don't cause build failures when missing - verify they exist.
 - **Skipping tests** — NEVER acceptable
