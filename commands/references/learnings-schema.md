@@ -1,13 +1,13 @@
 # Learnings Schema Reference
 
-The `.craft/cycles/{cycle}/.learnings.yaml` file captures patterns, corrections, and conventions discovered during story implementation. Written incrementally after each chunk (Step 4 post-chunk check) and verified at story completion (Step 5). The file is per-cycle - each cycle gets its own learnings file that accumulates during that cycle and is processed at cycle-complete.
+The `.craft/.learnings.yaml` file captures patterns, corrections, and conventions discovered during story implementation. Written incrementally after each chunk (Step 4 post-chunk check) and verified at story completion (Step 5). The file is global - a single project-level file that accumulates across cycles and is drained when reflection runs (offered at cycle-complete, or any time via `/craft:reflect`).
 
 ## Data Structure
 
 Six categories, each following the same evidence/occurrence pattern:
 
 ```yaml
-# .craft/cycles/{cycle}/.learnings.yaml
+# .craft/.learnings.yaml
 
 conventions:
   - pattern: "Use Zustand for client state"

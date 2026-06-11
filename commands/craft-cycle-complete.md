@@ -37,30 +37,41 @@ options:
 
 ---
 
-### Step 2: Check for Pending Learnings
+### Step 2: Check for Pending Learnings & Ungraduated Fixes
 
 Use **Grep** with pattern `status: pending`, path `.craft/.learnings.yaml`, output_mode `count` → `pending_count`. If file doesn't exist, `pending_count = 0`.
 
-**If pending learnings exist:**
+Also count ungraduated fix records and the rule-pass threshold:
 
-> "There are [N] pending learnings that haven't been converted to harness yet.
+```bash
+FIX_COUNT=$(bash "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/count-ungraduated-fixes.sh")
+THRESHOLD=$(grep -m1 '^rule_pass_threshold:' "${CRAFT_PROJECT_ROOT:-.}/.craft/settings.yaml" 2>/dev/null | sed 's/^rule_pass_threshold:[[:space:]]*//')
+THRESHOLD=${THRESHOLD:-10}
+```
+
+**If `pending_count > 0` OR `FIX_COUNT >= THRESHOLD`:**
+
+Name the reason(s) that apply:
+
+> "There are [N] pending learnings that haven't been converted to harness yet."
+> "[FIX_COUNT] fixes have accumulated since the last rule pass - reflect can mine them for graduation-worthy rules."
 >
-> Reflect before archiving?"
+> "Reflect before archiving?"
 
 Use **AskUserQuestion**:
 ```yaml
-question: "Reflect on learnings before archiving?"
+question: "Reflect before archiving?"
 header: "Reflect"
 options:
   - label: "Yes, reflect now"
-    description: "Convert learnings to .claude/ harness, then archive"
+    description: "Run /craft:reflect (learnings drain and/or rule pass), then archive"
   - label: "Skip reflection"
-    description: "Keep learnings pending, just archive cycle"
+    description: "Keep everything pending, just archive cycle"
 ```
 
-**If "Yes, reflect now":** Run `/craft:reflect`, then continue to Step 3.
+**If "Yes, reflect now":** Run `/craft:reflect`, then continue to Step 3. Reflect owns the rule-pass offer - this step only routes into it, never presents the pass itself.
 
-**If "Skip reflection":** Learnings remain in `.craft/.learnings.yaml` with `status: pending` — they'll be available for the next reflection.
+**If "Skip reflection":** Learnings remain in `.craft/.learnings.yaml` with `status: pending` and the fix watermark is untouched — both will be available for the next reflection.
 
 ---
 

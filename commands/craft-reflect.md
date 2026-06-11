@@ -18,7 +18,7 @@ Convert captured learnings from `.craft/.learnings.yaml` into permanent harness 
 
 ## Flow
 
-### Step 1: Load Pending Learnings
+### Step 1: Load Pending Learnings & Ungraduated Fixes
 
 Read `.craft/.learnings.yaml` and filter for `status: pending`:
 
@@ -28,10 +28,46 @@ Also check for aggregated failure patterns from the active cycle:
 
 If `ACTIVE_CYCLE` is set, use **Grep** with pattern `^  - pattern:`, path `.craft/cycles/$ACTIVE_CYCLE/.failure-patterns.yaml`, output_mode `count` → `failure_patterns`. If file doesn't exist or `ACTIVE_CYCLE` not set, `failure_patterns = 0`.
 
-**If no pending learnings AND no failure patterns:**
+Also count ungraduated fix records (the second intake - fixes carry human-confirmed root causes that can graduate into `.claude/rules/`):
+
+```bash
+FIX_COUNT=$(bash "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/count-ungraduated-fixes.sh")
+THRESHOLD=$(grep -m1 '^rule_pass_threshold:' "${CRAFT_PROJECT_ROOT:-.}/.craft/settings.yaml" 2>/dev/null | sed 's/^rule_pass_threshold:[[:space:]]*//')
+THRESHOLD=${THRESHOLD:-10}
+```
+
+The fix queue is **actionable only when `FIX_COUNT >= THRESHOLD`** - below the threshold there is no fix action available, so it counts as empty for this gate.
+
+**If no pending learnings AND no failure patterns AND `FIX_COUNT < THRESHOLD`:**
 > "No pending learnings to process. Harness is up to date."
 
-**If pending learnings or failure patterns exist:** Continue to Step 2.
+**If anything is actionable:** Continue to Step 1b.
+
+---
+
+### Step 1b: Rule-Pass Offer (when the fix queue is actionable)
+
+**If `FIX_COUNT >= THRESHOLD`**, offer the rule pass FIRST - before any learnings drain. Fixes are the denser signal (every record is a human-confirmed root cause).
+
+Use **AskUserQuestion**:
+```yaml
+question: "[FIX_COUNT] fixes have accumulated since the last rule pass. Run a rule pass to mine them for graduation-worthy rules?"
+header: "Rule pass"
+options:
+  - label: "Run the rule pass"
+    description: "~2-3 min agent read + per-rule review. Proposals are review-gated - nothing is written without your approval."
+  - label: "Not now"
+    description: "Skip - the offer returns next reflect (the counter does not reset on decline)"
+```
+
+**If "Run the rule pass":** Read [references/rule-pass.md](references/rule-pass.md) and follow its instructions completely (agent invocation, presentation, review, write, receipt, watermark). When the pass completes, continue below.
+
+**If "Not now":** Do NOT touch `.craft/fixes/.rule-pass-state` - the watermark only advances on a completed pass. Continue below.
+
+**Then:** If `pending_count > 0` or `failure_patterns > 0`, continue to Step 2 (the learnings drain, unchanged). Otherwise the session is done:
+> "Nothing else to reflect on."
+
+**If `FIX_COUNT < THRESHOLD`** (learnings or failure patterns brought us here): skip this step, continue to Step 2.
 
 ---
 
