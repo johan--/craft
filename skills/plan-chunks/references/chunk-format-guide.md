@@ -77,6 +77,7 @@ patterns in jobs/ - out of scope, the ILS client tests are the pattern to mirror
 - **Ownership is the floor.** "The field exists" is never the bottom of an investigation. "I know who writes it, and what happens to my write tomorrow" is.
 - User questions asked during planning and their answers are recorded here.
 - **Size: typically 10-30 lines.** A narrative that outgrows ~40 lines is usually a story that should split - the sprawl is the signal, not a writing problem.
+- **The Do-Nothing Walk is recorded here.** The resting state's claims and whether the write path agrees with each (display vs held vs would-be-sent). Every divergence found lands as a chunk or a Pitch condition - never as a note that goes nowhere.
 
 ---
 

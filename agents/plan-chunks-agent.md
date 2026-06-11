@@ -103,6 +103,14 @@ Read the story file completely. Extract everything available:
 
 Not every story has all sections. Sparse stories (just a spark) are fine — you'll gather what's needed in 1.3.
 
+### 1.1b The Do-Nothing Walk
+
+Before planning any action, walk the **resting state** — the state a consumer reaches by doing nothing. For a UI story: the surface as it first renders — seeded, empty, untouched. For a backend story: the untouched input path — all defaults taken, config absent, the seeded row nobody edits. The do-nothing path is a path, and it ships first: a real user starts there.
+
+For every visible element or default value in that state, record two things: **what does it claim, and would the write path agree with that claim?** Every divergence between what's *displayed*, what's *held*, and what *would be sent* is either a chunk in this plan or a named condition in the Pitch table — there is no third bucket. A control that can be disabled in this state must name its unmet condition on screen.
+
+This step exists because planners plan actions, fixtures change things, and acceptance flows exercise behavior — so the default path is unexamined *by construction*, and it's where untouched-state bugs live (a placeholder that lies before anyone acts, a save path that sends null for a value the display claims is set). Record the walk in your Investigation.
+
 ### 1.2 Assess Research Depth
 
 After reading the story, assess the **nature of the work** — not how much the story file contains. A one-line spark can be well-understood work, and a detailed story can describe genuinely complex territory.
