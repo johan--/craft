@@ -278,8 +278,17 @@ If user wants more options:
 If user wants to combine options:
 → Create a hybrid option that captures the best of each
 
-If user is unsure:
-→ Use AskUserQuestion to narrow down priorities
+If user is unsure - read which kind of unsure by their language, and route:
+
+→ **Options resonated, can't name which** ("they're all good, I can't tell which", "I want a mix I can't quite see"): run the calibration loop. Read `reference/calibration-loop.md` and run it inline - one concrete either/or at a time ("snappier or more weighted?", "lead with the number or the chart?"), state the discriminating dimension after each, stop the moment the pick clicks. The loop SURFACES a direction - it does NOT commit it. Return to **Present Options for Selection** (or restate the converged direction) and get the explicit pick before writing anything to the story file.
+
+→ **Nothing landed** ("these all feel kind of expected/obvious"): coverage gap, not a selection problem. Generate 3 more options with a narrower brief - do NOT run the loop.
+
+→ **Explicit delegation** ("just pick for me, I trust you"): recommend a winner and proceed. This is the ONLY case where you may commit the pick without a further selection - the user explicitly delegated it.
+
+→ **Named hybrid** ("A's layout with B's motion"): synthesize the combine directly (same as "wants to combine" above).
+
+Rail: recommend freely, but commit a direction to the story file only on an explicit pick/yes; auto-pick ONLY on explicit delegation. The loop converging on a direction is NOT itself approval - close it with the selection.
 
 ## Present Options for Selection
 

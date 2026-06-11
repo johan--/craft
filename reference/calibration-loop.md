@@ -94,6 +94,7 @@ the signal that the boundary was sharp enough to write into a rule.
 This is a general technique, not a riff-internal detail. Reach for it in any
 skill that has to pin a tacit boundary: **content-spark** (which content
 dimensions are assumed vs. resolved), **design-vibe** (what the aesthetic is and
-isn't), **lock-decision** (where a project-wide standard's edges are), and
-**plan-chunks** (what belongs in scope vs. deferred). A skill running this loop
+isn't), **lock-decision** (where a project-wide standard's edges are),
+**plan-chunks** (what belongs in scope vs. deferred), and **creative-spark**
+(which generated option a stuck user actually wants). A skill running this loop
 points here rather than re-documenting the mechanic.
