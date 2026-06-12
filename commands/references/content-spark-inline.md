@@ -48,7 +48,7 @@ Be honest about what's resolved vs. assumed. The value is revealing what the sys
 
 ## Phase 2.5: Risk Classification
 
-Classify which implementation risks apply. These tags tell plan-chunks what acceptance criteria to generate and validate-chunk what to enforce.
+Classify which implementation risks apply. These tags tell plan-chunks what acceptance criteria to generate - each tag is translated into criteria that name the implementation mechanism.
 
 | Tag | Apply ONLY when... |
 |-----|---------------------|
@@ -116,12 +116,17 @@ Also write `## Risk Tags`:
 
 ```yaml
 risk_tags:
-  - has-variants    # [brief justification]
+  - has-variants    # [mechanism or cited locked rule; thresholds only as verification]
 ```
 
-<!-- These tags are read by plan-chunks to generate targeted acceptance criteria
-     and by validate-chunk to enforce them. -->
+<!-- These tags are read by plan-chunks to generate acceptance criteria
+     that name the implementation mechanism. -->
 ```
+
+**Risk Tag Authoring Rule** (short form - canonical statement lives in `skills/plan-chunks/references/chunk-format-guide.md`, section `Risk Tag Authoring Rule`): each tag's `#` comment must name the implementation mechanism or cite a project locked rule. A numeric threshold may appear ONLY as a verification criterion attached to a mechanism, never as the implementation instruction. A bare threshold gets implemented literally.
+
+- Wrong: `- has-touch-targets    # must stay >=44px`
+- Right: `- has-touch-targets    # hit area extended via padding/pseudo-element, not min-height on the visual element; verify computed target >=44px`
 
 Use **Edit** to insert both sections into the existing story file.
 

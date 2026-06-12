@@ -144,6 +144,28 @@ A contract about *pre-existing reality* that can earn no receipt goes in the Pit
 
 ---
 
+## Risk Tag Translation
+
+When the story carries a `## Risk Tags` section, the tags are consumed at plan time: translate EACH tag into at least one acceptance criterion that names the implementation mechanism. A tag that produces no criterion is a tag the plan ignored - say why, or translate it.
+
+### Risk Tag Authoring Rule
+
+This is the canonical statement; `skills/content-spark/SKILL.md` and `commands/references/content-spark-inline.md` carry the short form and point here.
+
+Each risk tag's `#` comment must specify the **implementation mechanism** or cite a **project locked rule**. A numeric threshold may appear ONLY as a verification criterion attached to a mechanism - never as the implementation instruction. A threshold as a CHECK is legitimate (a quality gate's 44px touch-target floor verifies an outcome); a threshold as the INSTRUCTION is the antipattern - the implementer satisfies the number in the cheapest literal way (`min-height: 44px` on the visual element) instead of building the mechanism (an extended hit area).
+
+- Wrong: `- has-touch-targets    # must stay >=44px`
+- Right: `- has-touch-targets    # hit area extended via padding/pseudo-element, not min-height on the visual element; verify computed target >=44px`
+
+**Per-tag translation requirement.** For each tag, the criteria you write must name the mechanism the tag carries (or the locked rule it cites). The threshold, if any, appears only as the verification clause of that mechanism-naming criterion:
+
+- From the RIGHT tag above: "Interactive elements extend their hit area via padding or pseudo-element (not min-height on the visual element); verify every computed target is >=44px."
+- A tag citing a locked rule translates to a criterion that names the rule and asserts conformance with it.
+
+A bare-threshold criterion ("touch targets >=44px") is rejected by plan validation (structural check #8 scans each tag line's `#` comment for a threshold with no mechanism wording).
+
+---
+
 ## Cutting Chunks: the Ladder
 
 Navigate top-down to find the seam; build bottom-up from the furthest-upstream fact the story touches.
