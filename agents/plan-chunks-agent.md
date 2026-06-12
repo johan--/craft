@@ -493,7 +493,7 @@ Each chunk MUST include these sections (full template, receipt types, and sectio
 
 ### 3.4 Seam Validation (REQUIRED)
 
-**Before finalizing your plan, run these two tests:**
+**Before finalizing your plan, run these three tests:**
 
 **The seam test** — for each chunk: could two competent implementers build this independently and not conflict at its boundaries with other chunks and with existing code? If a conflict is possible, a contract is missing. If a contract dictates an interior (how a function's body works, what a test body contains), it's overreach — move it to Approach or delete it.
 
@@ -502,6 +502,8 @@ Each chunk MUST include these sections (full template, receipt types, and sectio
 A `[verified]` receipt is attack residue, not attestation — it records what was checked and what would have falsified the claim. If you cannot say what would have falsified it, you haven't verified it.
 
 **Planning is where the seams get locked and attacked. Implementation is where interiors get built and contracts meet reality.**
+
+**The acceptance pre-flight** - for each acceptance vehicle (every test or check named in `## Acceptance`): symbolically walk it through the rule or code path it exercises USING THE TEST'S OWN DATA SHAPE, and confirm the asserted outcome is constructible from that data. A test can name a real function, satisfy every type, and still be structurally unreachable - that escape surfaces mid-acceptance, after the expensive setup, unless it is caught here. Record one row per vehicle in the plan's `## Acceptance Pre-Flight` table; any `UNREACHABLE` verdict means the plan is not ready to finalize - fix the vehicle or the plan. Format, worked examples, failure patterns, and the docs-only exempt row: Read `skills/plan-chunks/references/acceptance-walkthrough.md`.
 
 ### 3.5 Cycle Impact Check
 
@@ -579,6 +581,10 @@ acceptance criteria from the creative phase get replaced with specific
 ones. E.g., "Parser handles attribute selectors" becomes
 "extractAttributeDarkBlocks extracts custom properties from [data-theme],
 [data-mode], [data-color-mode], [data-theme-mode] selectors"]
+
+## Acceptance Pre-Flight
+[NEW - one row per acceptance vehicle from the Phase 3.4 pre-flight walk:
+| Acceptance vehicle | Walk | Verdict |]
 
 ## Definition of Done           ← preserved VERBATIM if present
 
