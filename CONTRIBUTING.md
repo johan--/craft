@@ -62,19 +62,28 @@ bash hooks/scripts/complete-chunk.sh
 
 This increments `CURRENT_CHUNK` and updates the story frontmatter.
 
-### 5. Complete the story
+### 5. Audit your completion claims
 
-After the final chunk:
+After the final chunk, verify the suite is green (`./tests/run-all.sh`), then audit your completion claims before completing the story - the audit verifies the narrator, not the code:
+
+- Persist the verification results to `.craft/.validation-receipt.md`, opening with a `story: <name>` header line
+- Reduce every completion statement you intend to report ("all tests pass", "acceptance criteria met") to a bare claim with no justification attached
+- Invoke the `craft:claims-auditor` agent (Task tool, haiku) with the claim list, the receipt path, and the story file path - never your narrative or reasoning
+- An unsupported claim means fix the underlying issue or correct the claim before completing; the audit itself never blocks completion
+
+The canonical flow with all result branches is `commands/craft-story-implement.md` Step 5.1b; the `/implement` command carries the same flow for this repo.
+
+### 6. Complete the story
 
 ```
 bash hooks/scripts/complete-story.sh <story-file-path>
 ```
 
-This sets the story status to `complete` and clears `CURRENT_STORY`.
+This sets the story status to `complete`, clears `CURRENT_STORY`, and creates the story commit - so the audit step above must come first.
 
-### 6. Commit
+### 7. Commit
 
-One commit per chunk is typical for review clarity; one commit per story is also fine for small stories. Follow the commit conventions below.
+`complete-story.sh` creates one commit per story. Additional manual commits (fixes, docs) follow the commit conventions below.
 
 ## Commit conventions
 
