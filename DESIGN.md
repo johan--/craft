@@ -12,7 +12,7 @@ For definitions of cycle, story, chunk, and the workshop concepts, see README.md
 plugins/craft/
 ├── .claude-plugin/
 │   └── plugin.json            ← Plugin manifest (name, version)
-├── agents/                    ← Isolated-context specialist agents (26 agents)
+├── agents/                    ← Isolated-context specialist agents (27 agents)
 │   ├── alchemist.md           ← CSS interaction physicist (crystallized)
 │   ├── become-researcher.md   ← Psychological material collector for /craft:become
 │   ├── chunk-validator.md     ← Quality check executor (haiku model)

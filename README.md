@@ -265,7 +265,7 @@ A future story adds `[[wikilink]]` syntax and a craft-wide graph helper that res
 
 ## Agents
 
-26 agents across six categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
+27 agents across six categories. See `docs/agent-catalog.md` for full descriptions, model assignments, and when to use each.
 
 **Core Workflow** - run inside the implementation pipeline
 
@@ -276,6 +276,7 @@ A future story adds `[[wikilink]]` syntax and a craft-wide graph helper that res
 | `chunk-validator` | Runs quality checks, returns structured report (haiku model) |
 | `plan-chunks-agent` | Autonomous chunk planning per story - used in batch mode |
 | `project-scanner` | Full project analysis for documentation updates |
+| `claims-auditor` | Verifies completion claims against on-disk artifacts at story-final (haiku model) |
 
 **Analysis** - inspect the live app post-cycle
 

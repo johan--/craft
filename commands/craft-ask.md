@@ -57,7 +57,7 @@ For each agent file, read the first 15 lines (frontmatter only). Extract:
 - `name:` field
 - `description:` field (contains trigger conditions and consulting guidance)
 
-Skip agents that are purely operational (chunk-validator, implementer, tester, plan-chunks-agent, project-scanner, verifier, practitioner-reviewer). These are internal to the craft pipeline and not designed for consultation.
+Skip agents that are purely operational (chunk-validator, claims-auditor, implementer, tester, plan-chunks-agent, project-scanner, verifier, practitioner-reviewer). These are internal to the craft pipeline and not designed for consultation.
 
 **Consultable agents** are those whose descriptions include phrases like "Consult when", "Trigger conditions", or are crystallized workshop agents.
 

@@ -630,7 +630,7 @@ fi
 
 **>>> STORY COMPLETION CHECKPOINT**
 
-You are in Step 5. The story is NOT done. You MUST complete ALL sub-steps below (quality gates, self-critique, usage summary, learnings, spark verification, complete-story.sh). If you stop before complete-story.sh runs, the story stays active forever and the user has to manually resume. **Do not stop until Step 5.8 (complete-story.sh) has executed.**
+You are in Step 5. The story is NOT done. You MUST complete ALL sub-steps below (quality gates, claims audit, self-critique, usage summary, learnings, spark verification, complete-story.sh). If you stop before complete-story.sh runs, the story stays active forever and the user has to manually resume. **Do not stop until Step 5.8 (complete-story.sh) has executed.**
 
 ---
 
@@ -683,19 +683,56 @@ After all chunks:
    **If PASSED:** Clean up any breadcrumb: `rm -f "${CRAFT_PROJECT_ROOT:-.}/.craft/.continuation"`. Write story-final continuation breadcrumb:
    ```bash
    cat > "${CRAFT_PROJECT_ROOT:-.}/.craft/.continuation" << CRUMB
-   ACTION: Story-final PASSED. Continue Step 5: Self-Critique, Usage Summary, Learnings, Spark Verification, then complete-story.sh. DO NOT STOP.
+   ACTION: Story-final PASSED. Continue Step 5: Claims Audit (5.1b), Self-Critique, Usage Summary, Learnings, Spark Verification, then complete-story.sh. DO NOT STOP.
    SKILL: craft:craft-story-implement
    ARGS: STORY_FINAL_PASSED - Continue Step 5 completion flow.
    WRITTEN_BY: story-implement (story-final)
    TIMESTAMP: $(date -u +%Y-%m-%dT%H:%M:%S)
    CRUMB
    ```
-   Continue to Self-Critique (Step 5.2). **Do NOT stop here.**
+   Continue to the Claims Audit (Step 5.1b). **Do NOT stop here.**
 
    **If FAILED:**
    > **FAILED path:** Read [references/validate-fix-loop.md](references/validate-fix-loop.md) for the error routing loop. Follow its instructions (pass `MODE: story-final` to re-validation). Fix must succeed before story can complete.
 
    **ALL tests must pass before a story completes. No exceptions.**
+
+1b. **Claims Audit (Step 5.1b - once per story, never per chunk)**
+
+   The audit verifies the orchestrator's completion claims against on-disk artifacts before the story can complete. Post-compact sessions have overstated "ALL PASS" - this sub-step audits the narrator, not the code.
+
+   **Write the validation receipt.** Persist the story-final validator's structured report (the verdict table plus any Errors section) verbatim, opening with a story-identity header:
+   ```bash
+   cat > "${CRAFT_PROJECT_ROOT:-.}/.craft/.validation-receipt.md" << RECEIPT
+   story: [story name from the story file's frontmatter]
+   [the chunk-validator's structured report from 5.1, verbatim]
+   RECEIPT
+   ```
+
+   **Extract bare claims.** Build CLAIMS as newline-delimited bare assertion strings: take each cashed Pitch condition, the validator's overall verdict, and every completion statement you intend to present ("all tests pass", "only touched agents/ and commands/", "acceptance criteria met"), and reduce each to its bare claim. **Strip ALL narrative justification - drop every "because..." clause.** The auditor re-derives truth from artifacts; it must not inherit your reasoning.
+
+   **Invoke the auditor.** Pass ONLY the claim list and artifact paths - NEVER your narrative summary, self-critique, or reasoning. Including them contaminates the audit and defeats its purpose.
+   ```
+   Task tool:
+     subagent_type: "craft:claims-auditor"
+     model: "haiku"
+     description: "Audit completion claims"
+     prompt: "Audit these completion claims against on-disk artifacts.
+
+       CLAIMS:
+       [newline-delimited bare claim strings]
+
+       PROJECT_ROOT: ${CRAFT_PROJECT_ROOT:-.}
+       VALIDATION_RECEIPT: ${CRAFT_PROJECT_ROOT:-.}/.craft/.validation-receipt.md
+       STORY_FILE: [absolute path to story .md file]"
+   ```
+
+   **Branch on the result:**
+   - **Auditor errored or returned no verdict table:** log "Claims audit failed to run - skipping (optional quality layer)" and continue to Self-Critique (Step 5.2). The audit NEVER blocks complete-story.sh.
+   - **RECEIPT MISMATCH:** the receipt was stale (left by a crashed prior story). Rewrite the receipt from the current 5.1 validator output and re-invoke the auditor once; if the mismatch persists, log it and continue as an audit-skip. Never accept wrong-story verdicts.
+   - **`Unsupported: 0`:** emit a single line - "Claims audit: N/N supported" - and continue to Self-Critique (Step 5.2). A clean run adds no noise.
+   - **`Unsupported: > 0` (interactive):** surface the auditor's `| Claim | Verdict | Evidence |` table to the user via AskUserQuestion BEFORE any later sub-step - options: fix the underlying issue, correct the claim in the completion report, or proceed acknowledging the flag. The user rules before complete-story.sh runs.
+   - **`Unsupported: > 0` (RUN_MODE=autonomous):** flag and continue - write the unsupported verdict rows into the story file as a `## Claims Audit` section and include them in the end-of-run summary; no blocking prompt; the chain continues. Real code failures already halt at validation - the audit's unattended value is the durable flag.
 
 2. **Self-Critique**
    Compare against:

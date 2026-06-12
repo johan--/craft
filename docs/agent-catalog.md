@@ -1,6 +1,6 @@
 # Agent Catalog
 
-> Reference for all 26 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
+> Reference for all 27 agents in the Craft plugin. Agents run in isolated context - they receive only what you pass in their prompt.
 
 *Last reviewed: 2026-06-08 - current as of plugin v1.89.x.*
 
@@ -19,8 +19,9 @@ These agents run inside the implementation pipeline. The orchestrator invokes th
 | `chunk-validator` | haiku | Runs quality checks (typecheck, lint, no-any, build, tests, design tokens) and returns a structured validation report. Reports only - never fixes. Haiku keeps this fast and cheap. |
 | `plan-chunks-agent` | opus | Autonomous chunk planning for a single story - researches the codebase, writes receipted contracts + Investigation + Pitch into the story file. Used by `plan-chunks` for single and batch planning. |
 | `project-scanner` | sonnet | Full project analysis for documentation updates. Invoked by `/craft:update-docs`. |
+| `claims-auditor` | haiku | Verifies the orchestrator's completion claims against on-disk artifacts (git diff, validation receipt, story file) once per story at story-final, before complete-story.sh. Audits the narrator, not the code. |
 
-**Key constraint:** `implementer` and `tester` receive full write access. `chunk-validator` is read-only. `plan-chunks-agent` writes only the story file it plans (never source code). `project-scanner` writes only to `.craft/`.
+**Key constraint:** `implementer` and `tester` receive full write access. `chunk-validator` and `claims-auditor` are read-only. `plan-chunks-agent` writes only the story file it plans (never source code). `project-scanner` writes only to `.craft/`.
 
 ---
 

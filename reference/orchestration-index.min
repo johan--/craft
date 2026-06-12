@@ -22,9 +22,9 @@ Per chunk 1..N:
 3.INVOKE chunk-validator via Task (haiku)
 4.PASSED:complete-chunk.sh→next chunk | FAILED:Read validate-fix-loop.md→fix(Skill)→re-validate
 5.Loop to 1
-After all: chunk-validator MODE=story-final→self-critique→complete-story.sh
+After all: chunk-validator final→claims-audit→self-critique→complete-story.sh
 =CHAINS
-story-implement→[checkpoint→implementer(Task)→chunk-validator(Task,haiku)→ON pass:complete-chunk.sh→ON fail:Read validate-fix-loop.md→fix(Skill)→re-validate]×N→chunk-validator MODE=story-final→complete-story.sh
+story-implement→[checkpoint→implementer(Task)→chunk-validator(haiku)→pass:complete-chunk.sh→fail:Read validate-fix-loop.md→fix(Skill)→re-validate]×N→chunk-validator final→claims-audit→complete-story.sh
 test-fix→triage→HAND BACK TO story-implement
 refine-chunk→surgical fix→HAND BACK TO story-implement
 cycle-design→content-spark(per story)→creative-spark(opt)→design-vibe→plan-chunks MODE=batch
