@@ -494,6 +494,21 @@ fi
    5. **Resume the SAME implementer via SendMessage** — it holds the chunk context and a green work state: "Amendment approved and recorded — the contract now reads [X]. Continue from your work state." Only if that agent is no longer reachable (session restart, compaction, or SendMessage unavailable in this environment): re-invoke a fresh implementer using the partial-chunk resume prompt from Resume Support, and include the persisted mismatch report (`.craft/checkpoints/[story]-chunk-[N]-mismatch.md`) in its prompt — a fresh agent has no other access to the prior work state.
    6. **If "Halt story":** stop, leave the story `active`, report. The user decides whether to replan.
 
+   **Observations parse (normal completion only):**
+
+   If the implementer's output has NO `## CONTRACT MISMATCH` heading AND contains a `## Observations` section, parse it into the per-story sidecar. **Skip this parse entirely on a CONTRACT MISMATCH return** - a mismatch is a stop-and-report with no observations section by construction. An ABSENT `## Observations` section is the common case: do nothing (a no-op, not an error).
+
+   For each bullet under `## Observations` of the form `- grade=<g> | severity=<s> | <file:line> | <desc>`:
+   - Parse the four pipe-delimited fields.
+   - **Malformed-bullet safety:** if a bullet is missing a pipe field, carries an embedded newline, or is prose-prefixed (not a clean `- grade=...` line), SKIP it, log a one-line note ("skipped malformed observation bullet"), and CONTINUE to the next bullet. A single bad bullet never crashes the chain or aborts the remaining observations.
+   - Append the valid entry:
+     ```bash
+     bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/observations-append.sh \
+       ".craft/cycles/[cycle]" "[story-name]" "<grade>" "<severity>" "<file:line>" "<desc>"
+     ```
+
+   `observations-append.sh` independently writes nothing when grade, severity, or loc is empty (defense in depth): a malformed entry that slips the parser still cannot corrupt a sidecar.
+
 3. **Validate the Chunk**
 
    Invoke the chunk-validator agent directly. Do NOT invoke the validate-chunk skill here - the skill is for manual use only. The command owns the validation chain.
@@ -964,6 +979,18 @@ After all chunks:
 
    **If no stories left at all (shouldn't happen — cycle completion check above should catch this):**
    → **INVOKE `craft:craft-cycle-complete` using the Skill tool**
+
+   **9a. Surface unread observations (attended human-step-in only):**
+
+   This is the chain-end / human-step-in moment - the orchestrator recomputes the unread observation count from source (the same on-demand count the injection hook uses; nothing is stored or passed) and surfaces the basket.
+
+   - **If `RUN_MODE == autonomous`:** do NOTHING. The surfacing/routing/mark-surfaced sequence is skipped entirely - observations stay in their sidecars (`surfaced: false`) and accumulate across the unattended run, surfacing only when a human next steps in. Never surface, route, or create a todo unattended. (Consistent with the reversed mark ordering: nothing acknowledged means nothing marked means it accumulates.)
+   - **If the chain just handed to `craft:craft-cycle-complete` (all stories complete):** do NOTHING here - cycle-complete surfaces the basket itself (its Step 2c, before Archive). Surfacing here too would double-fire.
+   - **Otherwise (attended, chain pausing back to the user):** recompute the count:
+     ```bash
+     bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/observations-count.sh ".craft/cycles/$ACTIVE_CYCLE"
+     ```
+     If it prints a non-empty `N unread / M stories`, **Read `commands/references/observations-surfacing.md` and run it inline.** The routine clusters the basket, presents the prose digest, routes each cluster to the user's choice, and runs `mark-observations-surfaced.sh` LAST (only after the user acknowledges and routes).
 
 ## Parallel Stories (Max 2)
 

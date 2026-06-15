@@ -72,6 +72,15 @@ if [ -f "${PROJECT_ROOT}.craft/.global-state" ]; then
     fi
 
     context="$context]"
+
+    # Unread implementer observations for this cycle (only when count > 0).
+    # Lives inside the ACTIVE_CYCLE branch so it never fires for planning/backlog
+    # contexts. The count helper is pure bash/grep (hot path - runs every prompt).
+    obs_count=$(bash "$SCRIPT_DIR/observations-count.sh" "${PROJECT_ROOT}.craft/cycles/$ACTIVE_CYCLE" 2>/dev/null || true)
+    if [ -n "$obs_count" ]; then
+      context="$context
+[Craft observations: $obs_count - review at story/cycle complete]"
+    fi
   else
     # No active cycle
     backlog_count=$(ls -1 "${PROJECT_ROOT}.craft/backlog/"*.md 2>/dev/null | wc -l | tr -d ' ')

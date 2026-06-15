@@ -342,6 +342,19 @@ The following stories were returned to backlog:
 
 ---
 
+### Step 3c: Surface Unread Observations
+
+Before archiving, surface any unread implementer observations for this cycle - cycle-complete is a human-step-in moment. This must run BEFORE Step 4 (Archive), while `ACTIVE_CYCLE` is still set (complete-cycle.sh clears it).
+
+- **If `RUN_MODE == autonomous`:** skip - leave observations in their sidecars to accumulate; do not surface, route, or create a todo unattended.
+- **Otherwise:** recompute the count:
+  ```bash
+  bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/observations-count.sh ".craft/cycles/$ACTIVE_CYCLE"
+  ```
+  If it prints a non-empty `N unread / M stories`, **Read `commands/references/observations-surfacing.md` and run it inline** (cluster -> prose digest -> route each cluster to the user's choice -> mark surfaced LAST). If empty, say nothing and continue to Step 4.
+
+---
+
 ### Step 4: Archive Cycle
 
 **Run the transition script:**

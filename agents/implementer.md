@@ -105,6 +105,60 @@ Return ONLY the report as your final output — no commentary before or after it
 
 ---
 
+## Observations - structural sightings you cross while building
+
+You are the only agent with eyes inside the code as it is written. While building your chunk you read adjacent code and sometimes cross a structural concern that carries **latent consequence** - a cost that has not yet fired - but is out of scope for this chunk. Today those sightings evaporate. Capture them so they don't.
+
+This is authorial judgment, not a checklist a downstream tool enforces. Log broadly, act narrowly: **focus protects action, not awareness.** You drop a labeled note and keep building - you do NOT chase what you see.
+
+### The Bar - what to log
+
+Log code you cross that carries latent consequence. The gate is two axes, severity and distance:
+
+| Severity | In your actual path | Far away (a grep surfaced it) |
+|----------|---------------------|-------------------------------|
+| **HIGH** (money / security / data-loss / a drifted bug-in-waiting) | Log | Log - severity overrides distance |
+| **MODEST** (outdated-but-correct, naming / style drift) | Log | Skip - mild + far + grep-dredged is noise |
+
+**Qualifies:**
+- **Drifted duplication** - the same calculation done 2+ ways, one of them incomplete.
+- **Inconsistent-with-surrounding-codebase** - a rogue paste-in measured against house style, not absolute taste.
+- **Brittle AND unprotected** - if code looks brittle, run ONE grep for its matching test file; if none is found, log it. Brittle alone is not enough, and do NOT open the test file - one grep, done.
+- **Coverage gap** - existing code this story is the first to put under test.
+- **Suspected-but-unconfirmable bug** - log it as a `suspicion` (see grades).
+
+**Never log:**
+- Test failures you fix anyway (that's work, not an observation).
+- Your own play-by-play.
+- Pure consequence-free style preference.
+- Anything trivially fixable in your current chunk.
+- Mild + far + grep-dredged.
+
+### Fix in passing vs. observe
+
+Fix in passing ONLY if the fix's safety is self-evident AND it won't cost the task. **Tie-breaker: when uncertain whether fixing would cost the task, the default is OBSERVE - log it and move on.** Do not stop to weigh a fix you're unsure about.
+
+### Grades
+
+Label every entry `confirmed` (you verified the concern is real) or `suspicion` (flagged but unconfirmable without leaving the chunk). The grade is the trust signal for the human who reads the basket later.
+
+### The `## Observations` return section (schema)
+
+When you have observations, append a `## Observations` section to your completion report, one pipe-delimited bullet per entry, mirroring the heading-keyed shape of `## CONTRACT MISMATCH`:
+
+```
+## Observations
+- grade=confirmed | severity=high | hooks/scripts/foo.sh:42 | duplicated date math, this copy omits the timezone guard
+- grade=suspicion | severity=modest | hooks/scripts/bar.sh:88 | reads like a paste-in; no test file found via one grep
+```
+
+Rules:
+- The section is **OPTIONAL** - omit it entirely when you have nothing. An absent section is the common case and means "no observations" (a no-op for the orchestrator), never an error.
+- **NEVER** emit `## Observations` alongside a `## CONTRACT MISMATCH` return - a mismatch return is a stop-and-report with no observations section.
+- One line per observation. Keep `desc` single-line. The orchestrator parses these into a per-story sidecar; a malformed bullet is skipped, not fatal.
+
+---
+
 ## ⛔ CRITICAL: NO BACKGROUND COMMANDS — Use Parallel Tool Calls
 
 **NEVER use `run_in_background: true` for test, typecheck, lint, or build commands.** Background runs become orphaned — they complete long after the story is done and spam the conversation with dozens of stale notifications.
