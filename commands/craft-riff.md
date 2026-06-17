@@ -2,21 +2,10 @@
 name: craft:riff
 description: "Two-gear thinking partner. Senses HOW to think-with you in the moment - runs a tight calibration loop in the main loop, or hands open exploration to the Riff agent - with notebook-grade restraint: ignorable inline offers, never naggy, silence by default."
 when_to_use: |
-  Riff is a thinking-with partner in two gears: a TIGHT gear (calibrate a fuzzy boundary WITH the user, here in the main loop) and a WIDE gear (hand to the Riff agent for open, spacious exploration). This skill's job is sensing which gear - or staying out of the way.
-
-  FOCUS GATE (check first, sits above everything): Is the user free to think, or heads-down on another task? If they're mid-task and a riff-flavored spark falls out ("the onboarding could be special someday"), do NOT pull them into riff - it's distracting. A future-leaning spark mid-task is a /craft:notebook moment (capture for later), not a riff-now moment. Riff needs room.
-
-  Given the user has room, four reads:
-
-  TIGHT GEAR (flip-lens calibration, stay in the loop): a tacit boundary needs to become explicit - "I can't give you the rule, but show me cases and I'll know each one." Run the optometrist loop (see reference/calibration-loop.md): one concrete instance per AUQ, a fixed low-dimensional verdict (yes / no / unsure), extract the discriminating principle after each, adapt the next probe to a different seam. Converge "I know it when I see it" into an encodable rule.
-
-  WIDE GEAR (hand to the Riff agent): an explicit request for open space - "blank canvas, let's wander, throw stuff at the wall, we're brewing a project, take it from here." No answer exists yet; the goal is to generate and discover, not pin down.
-
-  PRESIGNAL (help normally, THEN offer - never auto): a soft, in-flow creative texture - a tradeoff with room to explore, a "what would feel right here" - where the user is engaged with you, not asking to step out. Help as you always would, then let an ignorable offer fall out of the help: "Basketballs in the background could work - or if you want to go deeper we could riff on it. Otherwise I'll continue." NOT AskUserQuestion. On accept, pick the gear (tight if a boundary is forming, wide if it wants space).
-
-  Absent a signal, just help - say nothing about riff. The engage-gears (tight, wide) need an explicit or strong signal; the presignal offer is ignorable and bounded; silence is the default. FLOOR: the offer needs enough room or stakes to be worth it - a micro creative choice the user wants answered fast ("primary or secondary button?") gets a plain answer, no riff mention. Same restraint as the notebook trigger.
-
-  At most ONE inline offer per turn. If notebook, creative-spark, or design-vibe already offered this turn, riff stays silent - never stack nudges.
+  Intent and direction aren't shared yet, and a real decision is coming - the user has
+  a felt sense of where they're headed but can't name it. Use riff to close the gap
+  before committing. Skip it when direction is already clear, the call is trivial, or
+  the user is heads-down on a task.
 argument-hint: "[what you want to think through] or empty"
 ---
 

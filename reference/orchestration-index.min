@@ -14,7 +14,6 @@ post-cycle|analyze (QA,UX,Creative,Style)
 known bug/post-story issue (no active story)|craft:fix (adhoc,no story needed)
 deferral marker in user utterance ("later"/"don't let me forget"/"side note"/etc.)|inline-mention /craft:notebook (NOT AskUserQuestion); on accept invoke silently with session-context body+tags
 lifecycle verb + named/deictic ref|graduate=inline-offer with named referent / done=AUQ confirmation always (even at HIGH conf - asymmetric failure visibility); LOW=no action
-riff signal (user has room)|tacit-boundary "show me cases"=TIGHT flip-loop in main-loop (Read reference/calibration-loop.md) | blank-canvas "let's wander"=WIDE→craft:riff agent (Agent tool) | soft creative tradeoff=PRESIGNAL ignorable inline offer (NOT AUQ) | mid-task future spark=FOCUS GATE→notebook | micro choice=FLOOR silent. ≤1 inline offer/turn (no stacking w/ notebook/creative-spark/design-vibe)
 =LOOP
 Per chunk 1..N:
 1.create-checkpoint.sh [story] [chunk]

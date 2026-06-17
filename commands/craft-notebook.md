@@ -2,31 +2,15 @@
 name: craft:notebook
 description: "Low-ceremony capture for ideas (half-formed, want to mature into stories), todos (concrete actions), and notes (durable project/team facts for future recall). One-line capture, conditional elaboration AUQ. Use BEFORE thoughts get forced into stories."
 when_to_use: |
-  TRIGGER: a DEFERRAL MARKER in user's utterance: "later," "at some point," "don't let me forget," "separately," "side note," "unrelated but," "before I forget," "for next time," "remember to."
+  EXPLICIT REQUEST (check first): the user names "notebook" or asks to save/capture a note, idea, or todo. That IS the invocation - capture to the craft notebook now. Never divert to Claude Code's native memory or substitute your own dedup judgment for the request; if it overlaps an existing note, capture anyway or ask.
 
-  Scenarios: (a) off-current-flow thoughts during deep work; (b) adjacent observations while doing something else; (c) end-of-session loose ends; (d) half-formed observations surfaced but not chased; (e) explicit recall ("what's in notebook?", "show open todos").
+  DEFERRAL MARKER (proactive): "later," "don't let me forget," "side note," "unrelated but," "before I forget," "for next time," "remember to." Absent a marker or explicit request, follow the conversation - do NOT mention notebook; silence is the default.
 
-  Absent a deferral marker, follow the conversation - do NOT mention notebook. Markers bound your judgment.
+  OFFER proactively via an ignorable closing line ("Worth dropping in /craft:notebook? Otherwise I'll continue") - NOT AskUserQuestion. On accept, invoke silently with session context.
 
-  Reciprocal with riff: a future-leaning creative spark that falls out mid-task while the user is heads-down ("the onboarding could be special someday") is a notebook capture, not a riff-now moment - the /craft:riff focus gate routes such sparks here for later, rather than pulling the user into an exploration.
+  NOTE TRIGGER (distinct): a durable, project/team-local FACT future-us would want recalled - settled, currently-true, local to THIS project, reusable; capture the distilled fact, not the event. NOT general knowledge you already hold or transient incidents. Offer only when solidly durable with no expiry.
 
-  OFFER via inline mention as an ignorable closing line: "Worth dropping in /craft:notebook? Otherwise I'll continue." NOT AskUserQuestion. On accept, invoke silently with session context.
-
-  NOTE TRIGGER (distinct from the deferral-marker trigger): a durable, project/team-local FACT surfaces that I could not already know and that future-us would want recalled. Capture the distilled FACT, never the event that revealed it. ("Kevin ran the vercel CLI" -> note is "Project deploys on Vercel.")
-
-  Layer 1 - what IS a note (eligible content): a settled, currently-true standing fact that is (a) durable, not a transient incident; (b) local to THIS project/team/environment, not general knowledge I already hold; (c) reusable when a matching situation returns. Spans technical AND social/ownership facts. "Already written in an unread repo doc" still qualifies - the value is putting it in the recall path.
-
-  NOT a note: a transient incident ("CI went red, got reverted" - distill only a reusable technique if one surfaced, never the incident); anything I already know from general training (git reflog, standard CLI flags); an undecided lean or drift ("we've been leaning toward X, not official").
-
-  Layer 2 - when I OFFER proactively (higher bar than eligibility): only when the fact is solidly durable with NO built-in or vague expiry, and I'm confident it's true and stable. Provisional / soft-timelined / expiry-baked facts ("legacy auth until ~Q3, no ticket or owner") - stay silent; the user captures those explicitly if they want them.
-
-  Event shapes that warrant the offer: a teammate's tool/command/process reveals how this project actually works; a non-obvious project fact stated in passing; ownership / "ask X before touching Y" guidance; an environment/setup constraint we just hit. Reaction phrases ("TIL," "good to know," "didn't know that," "huh") are a secondary signal.
-
-  OFFER via inline mention - an ignorable closing line naming the distilled fact: "Worth noting 'Project deploys on Vercel'? Otherwise I'll continue." NOT AskUserQuestion. On accept, capture silently: distilled fact (paragraph 1) + how-we-learned-it provenance (paragraph 2) + facet + tags.
-
-  Absent BOTH an eligible fact AND the Layer-2 bar, do NOT mention notes. Default is silence. (Same high-bar-for-Claude-initiated discipline as the deferral-marker rule.)
-
-  Idea-vs-todo (AFTER capture intent): todos are imperative + concrete ("rename X," "fix Y"); ideas are speculative + abstract ("what if we," "the pattern we're seeing"). When ambiguous, ask.
+  Idea-vs-todo: todos are imperative + concrete ("rename X"); ideas speculative ("what if we"). Recall: "what's in notebook?" When ambiguous, ask.
 
   List triggers: "notebook?", "what's open?", "show my todos."
 argument-hint: "[idea|todo \"text\"] or empty for list"
