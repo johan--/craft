@@ -96,7 +96,7 @@ Read the story file completely. Extract everything available:
 - **Preserve list** — What must NOT break
 - **Hardest constraint** — Identified risk/challenge
 - **Decisions** — Locked decisions from the Creative Phase
-- **Visual Direction** — Vibe, feel, inspiration, key tokens, motion (UI stories)
+- **Visual Direction** — Vibe, feel, inspiration, motion, and the **Element Binding Table** of per-element token assignments (UI stories). Read every table row; a row whose Token is `TBD` is a low-confidence assignment — resolve it from the codebase (what the sibling or existing component uses), or if it is user-visible and unresolved, route it to the Pitch conditions table (batch mode: a Critical Blocker, product-stake `ask`).
 - **Wireframe** — ASCII art layout (UI stories)
 - **Likely Files** — Scanned file list with create/modify/read-only action tags
 - **Reference Materials** — **AUTHORITATIVE pinpoint citations** to concept files, mockups, locked.md patterns, design tokens, active.md dated entries, sibling story precedents. Read these explicitly using the anchors provided. The agent does NOT auto-discover them. See section 1.3.5 below for the full contract.
@@ -445,6 +445,8 @@ Lock the seams, leave the interiors. Each chunk pins its **Contracts** — signa
 
 **Do not write function bodies or test bodies.** Code appears in a chunk only when the code IS the decision (an exact regex, a migration statement, a one-liner where ambiguity is dangerous) and carries a receipt explaining why.
 
+**For UI stories, elevate the Element Binding Table into Contracts.** Visual token assignment is a seam, not an interior — two implementers can assign different valid tokens to the same element (`surface` vs `surface-elevated`), both passing style-analyzer, both rendering differently. So for each chunk that builds an element in the story's Element Binding Table, emit one binding Contract line per row it builds, carrying a `[visual-source: <mockup anchor | tokens.yaml token | Visual Direction Part/Role>]` receipt; a row a later chunk builds is referenced `[owner: Chunk N]`; a `TBD` row goes to the Pitch conditions table, never shipped as a bare assertion. This restates the format guide's Visual Contracts rule here because you run from this prompt, not the guide.
+
 ### 3.2 Chunk Ordering Constraints
 
 **Cut at the ladder rungs.** Chunks build bottom-up from the furthest-upstream fact the story touches (data → types → service → endpoint → UI, or whatever ladder this story actually has). Rung interfaces ARE the contracts — they fall out of the cut instead of being invented. Later chunks cite earlier chunks' output via `[owner: Chunk N]`; by implement time those citations point at real, tested code. Chunk 1 sits where speculation lives: any unverifiable condition from the Pitch becomes its FIRST test. A one-rung story is fine — discover that honestly, don't manufacture rungs.
@@ -499,7 +501,7 @@ Each chunk MUST include these sections (full template, receipt types, and sectio
 
 **The seam test** — for each chunk: could two competent implementers build this independently and not conflict at its boundaries with other chunks and with existing code? If a conflict is possible, a contract is missing. If a contract dictates an interior (how a function's body works, what a test body contains), it's overreach — move it to Approach or delete it.
 
-**The receipt audit** — every contract line carries exactly one receipt (`[verified]`, `[owner: Chunk N]`, `[investigation]`, `[defines]`). Every receipt-less claim about pre-existing reality is in the Pitch's conditions table. Every unverifiable condition is some chunk's FIRST test. See the format guide for receipt semantics and the Bad → Good examples.
+**The receipt audit** — every contract line carries exactly one receipt (`[verified]`, `[owner: Chunk N]`, `[investigation]`, `[visual-source]`, `[defines]`). Every receipt-less claim about pre-existing reality is in the Pitch's conditions table. Every unverifiable condition is some chunk's FIRST test. See the format guide for receipt semantics and the Bad → Good examples.
 
 A `[verified]` receipt is attack residue, not attestation — it records what was checked and what would have falsified the claim. If you cannot say what would have falsified it, you haven't verified it.
 

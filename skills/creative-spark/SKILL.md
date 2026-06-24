@@ -311,7 +311,7 @@ options:
 ```
 
 **What goes in the `markdown` field per option type:**
-- **UI/UX options:** ASCII wireframe + Visual Direction (Feel, Inspiration, Key Elements, Motion) + trade-offs
+- **UI/UX options:** ASCII wireframe + Visual Direction (Feel, Inspiration, Key Elements, Motion, Key token assignments) + trade-offs
 - **Technical options:** Architecture diagram + key rationale + trade-offs
 - **Copy/Voice options:** Tone description + sample copy examples + trade-offs
 

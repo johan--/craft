@@ -383,7 +383,7 @@ Use **AskUserQuestion** (from Priority Levels section below).
 
 If the user corrects the type, adjust before writing. The `type` field drives creative tool recommendations during planning - `ui` stories get creative-spark prompts, all stories get content-spark prompts.
 
-**CRITICAL for UI stories that went through creative-spark:** The Visual Direction block (Vibe, Feel, Inspiration, Key tokens, Motion) and Wireframe from the chosen option MUST be included in the story file. These details are the entire point of creative-spark — without them, all creative work is lost and plan-chunks has no visual context to work from.
+**CRITICAL for UI stories that went through creative-spark:** The Visual Direction block (Vibe, Feel, Inspiration, Motion, and the Element Binding Table of per-element token assignments) and Wireframe from the chosen option MUST be included in the story file. These details are the entire point of creative-spark — without them, all creative work is lost and plan-chunks has no visual context to work from.
 
 **Likely Files scan (required for all stories except "Just a spark"):**
 
@@ -478,8 +478,12 @@ _Scanned: [YYYY-MM-DD]_
 **Vibe:** [Name from creative-spark]
 **Feel:** [2-3 words]
 **Inspiration:** [Reference sites/patterns]
-**Key tokens:** [Token names]
 **Motion:** [Animation spec]
+
+**Element Binding Table** <!-- per-element visual intent; plan-chunks binds rows as [visual-source:] Contracts -->
+| Part | Role/State | Token | Value/Source |
+|------|------------|-------|--------------|
+| [element] | [role/state] | [token] | [tokens.yaml / mockup / TBD] |
 
 ## Wireframe
 ```

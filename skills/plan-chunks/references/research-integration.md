@@ -84,6 +84,7 @@ Task tool:
     KEY_FILES: [value]]
 
   Read the story, understand what it needs, then research the codebase and plan chunks.
+  If the story's `## Visual Direction` has an Element Binding Table, verify each row's token against tokens.yaml and bind every row a chunk builds as a `[visual-source:]` Contract; route TBD rows to the Pitch conditions table.
   Return findings in your structured output format."
 ```
 
@@ -124,6 +125,7 @@ Task tool:
   with CRITICAL alignment instructions.]
 
   Read the story, understand what it needs, then research the codebase and plan chunks.
+  If the story's `## Visual Direction` has an Element Binding Table, verify each row's token against tokens.yaml and bind every row a chunk builds as a `[visual-source:]` Contract; route TBD rows to the Pitch conditions table.
   Return findings in your structured output format."
 ```
 

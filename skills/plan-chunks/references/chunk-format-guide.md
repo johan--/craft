@@ -129,18 +129,32 @@ patterns in jobs/ - out of scope, the ILS client tests are the pattern to mirror
 | `[owner: Chunk N]` | The contract's truth is produced by an earlier chunk. By implement time it's real, compiled code - cite IT, not this line, if they differ. |
 | `[investigation: <one-line reason>]` | Backref to the narrative - the reasoning this contract protects. The implementer uses this to judge mismatches: does a deviation break the *reason*, or just the coordinates? |
 | `[defines]` | A new seam this chunk creates - a name, route, or shape with no prior reality to verify. Authoritative from this chunk on; later chunks cite it via `[owner: Chunk N]`. Greenfield stories are mostly `[defines]` - that's correct, not a gap. |
+| `[visual-source: <mockup anchor \| tokens.yaml token \| Visual Direction Part/Role>]` | A UI element's visual binding: this Part/Role uses this token or value, sourced from a mockup, the design system, or the Visual Direction table. The visual-domain twin of `[verified:]` - it points at where the look was decided, not at code. |
 
 A contract about *pre-existing reality* that can earn no receipt goes in the Pitch's conditions table as unverifiable - it does not ship as a bare assertion.
 
 **Mutation contracts carry their unit and their readers.** A contract for any state-changing write declares the key it writes under ("completion is per schedule-occurrence `(workout_id, scheduled_date)`, not per workout") and receipts its read sites ("[verified: read by CalendarView.tsx:31 and AccountPage.tsx:84 - both rebuild from the refreshed payload]"). An undeclared unit is an invisible assumption - and invisible assumptions are the one thing receipts can't attack.
 
-**Approach** - advisory prose. Pattern pointers by `file:line`, ordering, gotchas. **No code blocks** - with one exception: when the code IS the decision (an exact regex, a migration statement, a non-obvious one-liner where ambiguity is dangerous). Decision-code carries a receipt like any contract.
+**Approach** - advisory prose. Pattern pointers by `file:line`, ordering, gotchas. **No code blocks** - with two narrow exceptions. (1) When the code IS the decision (an exact regex, a migration statement, a non-obvious one-liner where ambiguity is dangerous). (2) Irreducible visual logic (an SVG node/path array, a CSS keyframe sequence, a GSAP timeline) that cannot be expressed as a binding-table row and where approximating the geometry or motion sequence would change the result. Either way the code carries a receipt that names what makes it non-substitutable - not a bare `[decision:]` - like any contract.
 
 **Test cases** - names plus what they assert. No bodies. The implementer writes bodies during TDD, where they get verified by running - not authored as fiction in a markdown file.
 
 **What Could Break** - every entry is `[resolved]` (checked dead during planning, say how) or `[escalated to conditions]` (now in the Pitch table). A bare risk bullet that is neither resolved nor escalated is an unfinished thought.
 
 **Amendments** - when implement-time reality contradicts a contract and the fix is approved, the delta is recorded in the chunk under an `**Amendments:**` heading (date, what changed, what the original receipt missed) - the contract line is never silently edited. The plan stays honest about what it got wrong; the amendment trail is how future planning learns which receipts fail.
+
+### Visual Contracts (type=ui stories)
+
+A UI story's per-element visual intent is carried as an **Element Binding Table** in `## Visual Direction` (the story-level source of truth); each chunk binds the subset of rows it builds as Contract lines, each carrying a `[visual-source:]` receipt. The table:
+
+| Part | Role/State | Token | Value/Source |
+|------|------------|-------|--------------|
+| cta | surface | `primary` | tokens.yaml |
+| cta | surface (hover) | `primary/90` | tokens.yaml |
+| label | on-surface | `card-foreground` | mockup hero/h2 |
+
+- **Part** = element/anatomy name. **Role/State** = the styling role plus interaction state - a hover row is its own row, owned by the chunk that builds that state. **Token** = the semantic token bound. **Value/Source** = origin (`tokens.yaml`, a mockup anchor, a design ref), and the literal value only where no token exists.
+- **Raw values are the narrow exception.** A literal (not a token) is allowed only when it is structural rather than thematic (a `1px` hairline, an `aspect-ratio`, a `z-index`) AND no token of that type exists - flagged inline with a one-line reason. Color, spacing, type, radius, shadow, and motion are theme-owned: those must be tokens, never literals.
 
 ---
 
@@ -190,6 +204,8 @@ Exempt: chunks that modify no source files (all Files entries `read-only`, or a 
 ## Quality Gates (run before presenting the plan)
 
 1. **The seam test** - for each chunk: could two competent implementers build this independently and not conflict at its boundaries with other chunks and with existing code? If a conflict is possible, a contract is missing. If a contract dictates an interior (HOW a function's body works, what a test body contains), it's overreach - move it to Approach or delete it.
+
+   *Visual token assignment is a seam, not an interior (UI stories).* Two implementers given the same UI spec can assign different valid tokens to one element (`surface` vs `surface-elevated`) - both pass style-analyzer, both render differently. That is exactly the conflict Contracts exist to prevent, so a per-element token/value binding belongs in Contracts with a `[visual-source:]` receipt, never left to Approach. (Also stated in `agents/plan-chunks-agent.md` Phase 3.1, which the agent runs from its own prompt.)
 
 2. **The receipt audit** - every contract line carries a receipt; every receipt-less claim is in the conditions table; every unverifiable condition is some chunk's first test. Run the narrative check: is the Investigation causal? Are the dead ends still in it? Too clean is a finding.
 

@@ -29,6 +29,7 @@ When the story involves UI, include visual direction as part of each option:
 - **Key Elements:** Generous whitespace, subtle shadows, 8px rounded corners
 - **Physicality:** [1 sentence - weight and easing character, e.g., "Light, snappy. Ease-out with short duration - the interface gets out of your way."]
 - **Signature motion:** [1 sentence - the defining movement, e.g., "Cards reveal with 20ms stagger from top-left, as if dropped from a hand."]
+- **Key token assignments:** the elements this option introduces, each as a `Part | Role/State | Token | Value/Source` row - Token = a tokens.yaml name where known, else TBD (planning verifies). These seed the story's Element Binding Table.
 
 **Why it works:** [Benefits]
 **Trade-offs:** [Considerations]

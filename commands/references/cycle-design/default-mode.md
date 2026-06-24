@@ -434,8 +434,12 @@ current_chunk: 0
 **Vibe:** [Name from creative-spark, e.g., "Friendly Energy"]
 **Feel:** [2-3 words, e.g., "Clean, warm, approachable"]
 **Inspiration:** [Reference sites/patterns]
-**Key tokens:** [Token names this story will use]
 **Motion:** [Animation approach from creative-spark]
+
+**Element Binding Table** <!-- per-element visual intent; plan-chunks binds rows as [visual-source:] Contracts -->
+| Part | Role/State | Token | Value/Source |
+|------|------------|-------|--------------|
+| [element] | [role/state] | [token] | [tokens.yaml / mockup / TBD] |
 
 <!-- Leave empty for non-UI stories -->
 

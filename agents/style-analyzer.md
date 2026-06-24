@@ -59,6 +59,8 @@ Browser mode catches runtime style issues (computed values, visual inconsistenci
 
 ### 1. Design Token Compliance
 
+**Scope note:** this audit checks token *compliance* (a token is used instead of a hardcoded value) — NOT *assignment* (that an element uses the *contracted* token rather than merely a valid one). Assignment is pinned by each chunk's `[visual-source:]` Contracts and checked by the chunk-validator's Visual Binding Assignment step. A green style audit is not a visual-fidelity pass.
+
 **Colors:**
 - All colors must come from `tokens.yaml`
 - No hardcoded hex values (`#FFFFFF`, `#000000`)

@@ -117,7 +117,7 @@ After user picks a direction, before transitioning to lock-decision, run motion 
 ## After Selection
 
 Update the story file with the chosen option's:
-- Visual Direction (Vibe, Feel, Inspiration, Key tokens, Motion)
+- Visual Direction (Vibe, Feel, Inspiration, Motion) including the **Element Binding Table** - one `Part | Role/State | Token | Value/Source` row per element the option introduces; Token = a tokens.yaml name where known, else TBD (planning verifies)
 - Wireframe (for UI stories)
 - Any decisions locked during the creative process
 

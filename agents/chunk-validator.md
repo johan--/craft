@@ -195,6 +195,19 @@ Run each check in order. For each check, determine the result: **PASS**, **FAIL*
 
 **Warning detail:** "Hex color values found — consider using design tokens"
 
+### 6b. Visual Binding Assignment
+
+**Goal:** Check that an element with a `[visual-source:]` Contract uses the *contracted* token, not merely *a* valid token (compliance ≠ assignment).
+**Tool:** Grep (NOT Bash)
+
+**How:**
+1. Read the chunk's `**Contracts:**`. Collect every line carrying a `[visual-source:]` receipt, with its `Part` and contracted `Token`.
+2. If none → **SKIP**
+3. For each, **Grep** the changed style/component files for the element (the Part's selector or className) and check the contracted token name appears on it.
+4. All present → **PASS**. A contracted token absent from its element → **WARN** ("element [Part] is contracted to token [X] but [X] not found on it — assignment may have drifted"). Element not greppable → **SKIP** that row.
+
+Assignment is enforced primarily at plan time (the binding is a Contract the implementer treats as law); this is the best-effort after-the-fact catch.
+
 ## After Checks: Determine Status
 
 Determine overall status:

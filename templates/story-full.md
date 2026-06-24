@@ -65,8 +65,11 @@ risk_tags: []
 **Vibe:**
 **Feel:**
 **Inspiration:**
-**Key tokens:**
 **Motion:**
+
+**Element Binding Table** <!-- UI source of truth: per-element visual intent. plan-chunks fills/verifies; each chunk binds the rows it builds as [visual-source:] Contracts. See chunk-format-guide "Visual Contracts". -->
+| Part | Role/State | Token | Value/Source |
+|------|------------|-------|--------------|
 
 ## Wireframe
 <!-- For UI stories - ASCII art of chosen layout -->

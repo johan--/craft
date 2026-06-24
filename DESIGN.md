@@ -154,7 +154,7 @@ plugins/craft/
 
 ## Planned Story Format (contracts model)
 
-Chunk specs lock **seams, not interiors**. The planner pins contracts (signatures, shapes, routes, invariants - each line carrying a receipt: `[verified: attack evidence]`, `[owner: Chunk N]`, `[investigation: reason]`, `[defines]`); the implementer owns function bodies and test bodies. No copy-pasteable code in plans - code appears only when the code IS the decision.
+Chunk specs lock **seams, not interiors**. The planner pins contracts (signatures, shapes, routes, invariants - each line carrying a receipt: `[verified: attack evidence]`, `[owner: Chunk N]`, `[investigation: reason]`, `[visual-source: where the look was decided]`, `[defines]`); the implementer owns function bodies and test bodies. No copy-pasteable code in plans - code appears only when the code IS the decision.
 
 A planned story carries four planning artifacts (format reference: `skills/plan-chunks/references/chunk-format-guide.md`):
 
@@ -162,6 +162,8 @@ A planned story carries four planning artifacts (format reference: `skills/plan-
 - **`## Investigation`** - the planner's causal research narrative, dead ends kept. Transfers the planner's headspace to the implementer and any future re-planner.
 - **`## Acceptance Pre-Flight`** - one row per acceptance vehicle, symbolically walked through the path it exercises using the test's own data shape; any `UNREACHABLE` verdict blocks plan acceptance (walk reference: `skills/plan-chunks/references/acceptance-walkthrough.md`).
 - **`## Chunks`** - cut bottom-up at layer rungs; later chunks cite earlier chunks' real output via `[owner: Chunk N]`, which self-freshens the spec.
+
+For `type=ui` stories, per-element visual intent lives as an **Element Binding Table** in `## Visual Direction` (the source of truth); each chunk binds the rows it builds as Contract lines carrying a `[visual-source:]` receipt. Visual token assignment is a seam, not an interior - two implementers can assign different valid tokens to the same element, so it is pinned in Contracts rather than left to the implementer. Verification is two-tier: a plan-time enumerating gate (every non-`TBD` row is bound by some chunk) plus a project-local rendered-fidelity Done-When check.
 
 Two escape valves keep the autonomy honest: the planner may stop mid-flight only for a **PLAN FORK** (a user-owned question whose answers produce two different plans); the implementer stops on **CONTRACT MISMATCH** (reality contradicts a receipted contract - the report is a deliverable, the orchestrator amends the plan, never the implementer). Lower-stakes decisions are made in flight and triaged by **product-stake** (silent / mention / ask, judged against a perfectionist product owner) rather than confidence alone.
 
