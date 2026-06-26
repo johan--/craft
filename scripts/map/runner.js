@@ -3219,9 +3219,230 @@ var require_extract = __commonJS({
   }
 });
 
+// src/rank.js
+var require_rank = __commonJS({
+  "src/rank.js"(exports2, module2) {
+    "use strict";
+    function leafName(symbolPath) {
+      if (!symbolPath) return "";
+      const noOverload = symbolPath.replace(/\(.*\)$/, "");
+      return noOverload.split(/[./]/).pop();
+    }
+    function escapeRe(s) {
+      return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+    function rankDefinitions(perFile) {
+      const corpus = perFile.map((f) => f.source).join("\n");
+      const counts = {};
+      function refCount(name2) {
+        if (!name2) return 0;
+        if (name2 in counts) return counts[name2];
+        const m = corpus.match(new RegExp("\\b" + escapeRe(name2) + "\\b", "g"));
+        counts[name2] = m ? m.length : 0;
+        return counts[name2];
+      }
+      const defs = [];
+      for (const f of perFile) {
+        for (const a of f.result.anchors) {
+          const symbolPath = a.anchor.includes("#") ? a.anchor.slice(a.anchor.indexOf("#") + 1) : "";
+          const name2 = leafName(symbolPath);
+          defs.push({
+            rel: f.rel,
+            anchor: a.anchor,
+            kind: a.kind,
+            line: a.line,
+            // discount the definition's own occurrence so a never-referenced symbol scores 0
+            score: Math.max(0, refCount(name2) - 1)
+          });
+        }
+      }
+      defs.sort((a, b) => b.score - a.score || a.rel.localeCompare(b.rel) || a.line - b.line);
+      return defs;
+    }
+    module2.exports = { rankDefinitions, leafName };
+  }
+});
+
+// src/budget-trim.js
+var require_budget_trim = __commonJS({
+  "src/budget-trim.js"(exports2, module2) {
+    "use strict";
+    function estimateTokens(text) {
+      return Math.ceil(text.length / 4);
+    }
+    function trimToBudget(orderedDefs, renderFn, budget) {
+      if (estimateTokens(renderFn(orderedDefs)) <= budget) return orderedDefs.slice();
+      let lo = 0;
+      let hi = orderedDefs.length;
+      let best = 0;
+      while (lo <= hi) {
+        const mid = lo + hi >> 1;
+        const tokens = estimateTokens(renderFn(orderedDefs.slice(0, mid)));
+        if (tokens <= budget) {
+          best = mid;
+          lo = mid + 1;
+        } else {
+          hi = mid - 1;
+        }
+      }
+      return orderedDefs.slice(0, best);
+    }
+    module2.exports = { trimToBudget, estimateTokens };
+  }
+});
+
+// src/assemble-area.js
+var require_assemble_area = __commonJS({
+  "src/assemble-area.js"(exports2, module2) {
+    "use strict";
+    var fs2 = require("fs");
+    var path = require("path");
+    var crypto = require("crypto");
+    var { execFileSync } = require("child_process");
+    var { enumerate } = require_index();
+    var { extract: extract2 } = require_extract();
+    var { rankDefinitions } = require_rank();
+    var { trimToBudget, estimateTokens } = require_budget_trim();
+    var DEFAULT_BUDGET = 4096;
+    function mapDir(root) {
+      return path.join(root, ".craft", "map");
+    }
+    function indexPath(root) {
+      return path.join(mapDir(root), "index.json");
+    }
+    function readIndex(root) {
+      try {
+        return JSON.parse(fs2.readFileSync(indexPath(root), "utf8"));
+      } catch {
+        return { version: 1, areas: {} };
+      }
+    }
+    function writeIndex(root, index) {
+      fs2.mkdirSync(mapDir(root), { recursive: true });
+      fs2.writeFileSync(indexPath(root), JSON.stringify(index, null, 2) + "\n");
+    }
+    function headSha(root) {
+      try {
+        return execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+      } catch {
+        return null;
+      }
+    }
+    function getBudget(root) {
+      try {
+        const text = fs2.readFileSync(path.join(root, ".craft", "settings.yaml"), "utf8");
+        const m = text.match(/token_budget:\s*(\d+)/);
+        if (m) return parseInt(m[1], 10);
+      } catch {
+      }
+      return DEFAULT_BUDGET;
+    }
+    function sepForTier(tier) {
+      return tier === "markdown" ? "/" : ".";
+    }
+    function splitSegments(symbolPath, sep) {
+      let overload = "";
+      const p = symbolPath.indexOf("(");
+      if (p !== -1) {
+        overload = symbolPath.slice(p);
+        symbolPath = symbolPath.slice(0, p);
+      }
+      const segs = symbolPath.length ? symbolPath.split(sep) : [];
+      if (segs.length) segs[segs.length - 1] += overload;
+      return segs;
+    }
+    function renderSlice(defs, fileMeta) {
+      const byFile = /* @__PURE__ */ new Map();
+      defs.forEach((d, i2) => {
+        if (!byFile.has(d.rel)) byFile.set(d.rel, { defs: [], firstRank: i2 });
+        byFile.get(d.rel).defs.push(d);
+      });
+      const files = [...byFile.entries()].sort((a, b) => a[1].firstRank - b[1].firstRank);
+      const lines = [];
+      for (const [rel, grp] of files) {
+        const meta = fileMeta.get(rel) || { tier: "grammar" };
+        const sep = sepForTier(meta.tier);
+        lines.push(rel);
+        const tree = /* @__PURE__ */ new Map();
+        const sourceOrder = grp.defs.slice().sort((a, b) => a.line - b.line);
+        for (const d of sourceOrder) {
+          const symbolPath = d.anchor.slice(d.anchor.indexOf("#") + 1);
+          let node = tree;
+          for (const seg of splitSegments(symbolPath, sep)) {
+            if (!node.has(seg)) node.set(seg, { children: /* @__PURE__ */ new Map() });
+            node = node.get(seg).children;
+          }
+        }
+        (function walk(node, depth) {
+          for (const [seg, info2] of node) {
+            let line = "  ".repeat(depth + 1) + seg;
+            if (line.length > 100) line = line.slice(0, 100);
+            lines.push(line);
+            walk(info2.children, depth + 1);
+          }
+        })(tree, 0);
+      }
+      return lines.length ? lines.join("\n") + "\n" : "";
+    }
+    async function assembleArea2(areaKey, root) {
+      root = root || process.cwd();
+      const absDir = path.resolve(root, areaKey);
+      const index = readIndex(root);
+      const prev = index.areas && index.areas[areaKey] || { files: {} };
+      let files = [];
+      try {
+        files = enumerate(absDir).filter((f) => !f.includes("/"));
+      } catch {
+        files = [];
+      }
+      const perFile = [];
+      const rederived = [];
+      const cached = [];
+      const newFiles = {};
+      for (const f of files) {
+        const abs = path.join(absDir, f);
+        const rel = path.relative(root, abs).split(path.sep).join("/");
+        const buf = fs2.readFileSync(abs);
+        const hash = crypto.createHash("sha256").update(buf).digest("hex");
+        const stored = prev.files[rel];
+        let result;
+        if (stored && stored.hash === hash) {
+          result = { file: rel, tier: stored.tier, language: stored.language, floored: stored.floored, anchors: stored.anchors };
+          cached.push(rel);
+        } else {
+          result = await extract2(abs, root);
+          rederived.push(rel);
+        }
+        perFile.push({ rel, source: buf.toString("utf8"), result, hash });
+        newFiles[rel] = { hash, tier: result.tier, language: result.language, floored: result.floored, anchors: result.anchors };
+      }
+      const ranked = rankDefinitions(perFile);
+      const fileMeta = new Map(perFile.map((f) => [f.rel, { tier: f.result.tier, language: f.result.language }]));
+      const budget = getBudget(root);
+      const included = trimToBudget(ranked, (subset) => renderSlice(subset, fileMeta), budget);
+      const slice = renderSlice(included, fileMeta);
+      index.version = 1;
+      index.areas = index.areas || {};
+      index.areas[areaKey] = { headSha: headSha(root), files: newFiles };
+      writeIndex(root, index);
+      return {
+        area: areaKey,
+        fileCount: files.length,
+        budget,
+        tokenEstimate: estimateTokens(slice),
+        rederived,
+        cached,
+        slice
+      };
+    }
+    module2.exports = { assembleArea: assembleArea2, renderSlice, getBudget };
+  }
+});
+
 // src/cli.js
 var lib = require_index();
 var { extract } = require_extract();
+var { assembleArea } = require_assemble_area();
 function countNodes(node) {
   let n = 1;
   let errors = 0;
@@ -3292,6 +3513,9 @@ async function main() {
     case "extract":
       result = await extract(rest[0]);
       break;
+    case "assemble":
+      result = await assembleArea(rest[0]);
+      break;
     default:
       process.stderr.write(`unknown command: ${cmd}
 `);
@@ -3299,7 +3523,7 @@ async function main() {
   }
   process.stdout.write(JSON.stringify(result) + "\n");
 }
-module.exports = { ...lib, extract };
+module.exports = { ...lib, extract, assembleArea };
 if (require.main === module) {
   main().catch((e) => {
     process.stderr.write(`runner error: ${String(e && e.message || e)}
