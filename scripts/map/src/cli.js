@@ -6,6 +6,7 @@
 
 const lib = require('./index.js');
 const { extract } = require('./extract.js');
+const { assembleArea } = require('./assemble-area.js');
 
 function countNodes(node) {
   let n = 1;
@@ -83,6 +84,9 @@ async function main() {
     case 'extract':
       result = await extract(rest[0]);
       break;
+    case 'assemble':
+      result = await assembleArea(rest[0]);
+      break;
     default:
       process.stderr.write(`unknown command: ${cmd}\n`);
       process.exit(2);
@@ -91,7 +95,7 @@ async function main() {
 }
 
 // Re-export the library so the bundle stays usable as a module (tests, callers).
-module.exports = { ...lib, extract };
+module.exports = { ...lib, extract, assembleArea };
 
 if (require.main === module) {
   main().catch((e) => {
