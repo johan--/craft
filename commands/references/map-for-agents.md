@@ -45,10 +45,14 @@ in doubt, lean on the slice and read fewer files, not more.
 
 ## 2. How to pull a slice
 
-The map lives in the plugin and is reached only through its wrapper. Invoke:
+The map lives in the plugin and is reached only through its wrapper. Use the
+`PLUGIN_ROOT` value injected into your prompt - you CANNOT resolve
+`${CLAUDE_PLUGIN_ROOT}` yourself (it is empty in a subagent shell), so the
+orchestrator passes you the resolved path. Invoke (substitute the injected
+`PLUGIN_ROOT`):
 
 ```bash
-${CLAUDE_PLUGIN_ROOT}/scripts/map/map-run.sh assemble <directory> --root <project-root>
+<PLUGIN_ROOT>/scripts/map/map-run.sh assemble <directory> --root <project-root>
 ```
 
 - `<directory>` is a directory path relative to the project root (e.g. `src/auth`).

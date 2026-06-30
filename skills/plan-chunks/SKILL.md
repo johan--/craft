@@ -277,6 +277,7 @@ Include in the prompt:
 - Story file path (full path)
 - Cycle directory (path, or 'backlog' if not in cycle)
 - Project root (derived from story path — parent of `.craft/`)
+- Plugin root: `PLUGIN_ROOT: ${CLAUDE_PLUGIN_ROOT}` — inject the resolved value. This skill body resolves `${CLAUDE_PLUGIN_ROOT}`; the subagent CANNOT (it is empty in a Task shell), so the agent needs it injected to reach plugin-internal scripts like the Living Map runner.
 - Sibling context from Phase 0.1b
 - Cycle goal (from `CYCLE_GOAL:` arg or read from cycle.yaml)
 - Content Direction (if the story has a `## Content Direction` section — read it and include the full text in the agent prompt. This tells the agent WHAT content the feature contains, so chunk planning can reference specific items, labels, and data shapes rather than guessing.)
@@ -722,6 +723,7 @@ Parse dependencies from each planning story to determine which can plan in paral
      **Story file:** [full path]
      **Cycle directory:** [path]
      **Project root:** [derived path]
+     **PLUGIN_ROOT:** ${CLAUDE_PLUGIN_ROOT}   (inject the resolved value — the subagent cannot resolve ${CLAUDE_PLUGIN_ROOT} itself; it needs this to reach plugin-internal scripts like the Living Map runner)
 
      CRITICAL: SCOPE ALL SEARCHES to the project root above.
      Do NOT search the monorepo root or parent directories.
