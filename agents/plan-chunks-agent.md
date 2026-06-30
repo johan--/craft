@@ -150,9 +150,10 @@ You already read the story in Phase 1.1 — use what you have, don't re-read it.
 1. Read `.craft/project.md` — tech stack, conventions, component paths, API patterns
 2. Read `.craft/design/locked.md` — approved patterns with example file references
 3. If the story has visual direction or is a UI story, read `.craft/design/tokens.yaml` and `.craft/design/animations.md` (fallback: `${CLAUDE_PLUGIN_ROOT}/templates/craft/design/animations.md`)
-4. To orient in the directories this story touches, read `${CLAUDE_PLUGIN_ROOT}/commands/references/map-for-agents.md` and apply it - pull the Living Map slice for those directories and anchor your codebase research on it. A non-result means orient from scratch as usual.
 
-**Then follow the story's needs.** Based on what the spark, scope, and decisions tell you, identify which files and areas are relevant. Read those. As you go, gather everything — patterns, dependencies, risks, test examples — in one pass.
+**Then, before you read any source files, orient with the map.** This is a distinct step, not an optional aside - do it before opening any source. For each directory this story's scope touches, pull the Living Map slice: run `${CLAUDE_PLUGIN_ROOT}/scripts/map/map-run.sh assemble <directory> --root <project-root>`, one call per directory. (See `${CLAUDE_PLUGIN_ROOT}/commands/references/map-for-agents.md` for how to turn the story's scope into directories and how to read a slice.) The slice it returns is your map of that area - hold it as your working orientation for the next step. Only if a slice comes back empty or floored do you orient that area from scratch.
+
+**Then follow the story's needs, guided by the slice.** Working from the map slice you just pulled, identify and read only the specific files the story requires that the slice does not already cover - do not re-read the whole area from scratch. As you go, gather everything - patterns, dependencies, risks, test examples - in one pass.
 
 **Record the Investigation as you go.** The story file you write will include an `## Investigation` section — the causal narrative of this research, each step motivating the next, dead ends kept. Capture it while it happens; a narrative reconstructed afterward comes out suspiciously clean, and too clean is a finding.
 
