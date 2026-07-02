@@ -149,7 +149,7 @@ You already read the story in Phase 1.1 — use what you have, don't re-read it.
 **Start with your baseline context:**
 1. Read `.craft/project.md` — tech stack, conventions, component paths, API patterns
 2. Read `.craft/design/locked.md` — approved patterns with example file references
-3. If the story has visual direction or is a UI story, read `.craft/design/tokens.yaml` and `.craft/design/animations.md` (fallback: `${CLAUDE_PLUGIN_ROOT}/templates/craft/design/animations.md`)
+3. If the story has visual direction or is a UI story, read `.craft/design/tokens.yaml` and `.craft/design/animations.md` (fallback: `<PLUGIN_ROOT>/templates/craft/design/animations.md`, using the injected `PLUGIN_ROOT`)
 
 **Then, before you read any source files, orient with the map.** This is a distinct step, not an optional aside - do it before opening any source. Use the `PLUGIN_ROOT` value given to you in this prompt - you CANNOT resolve `${CLAUDE_PLUGIN_ROOT}` yourself (it is empty in a subagent shell), so the orchestrator injected the resolved path. For each directory this story's scope touches, pull the Living Map slice: run `<PLUGIN_ROOT>/scripts/map/map-run.sh assemble <directory> --root <project-root>` (substitute the injected `PLUGIN_ROOT`), one call per directory. (See `<PLUGIN_ROOT>/commands/references/map-for-agents.md` for how to turn the story's scope into directories and how to read a slice.) The slice it returns is your map of that area - hold it as your working orientation for the next step. Only if a slice comes back empty or floored do you orient that area from scratch.
 
@@ -294,7 +294,7 @@ Requirements:
 
 If the story has a `**Motion:**` field, map the animations to specific implementation patterns from the catalog.
 
-Read `.craft/design/animations.md` (fallback: `${CLAUDE_PLUGIN_ROOT}/templates/craft/design/animations.md`) and map each animation to:
+Read `.craft/design/animations.md` (fallback: `<PLUGIN_ROOT>/templates/craft/design/animations.md`, using the injected `PLUGIN_ROOT`) and map each animation to:
 - Specific CSS/JS pattern from the catalog
 - Timing and easing values
 - Trigger conditions

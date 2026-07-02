@@ -20,7 +20,12 @@ The guide reads craft's real source files and your project's `.craft/` state to 
 
 ### Step 2: Delegate to the guide agent
 
-Invoke the **`guide`** subagent (via the Agent/Task tool), passing the user's question as the prompt. The guide is read-only (Read, Glob, Grep): it reads craft's source under `${CLAUDE_PLUGIN_ROOT}` and the user's `./.craft/` state, grounds its answer in the actual files, and hands off any pure Claude Code parts to claude-code-guide.
+Invoke the **`guide`** subagent (via the Agent/Task tool). The prompt MUST contain two things:
+
+1. The user's question.
+2. The resolved plugin root, on its own line: `PLUGIN_ROOT: ${CLAUDE_PLUGIN_ROOT}` - inject the resolved value. This command body resolves `${CLAUDE_PLUGIN_ROOT}`; the subagent CANNOT (it is empty in a Task shell). Without it the guide has no trustworthy path to craft's source and is instructed to say so rather than hunt the filesystem - so omitting it degrades every answer.
+
+The guide is read-only (Read, Glob, Grep): it reads craft's source under the injected `PLUGIN_ROOT` and the user's `./.craft/` state, grounds its answer in the actual files, and hands off any pure Claude Code parts to claude-code-guide.
 
 Do **not** answer the craft how-to question yourself from memory - route it to the guide so the answer is source-grounded, not recalled.
 
