@@ -196,7 +196,7 @@ def deny():
                 "BLOCKED: No active story or workflow session. "
                 "For workflow sessions, run start-workflow-session.sh to activate the session first. "
                 "For small fixes with a known root cause (bug, misalignment, broken interaction), "
-                "use Skill(craft:fix). "
+                "use Skill(craft:adhoc). "
                 "For new features or complex changes, use Skill(craft:craft-story-new) or "
                 "Skill(craft:craft-story-implement)."
             ),

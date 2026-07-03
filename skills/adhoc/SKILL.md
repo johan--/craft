@@ -1,5 +1,5 @@
 ---
-name: craft:fix
+name: craft:adhoc
 description: "Adhoc fix workflow for small targeted code fixes without the full story ceremony. Use when the orchestrator encounters a bug, misalignment, broken interaction, or post-implementation issue that has a clear root cause and surgical solution. Triggers on: 'fix this', 'this is broken', 'the alignment is off', 'that button doesn't work', 'quick fix', 'adhoc fix', 'patch this', post-story corrections, or any situation where the write gate blocks a small obvious fix. Do NOT use for new features, design exploration, or changes requiring creative spark."
 allowed-tools: ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
 ---

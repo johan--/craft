@@ -1,6 +1,6 @@
 #!/bin/bash
-# test-fix-commit.sh — Evals for the fix skill's Step 5b scoped staging
-# The fix flow is orchestrator-run prose (skills/fix/SKILL.md), not a script,
+# test-fix-commit.sh — Evals for the adhoc skill's commit-step scoped staging
+# The fix flow is orchestrator-run prose (skills/adhoc/SKILL.md), not a script,
 # so these tests mirror the documented staging commands against a git fixture
 # and assert the staged set. If SKILL.md's commands change shape, update both.
 
@@ -16,19 +16,19 @@ echo ""
 # Guard: the skill must not regress to a tree sweep
 begin_test "SKILL.md Step 5b no longer documents git add -A"
 
-FIX_SKILL="$SCRIPT_DIR/../skills/fix/SKILL.md"
+FIX_SKILL="$SCRIPT_DIR/../skills/adhoc/SKILL.md"
 if grep -q "^git add -A" "$FIX_SKILL"; then
-  echo "  FAIL: skills/fix/SKILL.md still documents 'git add -A'"
+  echo "  FAIL: skills/adhoc/SKILL.md still documents 'git add -A'"
   FAIL=$((FAIL + 1))
 else
-  echo "  PASS: no bare 'git add -A' command in fix skill"
+  echo "  PASS: no bare 'git add -A' command in adhoc skill"
   PASS=$((PASS + 1))
 fi
 if grep -q 'git add -- ' "$FIX_SKILL"; then
   echo "  PASS: scoped 'git add --' staging documented"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: scoped 'git add --' staging not found in fix skill"
+  echo "  FAIL: scoped 'git add --' staging not found in adhoc skill"
   FAIL=$((FAIL + 1))
 fi
 echo ""

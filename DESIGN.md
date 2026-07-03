@@ -200,9 +200,9 @@ See `docs/workflow-reference.md` for the full format spec and examples.
 
 Write access restricted to `.craft/` and `.claude/`. Used for story creation, design, planning, and locking decisions - no source-code edits.
 
-**Included skills:** content-spark, creative-spark, design-vibe, lock-decision, plan-chunks, fix, approve, browser
+**Included skills:** content-spark, creative-spark, design-vibe, lock-decision, plan-chunks, adhoc, approve, browser
 **Included agents:** plan-chunks-agent, project-scanner, muse, riff, alchemist, conductor, doc-writer, product-anthropologist, pr-reviewer-expert, maze-architect, researcher, research-synthesizer, verifier, practitioner-reviewer, playwright-browser, become-researcher, crystallizer, guide
-**Included commands:** craft, craft:init, craft:cycle-design, craft:cycle-start, craft:cycle-complete, craft:cycle-assign, craft:story-new, craft:story-archive, craft:story-delete, craft:status, craft:update-docs, craft:docs, craft:project, craft:review, craft:become, craft:ask, craft:workflow, craft:workflow-run, craft:workflow-design, craft:research, craft:research-verify, craft:fix
+**Included commands:** craft, craft:init, craft:cycle-design, craft:cycle-start, craft:cycle-complete, craft:cycle-assign, craft:story-new, craft:story-archive, craft:story-delete, craft:status, craft:update-docs, craft:docs, craft:project, craft:review, craft:become, craft:ask, craft:workflow, craft:workflow-run, craft:workflow-design, craft:research, craft:research-verify, craft:adhoc
 
 ### Implement Phase
 
@@ -306,7 +306,7 @@ project-root/
 │   │       └── stories/
 │   │           └── 1-story-name.md
 │   ├── checkpoints/           ← Chunk rollback points (YAML)
-│   ├── fixes/                 ← Adhoc fix records (created by /craft:fix)
+│   ├── fixes/                 ← Adhoc fix records (created by /craft:adhoc)
 │   │   └── fix-name.md        ← category, root cause, solution, lesson
 │   ├── analysis/              ← Persistent analysis findings
 │   │   ├── pending/           ← Findings queue (survives sessions)
@@ -373,7 +373,7 @@ RUN_MODE=""
 ```
 
 Key fields:
-- `CRAFT_WRITE_ENABLED` - gates writes outside `.craft/`. Set to `"true"` by active stories, the `fix` skill, and the `approve` skill. Empty string means closed.
+- `CRAFT_WRITE_ENABLED` - gates writes outside `.craft/`. Set to `"true"` by active stories, the `adhoc` skill, and the `approve` skill. Empty string means closed.
 - `CURRENT_WORKFLOW_SESSION` - active workflow session path (set when a workflow session is running).
 - `RUN_MODE` - `autonomous` when an unattended run is active (set by `story-implement-auto`), empty otherwise. Normal cruise runs leave it empty; cruise is craft's single default behavior (chains chunks and stories, stops only at decision points or on failure), not a stored mode.
 - `CYCLE_STATUS` - current state of the active cycle.
