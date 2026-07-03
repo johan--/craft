@@ -46,7 +46,7 @@ lines_changed: 0
 
 **`kind`:** exactly one of `icon | copy | spacing | color | motion | content`.
 
-**`status` lifecycle:** born `open`, stays `open` until the user explicitly closes it - `accepted` (first attempt landed), `revised-then-accepted` (took 2+ attempts), `abandoned` (user dropped it), or `escalated` (became a story/design question). **Validation passing never closes a tweak. Only the user's reaction does.**
+**`status` lifecycle:** born `open`, stays `open` until the user explicitly closes it - `accepted` (first attempt landed), `revised-then-accepted` (took 2+ attempts), `abandoned` (user dropped it), or `escalated` (became a story/design question). **Validation passing never closes a tweak. Only the user's reaction does.** A later conversational decline also abandons an open record - name it explicitly before writing ("Closing `tweak-settings-icon` as abandoned"), never guess which record the user means when more than one is open.
 
 ## Step 2: Fit Check
 
@@ -94,6 +94,7 @@ options:
 5. **Route the reaction - capture it VERBATIM:**
    - **"Looks good"** (or equivalent typed approval): write it to the attempt's Reaction and to `outcome_note`. Set `status: accepted` (attempt 1) or `revised-then-accepted` (2+). Continue to Step 4.
    - **Typed criticism** ("the alignment is still off"): write the exact words to the attempt's Reaction. Leave `status: open`. Loop to the next attempt - the reaction is the new brief.
+   - **Explicit decline** ("never mind", "drop it", "not worth another pass"): write the exact words to the attempt's Reaction and to `outcome_note`. Set `status: abandoned`. Hand back to the shell to close the gate.
    - **No reaction / user changes topic:** leave `status: open` and the record as-is. Do not nag, do not mark accepted. Hand back to the shell to close the gate (the gate closes with the thread; the record's openness is independent bookkeeping). If the user raises it again - this session or any later one - reopen the loop from the recorded reactions.
 
 There is NO lesson-capture step on the tweak path - that belongs to fixes. The record's verbatim reactions ARE the learning payload here.

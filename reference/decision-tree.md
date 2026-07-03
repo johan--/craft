@@ -666,6 +666,7 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 │       └── stories/
 │           └── *.md             ← READ status, chunks
 ├── fixes/                       ← Adhoc fix records (permanent log)
+├── tweaks/                      ← Tweak records (permanent log, open until user accepts)
 ├── requests/                    ← Pending requests checked at /craft entry (Step 2.5)
 ├── notebook/                    ← Low-ceremony idea/todo capture
 ├── research/                    ← Research + become branch files

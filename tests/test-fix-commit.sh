@@ -1,6 +1,7 @@
 #!/bin/bash
 # test-fix-commit.sh — Evals for the adhoc skill's commit-step scoped staging
-# The fix flow is orchestrator-run prose (skills/adhoc/SKILL.md), not a script,
+# The commit step (shared by the fix and tweak flows) is orchestrator-run prose
+# (skills/adhoc/SKILL.md), not a script,
 # so these tests mirror the documented staging commands against a git fixture
 # and assert the staged set. If SKILL.md's commands change shape, update both.
 
@@ -14,7 +15,7 @@ echo "=== test-fix-commit.sh ==="
 echo ""
 
 # Guard: the skill must not regress to a tree sweep
-begin_test "SKILL.md Step 5b no longer documents git add -A"
+begin_test "SKILL.md commit step no longer documents git add -A"
 
 FIX_SKILL="$SCRIPT_DIR/../skills/adhoc/SKILL.md"
 if grep -q "^git add -A" "$FIX_SKILL"; then
