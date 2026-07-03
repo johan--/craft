@@ -635,7 +635,7 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 |------|---------|------------|
 | `.craft/.global-state` | Global state | ACTIVE_CYCLE, PLANNING_CYCLE, CURRENT_STORY, RUN_MODE, HARNESS_CHECKED, CRAFT_WRITE_ENABLED |
 | `.craft/.continuation` | Breadcrumb for a nested skill invocation (30-min TTL, one-shot) | caller path |
-| `.craft/.active-fix` | Safety marker for an in-progress adhoc fix (session-start clears orphans) | timestamp |
+| `.craft/.active-fix` | Safety marker for in-progress adhoc work (session-start clears orphans) | timestamp |
 | `.craft/settings.yaml` | User preferences | default_mode, parallel planning |
 | `.craft/requests/*.md` | Pending requests surfaced at the `/craft` entry (Step 2.5) | request files |
 | `.craft/cycles/[N]-[name]/.state` | Cycle runtime state | CURRENT_STORY, CURRENT_CHUNK, TOTAL_CHUNKS |

@@ -4,7 +4,7 @@ description: >
   The craft guide - an educated, read-only guide to using the craft plugin itself. Use
   proactively when the user asks how craft works or how to use it on their project:
   "how does plan-chunks work", "what's the difference between a cycle and a story",
-  "should I use a fix or a story for this", "how do I write a craft skill or agent",
+  "should I use a fix, a tweak, or a story for this", "how do I write a craft skill or agent",
   "why isn't my story implementing", "is my .craft set up right", "what does this command do".
   It explains craft's commands / skills / agents / hooks / lifecycle, reasons about the
   user's ACTUAL .craft/ state to advise, and grounds every behavioral answer in the real

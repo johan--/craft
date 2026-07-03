@@ -503,6 +503,9 @@ The macro stage of a story or cycle. Creative Phase flows into Implement Phase f
 ### notebook
 Low-ceremony capture below the backlog for ideas (half-formed thoughts that may mature into stories) and todos (concrete actions). Lifecycle is conversational: graduate to a story when ready, mark done when complete - no subcommands. Lives in `.craft/notebook/`.
 
+### adhoc
+A small targeted change to shipped work, without story ceremony - via `/craft:adhoc`. Two flavors: a fix (something is broken; gated on root-cause confidence, recorded in `.craft/fixes/`) and a tweak (works as built but you want it different; gated on visual fit, recorded in `.craft/tweaks/` and open until you accept it).
+
 ## Quick fixes
 
 **Too many permission prompts?**
