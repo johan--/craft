@@ -1,0 +1,4 @@
+# Craft's hooks and transition scripts are bash - CRLF line endings break them.
+# Force LF so Windows checkouts (core.autocrlf=true) don't corrupt scripts.
+*.sh text eol=lf
+*.py text eol=lf

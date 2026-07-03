@@ -70,7 +70,7 @@ Craft is a Claude Code plugin. It runs inside `claude` CLI sessions and adds opi
 
 ## Install
 
-> Requires Claude Code 2.1 or later.
+> Requires Claude Code 2.1 or later. Tested on macOS and Linux; on Windows, WSL is recommended (native + Git Bash should work but is untested).
 
 From your terminal, run these two commands:
 
