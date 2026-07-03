@@ -41,6 +41,12 @@ Task tool:
   **Story file:** [full path]
   **Cycle directory:** [path]
   **Project root:** [derived path]
+  **PLUGIN_ROOT:** [resolved ${CLAUDE_PLUGIN_ROOT} — the subagent cannot resolve it itself]
+
+  **FIRST ACTION — before reading any source file, pull your read plan:**
+  [one literal command per scope directory, pre-computed from the story's Likely Files — resolved paths, ready to run; omit only if the story names no files:]
+  [resolved PLUGIN_ROOT]/scripts/map/map-run.sh assemble [dir] --root [project root]
+  Each slice line ends in [off=N,lim=M] — issue those ranged Reads at the narrowest useful span; never open a whole annotated file. An empty or floored slice for a directory = orient that area normally.
 
   CRITICAL: SCOPE ALL SEARCHES to the project root above.
   Do NOT search the monorepo root or parent directories.

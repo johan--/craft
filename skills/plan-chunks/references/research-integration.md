@@ -69,6 +69,12 @@ Task tool:
   **Story file:** [full path to story .md file]
   **Cycle directory:** [path to cycle dir, or 'backlog' if not in cycle]
   **Project root:** [derived from story path — parent directory of .craft/]
+  **PLUGIN_ROOT:** [resolved ${CLAUDE_PLUGIN_ROOT} — the subagent cannot resolve it itself; it needs this to reach plugin-internal scripts like the Living Map runner]
+
+  **FIRST ACTION — before reading any source file, pull your read plan:**
+  [one literal command per scope directory, pre-computed from the story's Likely Files / KEY_FILES — resolved paths, ready to run; omit the block only if the story names no files:]
+  [resolved PLUGIN_ROOT]/scripts/map/map-run.sh assemble [dir] --root [project root]
+  Each slice line ends in [off=N,lim=M] — issue those ranged Reads at the narrowest useful span; never open a whole annotated file. An empty or floored slice for a directory = orient that area normally.
 
   CRITICAL: SCOPE ALL SEARCHES to the project root above.
   Do NOT search the monorepo root or parent directories.
@@ -78,7 +84,7 @@ Task tool:
 
   [SIBLING CONTEXT FROM PHASE 0.1b]
 
-  [OPTIONAL: Starting context from orchestrator — validate and deepen, don't rediscover from scratch:
+  [OPTIONAL: Starting context from orchestrator — validate it THROUGH the map slice's ranged reads, then deepen. Provided context means read NARROWER, never skip orientation — the FIRST ACTION above still runs first:
     APPROACH: [value]
     DECISIONS: [value]
     KEY_FILES: [value]]
@@ -107,6 +113,12 @@ Task tool:
   **Story file:** [full path]
   **Cycle directory:** [path]
   **Project root:** [derived path]
+  **PLUGIN_ROOT:** [resolved ${CLAUDE_PLUGIN_ROOT} — the subagent cannot resolve it itself]
+
+  **FIRST ACTION — before reading any source file, pull your read plan:**
+  [one literal command per scope directory, pre-computed from the story's Likely Files — resolved paths, ready to run; omit only if the story names no files:]
+  [resolved PLUGIN_ROOT]/scripts/map/map-run.sh assemble [dir] --root [project root]
+  Each slice line ends in [off=N,lim=M] — issue those ranged Reads at the narrowest useful span; never open a whole annotated file. An empty or floored slice for a directory = orient that area normally.
 
   CRITICAL: SCOPE ALL SEARCHES to the project root above.
   Do NOT search the monorepo root or parent directories.

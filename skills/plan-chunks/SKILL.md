@@ -278,11 +278,21 @@ Include in the prompt:
 - Cycle directory (path, or 'backlog' if not in cycle)
 - Project root (derived from story path — parent of `.craft/`)
 - Plugin root: `PLUGIN_ROOT: ${CLAUDE_PLUGIN_ROOT}` — inject the resolved value. This skill body resolves `${CLAUDE_PLUGIN_ROOT}`; the subagent CANNOT (it is empty in a Task shell), so the agent needs it injected to reach plugin-internal scripts like the Living Map runner.
+- **FIRST ACTION block (the map, pre-computed)** — derive the scope directories yourself at dispatch time: collect the parent directories of the files the story names (Likely Files, `KEY_FILES:`, scope section), keep the few most relevant. Emit LITERAL ready-to-run commands directly under the PLUGIN_ROOT line:
+
+  ```
+  **FIRST ACTION — before reading any source file, pull your read plan:**
+  [resolved PLUGIN_ROOT]/scripts/map/map-run.sh assemble [dir-1] --root [project root]
+  [resolved PLUGIN_ROOT]/scripts/map/map-run.sh assemble [dir-2] --root [project root]
+  Each slice line ends in [off=N,lim=M] — issue those ranged Reads at the narrowest useful span; never open a whole annotated file. An empty or floored slice for a directory = orient that area normally.
+  ```
+
+  Pre-compute everything — resolved paths, real directories. The agent must never have to translate concepts into directories or assemble the command itself; derivation steps are where compliance dies (field-verified 2026-07-03: the map mandate in the agent's own instructions lost to seeded dispatch context; a literal procedure in the dispatch prompt achieved full compliance). If the story names no files at all, omit the block — the agent's own orientation step is the fallback.
 - Sibling context from Phase 0.1b
 - Cycle goal (from `CYCLE_GOAL:` arg or read from cycle.yaml)
 - Content Direction (if the story has a `## Content Direction` section — read it and include the full text in the agent prompt. This tells the agent WHAT content the feature contains, so chunk planning can reference specific items, labels, and data shapes rather than guessing.)
 
-**If args include `APPROACH:`, `DECISIONS:`, or `KEY_FILES:`**, add to the agent prompt: "Starting context from orchestrator — validate and deepen, don't rediscover from scratch:\n  APPROACH: [value]\n  DECISIONS: [value]\n  KEY_FILES: [value]"
+**If args include `APPROACH:`, `DECISIONS:`, or `KEY_FILES:`**, add to the agent prompt: "Starting context from orchestrator — validate it THROUGH the map slice's ranged reads, then deepen. Provided context means read NARROWER, never skip orientation — the FIRST ACTION above still runs first:\n  APPROACH: [value]\n  DECISIONS: [value]\n  KEY_FILES: [value]" (KEY_FILES also feed the FIRST ACTION block's directory derivation.)
 
 **CRITICAL:** Include the scope note: "SCOPE ALL SEARCHES to the project root. Do NOT search the monorepo root or parent directories. Use the project root as the `path` parameter for ALL Glob and Grep calls."
 
@@ -724,6 +734,11 @@ Parse dependencies from each planning story to determine which can plan in paral
      **Cycle directory:** [path]
      **Project root:** [derived path]
      **PLUGIN_ROOT:** ${CLAUDE_PLUGIN_ROOT}   (inject the resolved value — the subagent cannot resolve ${CLAUDE_PLUGIN_ROOT} itself; it needs this to reach plugin-internal scripts like the Living Map runner)
+
+     **FIRST ACTION — before reading any source file, pull your read plan:**
+     [one literal command per scope directory, pre-computed from the story's Likely Files — resolved paths, ready to run:]
+     [resolved PLUGIN_ROOT]/scripts/map/map-run.sh assemble [dir] --root [project root]
+     Each slice line ends in [off=N,lim=M] — issue those ranged Reads at the narrowest useful span; never open a whole annotated file. An empty or floored slice for a directory = orient that area normally.
 
      CRITICAL: SCOPE ALL SEARCHES to the project root above.
      Do NOT search the monorepo root or parent directories.
