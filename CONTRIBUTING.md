@@ -90,7 +90,7 @@ This sets the story status to `complete` and clears `CURRENT_STORY`. The story c
 ## Commit conventions
 
 - Use conventional prefixes: `feat:` / `fix:` / `chore:` / `refactor:` / `docs:` / `test:`
-- Bump `.claude-plugin/plugin.json` in the same commit as plugin file changes. One version per commit
+- Bump `.claude-plugin/plugin.json` once per feature or fix - one bump per logical change, in its final commit. Never per chunk
 - Translate internal jargon to what the change DOES. Public craft terms (skills, agents, commands, hooks, cycles, stories, backlog, phases) are fine. Internal mechanism names need explanation
 - Regular dashes only, never em dashes (they read as AI-generated)
 

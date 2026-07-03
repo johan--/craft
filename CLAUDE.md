@@ -32,7 +32,7 @@ When unsure whether a change is architectural: ask first.
   - Bad: `fix: chain break when content-spark invokes via Skill tool`
   - Good: `fix: prevent skill nesting from breaking control flow back to caller`
 - **Use regular dashes (-) only, never em dashes.** Em dashes are an AI-text tell.
-- **Bump `.claude-plugin/plugin.json` version after every commit to plugin files.** One version per commit.
+- **Bump `.claude-plugin/plugin.json` version once per feature or fix** - one bump per logical change (a story, an adhoc fix), in that change's final commit. Never per chunk; intermediate chunk commits do not bump.
 
 ## Personality
 
