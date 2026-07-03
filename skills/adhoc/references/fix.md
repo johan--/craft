@@ -59,7 +59,7 @@ Am I 100% certain this solution resolves the root cause?
 
 ## Step 2: Investigate
 
-Before writing the Root Cause section, actually look at the problem. Read the relevant code. If it's a visual issue, use the browser (screenshot, inspect elements). If it's a build issue, read the error output. Don't guess based on the symptom description alone.
+Before writing the Root Cause section, actually look at the problem. Read the relevant code. If it's a visual issue, use the browser (screenshot, inspect elements) - if the shell already took a classification screenshot, that IS your symptom evidence; don't re-take it. If it's a build issue, read the error output. Don't guess based on the symptom description alone.
 
 Update the Investigation section with what you checked.
 

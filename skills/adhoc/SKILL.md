@@ -30,7 +30,7 @@ Apply the tie-breaker:
 
 - **Fix:** the change restores something that used to work, or makes behavior match a stated spec. There is a symptom and a root cause. ("The button doesn't respond." "Font weights render wrong.")
 - **Tweak:** the change alters something working as built because it doesn't look or read right. Nothing is broken; taste or intent changed. ("I want a different icon." "That heading is too loud.")
-- **Genuinely ambiguous** ("the icon looks wrong" - broken render or bad taste?): **ask the user which they mean.** Never silently pick a lane.
+- **Ambiguous from the words alone** ("the icon looks wrong", "this card looks bad"): **look before asking.** Screenshot or inspect the target first - broken-in-evidence (clipped, overflowing, misaligned, regressed) classifies as a fix; renders-as-built-but-displeasing classifies as a tweak. Ask the user only if the evidence doesn't settle it. Never silently pick a lane on a guess. Keep the shot: it becomes the fix path's symptom evidence or the tweak path's before-shot.
 
 ## Step 3: Open the Gate
 

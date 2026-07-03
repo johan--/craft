@@ -52,7 +52,7 @@ lines_changed: 0
 
 Before editing anything, answer "will it fit?" - the tweak equivalent of the fix flow's confidence check:
 
-1. **Survey the neighborhood.** What sits next to this element - same row, same toolbar, same card? Read the surrounding component code; for UI, screenshot the surface as it is now (this is also your before-shot).
+1. **Survey the neighborhood.** What sits next to this element - same row, same toolbar, same card? Read the surrounding component code; for UI, screenshot the surface as it is now (this is also your before-shot - if the shell already took a classification screenshot, reuse it, don't re-take).
 2. **Match the visual family.** An icon next to existing icons should mirror their language: stroke vs filled, weight, corner radius, metaphor register. Copy should match the surrounding voice; spacing should follow the established rhythm.
 3. **Check the design contracts.** Read `.craft/design/tokens.yaml` and `.craft/design/locked.md` - does the change use existing tokens and respect locked decisions?
 
