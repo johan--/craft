@@ -59,7 +59,7 @@ Before editing anything, answer "will it fit?" - the tweak equivalent of the fix
 
 1. **Survey the neighborhood.** What sits next to this element - same row, same toolbar, same card? Read the surrounding component code; for UI, screenshot the surface as it is now (this is also your before-shot - if the shell already took a classification screenshot, reuse it, don't re-take).
 2. **Match the visual family.** An icon next to existing icons should mirror their language: stroke vs filled, weight, corner radius, metaphor register. Copy should match the surrounding voice; spacing should follow the established rhythm.
-3. **Check the design contracts.** Read `.craft/design/tokens.yaml` and `.craft/design/locked.md` - does the change use existing tokens and respect locked decisions?
+3. **Check the design contracts.** Read `.craft/design/tokens.yaml` and `.craft/design/locked.md` - does the change use existing tokens and respect locked decisions? Also glance at `.craft/quality.yaml`'s standards (touch targets, contrast): if the tweak conflicts with one, say so and proceed anyway - a heads-up, never a blocker.
 
 Write the findings into the `## Fit Check` section: where the element lives, what its siblings look like, which conventions apply, and how the requested change fits them.
 
