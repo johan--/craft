@@ -122,7 +122,7 @@ Four lock types: **Design Decisions** (typed UI decisions with valid keys per ty
 Locked decisions are enforced via:
 
 1. **Style hooks** — Grep for token violations on Write/Edit
-2. **Pattern hooks** — Check locked.md compliance
+2. **Adhoc Fit Check** - on the adhoc tweak path, the Fit Check's read of locked.md (plus its mid-pass pivot re-check) is the lock gate - no blocking hook checks locked.md compliance; the write-gate hook checks only write permission
 3. **Code review** — Analyzer agents reference locked patterns
 4. **Validation** — Validation enforces locked decisions during implementation
 
@@ -145,11 +145,15 @@ Options:
 3. Keep locked, find another approach
 ```
 
+### Tweak-path lock edits (inline)
+
+The adhoc tweak flow (`skills/adhoc/references/tweak.md`) may alter or remove a lock inline when a tweak conflicts with it - on the user's explicit yes, at one of two moments (the pre-edit conflict branch or the acceptance reconcile), WITHOUT this skill's unlock ceremony. Same discipline (explicit yes only, locked.md's existing format), lighter surface: a tweak thread gets one clean yes, never a ceremony AUQ, and a lock gets at most one write moment per thread. See tweak.md's "inline lock-edit path" for the rules.
+
 ## Remember
 
 - **Locks are sacred** — they represent approved decisions
 - **Context is crucial** — always record why something was locked
-- **Enforcement is automatic** — hooks check locks on every change
+- **Enforcement is layered, not hooked** - implementers and validation enforce locks at story time, the adhoc Fit Check at tweak time; no hook blocks a write on lock compliance
 - **Quality only goes up** — new locks can add requirements, never remove
 
 Your goal: Turn "yes" into "always" — making decisions stick.
