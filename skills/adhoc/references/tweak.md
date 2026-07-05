@@ -59,7 +59,7 @@ Before editing anything, answer "will it fit?" - the tweak equivalent of the fix
 
 1. **Survey the neighborhood.** What sits next to this element - same row, same toolbar, same card? Read the surrounding component code; for UI, screenshot the surface as it is now (this is also your before-shot - if the shell already took a classification screenshot, reuse it, don't re-take).
 2. **Match the visual family.** An icon next to existing icons should mirror their language: stroke vs filled, weight, corner radius, metaphor register. Copy should match the surrounding voice; spacing should follow the established rhythm.
-3. **Check the design contracts.** Read `.craft/design/tokens.yaml` and `.craft/design/locked.md` - does the change use existing tokens and respect locked decisions? Also glance at `.craft/quality.yaml`'s standards (touch targets, contrast). A conflict with tokens.yaml or quality.yaml is noted SILENTLY in the Fit Check section as a pending reconcile payload - never interrupt the user mid-tweak over it; it gets its one question at acceptance (see Acceptance reconcile, Step 3). A conflict with a locked decision routes through the pre-edit branch below, before anything is edited.
+3. **Check the design contracts.** Read `.craft/design/tokens.yaml` and `.craft/design/locked.md` - does the change use existing tokens and respect locked decisions? Also glance at `.craft/quality.yaml`'s standards (touch targets, contrast). A conflict with tokens.yaml or quality.yaml is noted SILENTLY in the Fit Check section as a pending reconcile payload - never interrupt the user mid-tweak over it; it gets its one question at acceptance (see Acceptance reconcile, Step 3). A conflict with a locked decision routes through the pre-edit branch below, before anything is edited. This Fit-Check note only PRE-SEEDS the token reconcile - it is not the sole detection point: tokens are re-derived from the FINAL accepted values at acceptance regardless (Step 3), so a token drift that was absent or matching here and only emerged as attempts progressed is still caught.
 
 Write the findings into the `## Fit Check` section: where the element lives, what its siblings look like, which conventions apply, and how the requested change fits them.
 
@@ -118,11 +118,15 @@ options:
 
 ### Acceptance reconcile (one beat)
 
-Entered ONLY when a reconcile payload is pending: an emergent lock conflict announced at a mid-pass pivot, token/quality drift noted silently at the Fit Check, or a lock the accepted work OUTGREW without contradicting (the lock says round buttons; the accepted pass rounded the cards too). No pending payload → skip this entirely - the close-out is exactly the routing above, unchanged, and nothing new is asked or written.
+**First, re-derive the token payload from the FINAL accepted values - never trust the Fit Check's pre-edit note alone.** Token drift is a final-state property: a tweak that iterates ("warmer", "tighter", "sharper") or grows in scope mid-loop can land on color, spacing, timing, or radius values that were absent or matching at the Fit Check and only drifted as attempts progressed - and the Fit Check, running before any edit, cannot see them. So at EVERY acceptance, scan the values the accepted attempt actually shipped (the files in `files_changed`) against `.craft/design/tokens.yaml`: any shipped design value that maps to no existing token, or overrides one, is a pending token payload - whether or not the Fit Check flagged it. This scan runs unconditionally; the Fit-Check note only pre-seeds it.
+
+The beat is then entered when ANY payload is pending: the token payload just derived, a quality-floor miss noted at the Fit Check, an emergent lock conflict announced at a mid-pass pivot, or a lock the accepted work OUTGREW without contradicting (the lock says round buttons; the accepted pass rounded the cards too). No payload of any kind → skip this entirely - the close-out is exactly the routing above, unchanged, and nothing new is asked or written.
+
+Tokens and quality are NOT the same kind of contract. tokens.yaml is descriptive - it records the values in use, so a drift reconciles by updating the doc to the accepted value. quality.yaml is prescriptive - its numbers (touch target, contrast) are FLOORS, so a miss is fixed in the work or tolerated as a noted exception; the floor is never lowered to match a violation. The two questions below reflect that asymmetry.
 
 It fires immediately after either "Looks good" variant closes the record - at the ORIGINAL's acceptance, always BEFORE any Step 3b reapplication. Multi-attempt tweaks reconcile once, here, against the FINAL accepted values.
 
-One beat means ONE AskUserQuestion call - include only the questions whose payload is pending (one, two, or all three), never ask them serially:
+One beat means ONE AskUserQuestion call - include only the questions whose payload is pending (any subset of the four below), never ask them serially:
 
 ```
 question (only if an emergent lock conflict is unsettled): "The accepted tweak crosses the [X] lock - settle it?"
@@ -133,13 +137,21 @@ options:
   - label: "Conform the work"
     description: "Revert or reshape the offending part to respect the lock as written"
 
-question (only if token/quality drift was noted): "[value] ended at [accepted] but [tokens.yaml / quality.yaml] says [documented] - solidify?"
+question (only if a token drift was detected - at the Fit Check or the acceptance re-scan): "[value] ended at [accepted] but tokens.yaml says [documented] - solidify?"
 header: "Solidify"
 options:
   - label: "Update the doc"
-    description: "The accepted value becomes the documented standard"
+    description: "The accepted value becomes the documented token"
   - label: "Leave as drift"
-    description: "Keep the doc as-is; this surface is a tolerated exception"
+    description: "Keep tokens.yaml as-is; this surface is a tolerated exception"
+
+question (only if a quality-floor miss was detected): "The accepted [value] misses the [X] standard (quality.yaml floor: [floor]) - conform it?"
+header: "Conform"
+options:
+  - label: "Fix the work"
+    description: "Revert or reshape the accepted change to meet the [X] floor - quality.yaml is a minimum, not a value to relax"
+  - label: "Leave as a known exception"
+    description: "Ship below the floor as a deliberate, noted exception; quality.yaml is untouched"
 
 question (only if the work outgrew a lock): "This pass applied [X]'s move beyond its scope ([new surfaces]) - widen the lock to match?"
 header: "Widen"
@@ -150,11 +162,11 @@ options:
     description: "The lock stays narrow; the extra surfaces stay unclaimed"
 ```
 
-There is no third door on the lock question: a tweak never CLOSES in a lock-breaking state. "Update the lock" requires the explicit yes the inline lock-edit path demands; anything less conforms the work.
+There is no third door on the lock question: a tweak never CLOSES in a lock-breaking state. "Update the lock" requires the explicit yes the inline lock-edit path demands; anything less conforms the work. The quality question likewise has no "lower the floor" door - quality.yaml is a minimum, so a miss is fixed or tolerated as a noted exception, never solidified downward.
 
 ### Snowball offer
 
-After the reconcile beat settles (or, for a reapplication family, after the batched close-out settles) - and ONLY if a rule changed in this thread (a lock altered/removed, or tokens.yaml/quality.yaml updated) - offer the sweep as one ignorable closing line, per notebook conventions, never an AskUserQuestion:
+After the reconcile beat settles (or, for a reapplication family, after the batched close-out settles) - and ONLY if a rule changed in this thread (a lock altered/removed, or tokens.yaml updated) - offer the sweep as one ignorable closing line, per notebook conventions, never an AskUserQuestion:
 
 > "That changed [rule] - worth a sweep TODO in /craft:notebook to find other surfaces that could inherit it? Otherwise moving on."
 
