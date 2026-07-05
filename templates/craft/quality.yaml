@@ -1,5 +1,9 @@
 # Quality Configuration - Craft Harness
 # Philosophy: Pristine by default (Stripe, Linear, Vercel level)
+#
+# ROLE: this file holds STANDARDS, floors, and gates (touch targets, contrast,
+# coverage, the quality gates, process). It does NOT define design values -
+# reference tokens.yaml for any color/spacing/motion/breakpoint number.
 
 philosophy: pristine
 # pristine = industry-leading, not "good enough"

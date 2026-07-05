@@ -1,6 +1,10 @@
 # Design Tokens - Craft Design System
 # All code must use these tokens. Hooks enforce compliance.
 # Hardcoded values will be flagged.
+#
+# ROLE: this file is the SINGLE SOURCE for design VALUES (colors, spacing,
+# radius, type, shadows, motion timing, breakpoints). quality.yaml holds
+# standards/floors and references these values - it never re-encodes them.
 
 # ─────────────────────────────────────────────────────────────
 # COLORS
