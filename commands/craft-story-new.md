@@ -61,31 +61,35 @@ options:
 
 **If idea is already clear:** Skip directly to Step 2.5.
 
-### Step 2.5: Planning Source Detection
+### Step 2.5: Story Source Detection
 
-Before asking "How deep do you want to go?" (Step 3), check whether this project has planning docs that the story could be built from.
+Before asking "How deep do you want to go?" (Step 3), check whether this project has planning docs OR converged mockups that the story could be built from.
 
 **Detection logic:**
 
 Use **Bash**:
 
 ```bash
-# Glob planning files and check for concept/initiative frontmatter
+# Planning concepts/initiatives
 find "$CRAFT_PROJECT_ROOT/.craft/planning" -maxdepth 3 -type f -name "*.md" 2>/dev/null \
   | xargs grep -l "^concept:\|^initiative:" 2>/dev/null \
   | head -20
+# Non-abandoned mockup records
+grep -L "^status: abandoned" "$CRAFT_PROJECT_ROOT"/.craft/mockups/*/record.md 2>/dev/null | head -20
 ```
 
-**If zero matches:** skip this step entirely and continue to Step 3. No AskUserQuestion shown. Users who have never used craft planning see zero behavior change.
+**If both come back empty:** skip this step entirely and continue to Step 3. No AskUserQuestion shown. Users who have never used craft planning or mockups see zero behavior change.
 
-**If one or more matches:** present the choice via **AskUserQuestion**:
+**If either has matches:** present the choice via **AskUserQuestion** - include ONLY the source options whose scan found something, plus Freeform:
 
 ```
-question: "Is this story from planning, or freeform? (I see [N] concepts in .craft/planning/.)"
+question: "Where does this story come from? (I see [N] concepts in .craft/planning/ / [M] mockups in .craft/mockups/.)"
 header: "Source"
 options:
-  - label: "From planning"
+  - label: "From planning"   (only if concepts matched)
     description: "Build this story from existing planning docs. I'll walk the concept(s) and produce a thorough story with Reference Materials."
+  - label: "From mockup"   (only if mockup records matched)
+    description: "Build this story from a converged mockup. Spark, Visual Direction, and binding table pre-fill from the record; the mockup's CSS is normative."
   - label: "Freeform"
     description: "Build a fresh story without planning context. Continue with the standard flow."
 ```
@@ -102,6 +106,17 @@ Execute the phases (1, 2, 3a, 3b, 4, 5, 6, 7) described in that file against the
 The reference file owns the entire planning-to-story transformation: concept selection, Explore-agent extraction, gap-fill, file write with all canonical sections including `## Reference Materials`, and mandatory forward-linking to active.md + consumed concepts. When it completes Phase 7, the parent flow is DONE.
 
 **Do NOT continue to Step 3 (Choose Your Path) or Step 3b (Content Check)** after the From planning branch completes. The story file is fully written with `alignment: pending` - the existing alignment-check fires when `/craft:story-implement` runs later.
+
+**If "From mockup":**
+
+⛔ **Same chain-break rule - never via the Skill tool.** Read and execute inline:
+
+```
+Read "${CLAUDE_PLUGIN_ROOT}/commands/references/story-from-mockup.md"
+Execute its phases against the chosen mockup record.
+```
+
+The reference owns the mockup-to-story transformation: record selection (when several are open), the parked-mockup surface re-check, and the pre-filled story write (Spark, Visual Direction, Element Binding Table with mockup anchors, Reference Materials, frontmatter `mockup:`). When it completes, the parent flow is DONE - do not continue to Step 3.
 
 **If "Freeform":** continue to Step 3 (Choose Your Path) unchanged.
 

@@ -37,12 +37,13 @@ plugins/craft/
 │   ├── ux-analyzer.md         ← Nielsen heuristics, accessibility
 │   ├── verifier.md            ← Adversarial claim checker (primary sources only)
 │   └── walkthrough-analyzer.md ← First-time user simulation (chrome-devtools MCP)
-├── commands/                  ← Slash command definitions (30 commands)
+├── commands/                  ← Slash command definitions (31 commands)
 │   ├── craft.md               ← Main entry point
 │   ├── craft-ask.md           ← Consult a workshop agent (intelligent routing)
 │   ├── craft-become.md        ← Agent crystallization (4-phase: research→checkpoint→crystallize→save)
 │   ├── craft-docs.md          ← Documentation generation (two-pass: brief then generate)
 │   ├── craft-init.md
+│   ├── craft-mockup.md        ← Live mockup funnel shell (diverge→refine→polish, solidify at acceptance)
 │   ├── craft-notebook.md      ← Low-ceremony capture (ideas/todos/notes); conversational graduate/done
 │   ├── craft-riff.md          ← Two-gear thinking partner (thin sensor/router); tight gear in-loop, wide gear → riff agent
 │   ├── craft-planning.md
@@ -68,7 +69,9 @@ plugins/craft/
 │   ├── craft-workflow-run.md      ← Session lifecycle (run/continue/next/run-all/batch/ready)
 │   ├── craft-workflow-design.md   ← Definition lifecycle (create/edit/archive)
 │   └── references/
-│       └── workflow-formats.md    ← Shared schema reference (frontmatter, stage-file format)
+│       ├── workflow-formats.md    ← Shared schema reference (frontmatter, stage-file format)
+│       ├── mockup-inline.md       ← The mockup funnel logic (single source of truth, read inline)
+│       └── story-from-mockup.md   ← Story ramp: pre-fill a story from a converged mockup (CSS normative)
 ├── skills/                    ← Orchestrator-context skills (11 skills)
 │   ├── approve/               ← Scoped write permission gate (AskUserQuestion + TaskCreate)
 │   ├── browser/               ← playwright-cli browser automation launcher
@@ -203,7 +206,7 @@ Write access restricted to `.craft/` and `.claude/`. Used for story creation, de
 
 **Included skills:** content-spark, creative-spark, design-vibe, lock-decision, plan-chunks, adhoc, approve, browser
 **Included agents:** plan-chunks-agent, project-scanner, muse, riff, alchemist, conductor, doc-writer, product-anthropologist, pr-reviewer-expert, maze-architect, researcher, research-synthesizer, verifier, practitioner-reviewer, playwright-browser, become-researcher, crystallizer, guide
-**Included commands:** craft, craft:init, craft:cycle-design, craft:cycle-start, craft:cycle-complete, craft:cycle-assign, craft:story-new, craft:story-archive, craft:story-delete, craft:status, craft:update-docs, craft:docs, craft:project, craft:review, craft:become, craft:ask, craft:workflow, craft:workflow-run, craft:workflow-design, craft:research, craft:research-verify, craft:adhoc
+**Included commands:** craft, craft:init, craft:cycle-design, craft:cycle-start, craft:cycle-complete, craft:cycle-assign, craft:story-new, craft:story-archive, craft:story-delete, craft:status, craft:update-docs, craft:docs, craft:project, craft:review, craft:become, craft:ask, craft:workflow, craft:workflow-run, craft:workflow-design, craft:research, craft:research-verify, craft:adhoc, craft:mockup
 
 ### Implement Phase
 
@@ -352,6 +355,11 @@ project-root/
 │   │       ├── _plan.md
 │   │       ├── 01-branch.md
 │   │       └── verification-{slug}.md
+│   ├── mockups/               ← Mockup artifacts (created by /craft:mockup)
+│   │   └── {date}-{slug}/
+│   │       ├── mockup.html    ← The living page (replaced per round)
+│   │       ├── record.md      ← Durable anchor: status, reactions, polish ledger, backlinks
+│   │       └── rounds/        ← Archived outgoing rounds (never rendered)
 │   ├── project.md             ← Project DNA
 │   ├── quality.yaml           ← Quality gates
 │   ├── settings.yaml          ← Craft settings
@@ -359,6 +367,8 @@ project-root/
 │   └── .continuation          ← Breadcrumb for skill continuation (transient, 30-min TTL)
 └── src/
 ```
+
+Projects that gitignore `.craft/` get local-only persistence for everything under it - stories, records, mockups alike. That is the existing craft convention (state is per-machine unless the project chooses to track it), not a gap in any one feature.
 
 ### .global-state Fields
 

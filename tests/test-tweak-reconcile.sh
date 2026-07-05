@@ -108,7 +108,7 @@ assert_contains_literal \
 
 assert_contains_literal \
   "the beat is entered only on a pending payload" \
-  "ONLY when a reconcile payload is pending" \
+  "entered when ANY payload is pending" \
   "$STEP3"
 
 assert_contains_literal \

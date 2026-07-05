@@ -31,6 +31,7 @@ project: [project name]
 surface: [free-text kebab slug for WHERE in the product, e.g. settings-toolbar]
 kind: [icon | copy | spacing | color | motion | content]
 source_story: [story that built the element, if known]
+mockup: [name of the converged mockup this tweak ports, e.g. 2026-07-05-hero-pulse - empty for non-mockup tweaks]
 reapplies: [name of the original tweak this reapplies, e.g. tweak-toolbar-stroke-weight - empty for a novel tweak]
 attempts: 0
 outcome_note:
@@ -65,7 +66,9 @@ Write the findings into the `## Fit Check` section: where the element lives, wha
 
 **Lock conflict (pre-edit):** if the requested change would break a locked decision, do NOT edit yet. The tweak is the user's taste showing up live - the lock may be what's stale. Present a recommendation: alter the lock, remove it, or reshape the tweak to fit it - whichever the neighborhood evidence supports. On the user's explicit yes, update locked.md FIRST via the inline lock-edit path below, then proceed with the tweak - the edit never exists in a lock-breaking state. On decline, fall back to escalation: update `status: escalated`, tell the user why, and suggest design-vibe or a story. Hand back to the shell to close the gate. (Mention the option; do not invoke another skill from inside this flow.)
 
-**Escalation (design question):** if the fit check surfaces a genuine design question (multiple plausible directions and no clear fit) - do NOT edit. Same mechanics as the decline path above: update `status: escalated`, say why, suggest design-vibe or a story, hand back to the shell.
+**Escalation (design question):** if the fit check surfaces a genuine design question (multiple plausible directions and no clear fit) - do NOT edit. Same mechanics as the decline path above: update `status: escalated`, say why, suggest a mockup first (the direction needs to be seen to be decided), or design-vibe / a story for bigger questions, hand back to the shell.
+
+**Mockup-ported tweaks:** when the handoff brief states "direction pre-settled, converged mockup at [path]", set the record's `mockup:` field, skip re-opening exploration in the Fit Check (the mockup already settled the direction - the check verifies fit of the PORT, not of the idea), and treat mockup.html's CSS as normative: port values verbatim, never reinterpret from appearance.
 
 ### The inline lock-edit path
 

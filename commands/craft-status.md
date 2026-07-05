@@ -93,6 +93,7 @@ Read from:
 - `.craft/planning/*/README.md` — initiative details (if exists)
 - `.craft/map/capability.json` — Living Map capability verdict (if exists)
 - `.craft/map/index.json` — Living Map index: areas + per-file anchor keys (if exists)
+- `.craft/mockups/*/record.md` — mockup records (if any exist)
 
 ## Map status
 
@@ -105,6 +106,17 @@ Render ONE line, only if `.craft/map/` exists (a project that has never needed t
 - `mode: disabled` — `Map: off (map.enabled: false)`
 
 This is render-only: read the cached verdict and print the line in the dashboard's existing style. Do NOT probe, build, or re-derive anything from the status command.
+
+## Mockups
+
+Render a Mockups section ONLY when at least one non-abandoned record exists - empty-state silence, never an empty header. Source: glob `.craft/mockups/*/record.md`, read frontmatter only, exclude `status: abandoned`. One line per mockup:
+
+```
+Mockups:
+  [slug] · [status] · [age, e.g. 3d] · [graduated_to value, or "awaiting destination" when converged with no graduation]
+```
+
+No new state files - the records ARE the state. Conversational recall ("what mockups do I have open?") reads the same records and answers in the same shape; there is no subcommand syntax.
 
 ## Implementation
 

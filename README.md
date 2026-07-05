@@ -163,6 +163,7 @@ This runs the story end-to-end. Craft flows through four beats: a creative pass 
 | `/craft:research` | Ad-hoc research - discover, elaborate, synthesize with ranked branches |
 | `/craft:research-verify` | Verify existing research findings against independent primary sources |
 | `/craft:adhoc` | Adhoc fix or tweak without story ceremony. Bugs record to `.craft/fixes/`, tweaks to `.craft/tweaks/` |
+| `/craft:mockup` | Live HTML mockup funnel - 3 options, converge by reacting, graduate to tweak/story/todo |
 | `/craft:project` | Switch projects or cross-project dashboard |
 | `/craft:init` | One-time project setup |
 
@@ -393,6 +394,7 @@ After initialization, your project will have:
 │   └── processed/        # Requests routed to stories or cycles
 ├── docs/                 # Documentation briefs (created by /craft:docs)
 ├── research/             # Ad-hoc research folders (created by /craft:research)
+├── mockups/              # Mockup artifacts (created by /craft:mockup): [date]-[slug]/ with mockup.html + record.md
 ├── project.md            # Project DNA
 ├── quality.yaml          # Quality gates
 ├── settings.yaml         # Craft settings

@@ -416,6 +416,32 @@ flowchart TD
 
 ---
 
+## Mockup Flow: `/craft:mockup`
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+flowchart TD
+    MOCKUP["/craft:mockup [subject]"] --> GUARD{"Open record with<br/>status: converging?"}
+    GUARD -->|Yes| DECLINE["Decline - point at the open record"]
+    GUARD -->|No| BRIEF["Brief: load tokens/locks,<br/>detect mobile, vibe AUQ<br/>(optional muse interrogation)"]
+
+    BRIEF --> SPAWN["Spawn alchemist ONCE (Agent tool)<br/>id → record.md agent_session"]
+    SPAWN --> DIVERGE["Diverge: 3 stances<br/>on one living page"]
+    DIVERGE -->|"conversational pick"| REFINE["Refine: variations of the pick<br/>(hybrids legal)"]
+    REFINE -->|"conversational reaction"| POLISH["Polish: orchestrator live-injection loop<br/>ledger in record.md ## Polish Ledger"]
+
+    POLISH -->|"explicit acceptance"| SOLIDIFY["Solidify beat (one AUQ):<br/>new values → tokens.yaml,<br/>crossed locks settle"]
+    SOLIDIFY --> SAVE["Save: status converged,<br/>artifact at .craft/mockups/"]
+    SAVE --> DEST{"Destination AUQ"}
+
+    DEST -->|"Tweak"| TWEAK["craft:adhoc<br/>direction pre-settled, CSS ported"]
+    DEST -->|"Story"| STORY["story-new 'From mockup'<br/>pre-filled, CSS normative"]
+    DEST -->|"Park"| PARK["Notebook todo holds the pointer<br/>pickup re-enters this fork"]
+    DEST -->|"No choice"| OPEN["Record stays converged<br/>task pending, never nagged"]
+```
+
+---
+
 ## Complete State Machine
 
 ```mermaid
@@ -544,6 +570,7 @@ flowchart LR
 | `/craft:research-verify` | Verify existing research findings against independent primary sources |
 | `/craft:adhoc` | Adhoc fix or tweak without story ceremony. Bugs record to `.craft/fixes/`, tweaks to `.craft/tweaks/` |
 | `/craft:notebook` | Low-ceremony capture for ideas, todos, and notes (durable project facts) before they harden into stories |
+| `/craft:mockup` | Live HTML mockup funnel - 3 options, converge by reacting, graduate to tweak/story/todo |
 | `/craft:riff` | Two-gear thinking partner - senses the moment, runs a tight calibration loop in the main loop or hands open exploration to the riff agent |
 | `/craft:planning` | Feature roadmap and planning - initiatives, concepts, open questions |
 | `/craft:project` | Switch projects or cross-project dashboard |
@@ -649,6 +676,7 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 | `.craft/workflows/` | Workflow session state | per-session state dirs |
 | `.craft/notebook/` | Low-ceremony captured ideas and todos | idea / todo entries |
 | `.craft/research/` | Research and become branch files | `{slug}/_plan.md`, `NN-branch.md` |
+| `.craft/mockups/[date]-[slug]/record.md` | Mockup records - status is the ledger, open until graduated/abandoned | status, agent_session, solidify_outcome, graduated_to |
 
 ## Directory Structure Check Points
 
@@ -670,6 +698,7 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 ├── requests/                    ← Pending requests checked at /craft entry (Step 2.5)
 ├── notebook/                    ← Low-ceremony idea/todo capture
 ├── research/                    ← Research + become branch files
+├── mockups/                     ← Mockup artifacts: [date]-[slug]/ (mockup.html, record.md, rounds/)
 ├── workflows/                   ← Workflow session state
 ├── analysis/
 │   └── pending/

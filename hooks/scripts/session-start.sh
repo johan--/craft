@@ -193,6 +193,23 @@ if [ -d "${PROJECT_ROOT}.craft/workflows" ]; then
   fi
 fi
 
+# Check for open mockups (converged/parked - awaiting a destination); absent entirely at zero
+if [ -d "${PROJECT_ROOT}.craft/mockups" ]; then
+  mockup_count=0
+  mockup_names=""
+  for rec in "${PROJECT_ROOT}.craft/mockups"/*/record.md; do
+    [ -f "$rec" ] || continue
+    rec_status=$(awk '/^status:/{print $2; exit}' "$rec" 2>/dev/null)
+    if [ "$rec_status" = "converged" ] || [ "$rec_status" = "parked" ]; then
+      mockup_count=$((mockup_count + 1))
+      mockup_names="${mockup_names}$(basename "$(dirname "$rec")"), "
+    fi
+  done
+  if [ "$mockup_count" -gt 0 ]; then
+    context="$context | Mockups: ${mockup_count} awaiting destination (${mockup_names%, })"
+  fi
+fi
+
 # Report orchestration index status (one-time, SessionStart only)
 ORCH_INDEX="$(dirname "$SCRIPT_DIR")/../reference/orchestration-index.min"
 if [ -f "$ORCH_INDEX" ]; then
