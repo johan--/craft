@@ -33,6 +33,7 @@ When unsure whether a change is architectural: ask first.
   - Good: `fix: prevent skill nesting from breaking control flow back to caller`
 - **Use regular dashes (-) only, never em dashes.** Em dashes are an AI-text tell.
 - **Bump `.claude-plugin/plugin.json` version once per feature or fix** - one bump per logical change (a story, an adhoc fix), in that change's final commit. Never per chunk; intermediate chunk commits do not bump.
+- **The bump commit also adds a `CHANGELOG.md` entry** - a `## <version>` heading (no date) with verb-first, user-facing bullets ("Added...", "Fixed...", "Changed...", "Improved..."), one bullet per user-visible change. Same audience rule as commit messages. `check-doc-drift.sh` blocks pushes where the newest entry doesn't match plugin.json's version.
 
 ## Personality
 

@@ -132,6 +132,18 @@ while read -r p; do
   [ -e "$p" ] || [ -e "commands/$p" ] || add "[refpath] decision-tree names '$p' but no such file exists"
 done < <(grep -oE '(commands/)?references/[A-Za-z0-9_./-]+\.md' reference/decision-tree.md | sort -u)
 
+# 8. Changelog currency: the newest CHANGELOG.md entry must match the plugin
+#    version, so a version bump cannot ship without its release note.
+#    Format is Claude Code style: "## <version>" headings, newest first.
+plugin_version="$(grep -oE '"version": *"[^"]+"' .claude-plugin/plugin.json 2>/dev/null \
+  | sed -E 's/.*"([^"]+)"$/\1/')"
+top_entry="$(grep -m1 -E '^## ' CHANGELOG.md 2>/dev/null | sed -E 's/^## +//')"
+if [ -z "$plugin_version" ]; then
+  add "[changelog] cannot read a version from .claude-plugin/plugin.json"
+elif [ "$top_entry" != "$plugin_version" ]; then
+  add "[changelog] plugin.json is at $plugin_version but CHANGELOG.md's newest entry is '${top_entry:-<none>}' - add a '## $plugin_version' section with user-facing bullets"
+fi
+
 # =========================================================================
 # Tier C - DEFERRED (not v1). Intentionally not enforced yet:
 #   - analysis-type parity: assert pending/*.yaml types == the types named in
