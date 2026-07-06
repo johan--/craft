@@ -64,7 +64,7 @@ options:
 
 **If "Include the muse":** invoke the muse via Task (`subagent_type: "craft:muse"`) using creative-spark's interrogation prompt shape (skills/creative-spark/SKILL.md Step 1.6): pass the subject + session context, demand the structured briefing (Stated Problem / Underlying Emotional Job / Mechanic That Carries Feeling / Constraints for Option Generation), and forbid option generation. The briefing enriches the brief only - the muse never builds, and the budget stays three AUQs because this rides inside the vibe answer.
 
-Write the brief (vibe answer, constraints, mobile verdict) into `## Brief`. Create the task rail - six TaskCreate tasks, blockedBy-chained in order: **Brief -> Diverge -> Refine -> Polish -> Save (mockup + solidify tokens) -> Choose destination**. Substeps never become tasks. Skipped rounds complete-with-note. Polish holds ONE task across all its attempts. The rail ENDS at Choose destination - destination flows create their own tasks. Mark Brief complete.
+Write the brief (vibe answer, constraints, mobile verdict) into `## Brief`. Create the task rail - six TaskCreate tasks, blockedBy-chained in order: **Brief -> Diverge -> Refine -> Polish -> Save (mockup + solidify tokens) -> Choose destination**. Task SUBJECTS are exactly the six beat names - `Brief`, `Diverge`, `Refine`, `Polish`, `Save`, `Choose destination` - no "Mockup:" prefix, no descriptive suffix; the subject is a label, detail goes in the task description. Substeps never become tasks. Skipped rounds complete-with-note. Polish holds ONE task across all its attempts. The rail ENDS at Choose destination - destination flows create their own tasks. Mark Brief complete.
 
 ## Step 2: The Alchemist (spawned once)
 
