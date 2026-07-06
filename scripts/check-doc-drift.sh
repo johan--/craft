@@ -132,16 +132,36 @@ while read -r p; do
   [ -e "$p" ] || [ -e "commands/$p" ] || add "[refpath] decision-tree names '$p' but no such file exists"
 done < <(grep -oE '(commands/)?references/[A-Za-z0-9_./-]+\.md' reference/decision-tree.md | sort -u)
 
-# 8. Changelog currency: the newest CHANGELOG.md entry must match the plugin
-#    version, so a version bump cannot ship without its release note.
+# 8. Changelog sanity: entries are notable-only (features and user-visible
+#    fixes), so the newest entry may LAG plugin.json - internal changes bump
+#    with no entry - but it must never be AHEAD of it or malformed. Ahead
+#    means release notes exist for a version that doesn't.
 #    Format is Claude Code style: "## <version>" headings, newest first.
 plugin_version="$(grep -oE '"version": *"[^"]+"' .claude-plugin/plugin.json 2>/dev/null \
   | sed -E 's/.*"([^"]+)"$/\1/')"
 top_entry="$(grep -m1 -E '^## ' CHANGELOG.md 2>/dev/null | sed -E 's/^## +//')"
 if [ -z "$plugin_version" ]; then
   add "[changelog] cannot read a version from .claude-plugin/plugin.json"
-elif [ "$top_entry" != "$plugin_version" ]; then
-  add "[changelog] plugin.json is at $plugin_version but CHANGELOG.md's newest entry is '${top_entry:-<none>}' - add a '## $plugin_version' section with user-facing bullets"
+elif [ -z "$top_entry" ]; then
+  add "[changelog] CHANGELOG.md has no '## <version>' entries"
+elif ! printf '%s' "$top_entry" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+  add "[changelog] CHANGELOG.md's newest heading '## $top_entry' is not a bare version number"
+elif [ "$(printf '%s\n%s\n' "$top_entry" "$plugin_version" | sort -V | tail -1)" != "$plugin_version" ]; then
+  add "[changelog] CHANGELOG.md's newest entry ($top_entry) is ahead of plugin.json ($plugin_version)"
+fi
+
+# 9. Feature release notes: an unpushed feat: commit must be accompanied by a
+#    CHANGELOG.md change somewhere in the unpushed range - a feature cannot
+#    ship without release notes. Fixes stay a judgment call (notable-only).
+#    Runs only when an upstream exists; fails open elsewhere (CI on a merged
+#    tree has no unpushed range to judge).
+if upstream="$(git rev-parse --abbrev-ref '@{u}' 2>/dev/null)"; then
+  feat_commits="$(git log --format='%h %s' "$upstream"..HEAD 2>/dev/null \
+    | grep -E '^[0-9a-f]+ feat[(!:]' || true)"
+  if [ -n "$feat_commits" ] \
+    && ! git diff --name-only "$upstream"..HEAD 2>/dev/null | grep -qxF 'CHANGELOG.md'; then
+    add "[changelog] feat commit(s) about to push with no CHANGELOG.md entry in the range: $(printf '%s' "$feat_commits" | head -3 | tr '\n' ';')"
+  fi
 fi
 
 # =========================================================================

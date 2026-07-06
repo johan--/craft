@@ -91,7 +91,7 @@ This sets the story status to `complete` and clears `CURRENT_STORY`. The story c
 
 - Use conventional prefixes: `feat:` / `fix:` / `chore:` / `refactor:` / `docs:` / `test:`
 - Bump `.claude-plugin/plugin.json` once per feature or fix - one bump per logical change, in its final commit. Never per chunk
-- Add a `CHANGELOG.md` entry in that same final commit: a `## <version>` heading (no date) with verb-first, user-facing bullets ("Added...", "Fixed...", "Changed..."). The newest entry must match plugin.json's version - the doc-drift check enforces it
+- Notable changes add a `CHANGELOG.md` entry in that same final commit: a `## <version>` heading (no date) with verb-first, user-facing bullets ("Added...", "Fixed...", "Changed..."). Features always count as notable; fixes only when a user would notice. Internal changes (tests, refactors, contributor tooling) bump with no entry. The doc-drift check blocks a changelog ahead of plugin.json and blocks pushing `feat:` commits with no changelog change
 - Translate internal jargon to what the change DOES. Public craft terms (skills, agents, commands, hooks, cycles, stories, backlog, phases) are fine. Internal mechanism names need explanation
 - Regular dashes only, never em dashes (they read as AI-generated)
 
@@ -118,7 +118,7 @@ Craft's reference docs (`docs/agent-catalog.md`, `reference/decision-tree.md`, `
 bash scripts/check-doc-drift.sh   # exit 0 = clean, exit 1 = drift (prints exactly what to fix)
 ```
 
-It derives every expected value from source (`ls agents/*.md`, etc.) and never hardcodes a count. Run it after any change that adds, renames, or removes a command, skill, or agent. It also checks that `CHANGELOG.md`'s newest entry matches the plugin version, so a version bump can't ship without its release note.
+It derives every expected value from source (`ls agents/*.md`, etc.) and never hardcodes a count. Run it after any change that adds, renames, or removes a command, skill, or agent. It also sanity-checks `CHANGELOG.md` (the newest entry can't be ahead of the plugin version) and, when there are unpushed `feat:` commits, requires a changelog change in that range - a feature can't ship without release notes.
 
 Maintainers can wire it as a local pre-push gate so a drifted `git push` is blocked in-session: add a `PreToolUse` hook (matcher `Bash`, `if: "Bash(git push *)"`) to your local, gitignored `.claude/settings.local.json` pointing at `scripts/pre-push-gate.sh`. That registration stays local; the check script is the shared, version-controlled piece (and drops into CI unchanged).
 

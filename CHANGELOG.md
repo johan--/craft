@@ -1,8 +1,10 @@
 # Changelog
 
-## 1.99.30
+Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
-- Fixed the tweak flow's lock-conflict decline path to also suggest a mockup when escalating, matching the design-question escalation
+## 1.99.31
+
+- Changed the changelog to notable-only: features and user-visible fixes get entries, internal fixes bump the version silently
 
 ## 1.99.29
 
@@ -10,8 +12,7 @@
 - Added three graduation ramps for a converged mockup: port it now as a tweak, create a pre-filled story (mockup CSS is normative - ported, never reinterpreted), or park it as a notebook todo
 - Added mockup visibility: a Mockups section in /craft:status and a session-start segment when mockups await a destination
 - Changed story creation: the source question now also offers "From mockup" when converged mockup records exist
-- Fixed a stale test expectation left behind by the tweak-flow acceptance-reconcile rewording
 
 ## 1.99.28
 
-- Added this changelog: every version bump now ships with a user-facing entry here, enforced by the doc-drift push gate
+- Added this changelog: notable user-facing changes land here with every release, enforced by the doc-drift push gate

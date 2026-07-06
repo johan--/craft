@@ -120,7 +120,7 @@ plugins/craft/
 │   ├── test_helper.sh
 │   ├── fixtures/
 │   └── test-*.sh
-├── CHANGELOG.md               ← User-facing release notes, one entry per version bump
+├── CHANGELOG.md               ← User-facing release notes (notable changes only)
 ├── CLAUDE.md                  ← Auto-loaded every session
 ├── DESIGN.md                  ← This file (reference only)
 └── README.md                  ← Human-facing docs
