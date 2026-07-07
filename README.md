@@ -12,9 +12,9 @@
 Craft has shipped real, public products across different domains - click through and see working software:
 
 - **[darinbuilds.com](https://darinbuilds.com)** - an immersive single-page portfolio and marketing site (Next.js, GSAP scroll), built across 30+ craft cycles.
-- **[wodspark.com](https://wodspark.com)** - a free on-demand workout generator: pick a focus, equipment, and duration, and it builds a workout instantly.
 - **[throve.fit](https://throve.fit)** - a structured daily coaching app: week-view programming, curated workouts with real coach's notes, exercise alternatives, and completion tracking.
 - **[hirecalling.jobs](https://hirecalling.jobs)** - client work: a hiring platform where every job application triggers a verified, live-tracked donation to a nonprofit. Job searching that gives back.
+- **[wodspark.com](https://wodspark.com)** - where craft started: a free on-demand workout generator - pick a focus, equipment, and duration, and it builds a workout instantly.
 
 Two of these are fitness apps, and they're genuinely different products - an instant generator versus a structured coaching tool. One is paid client work, shipped for someone else's business. That's the point: the same harness shipped range, not one idea four times.
 
