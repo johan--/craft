@@ -60,6 +60,8 @@ Most agent frameworks treat the model as fixed and harden the harness around it:
 
 Craft is built with craft. This plugin and the projects shipped with it went through the same cycles, the same locked decisions, the same checkpoints you'll use. Craft does docs the way craft does code.
 
+*The longer story - four months of craft building craft - is in ["I built Craft for myself. Now it's running me"](https://darinbuilds.com/writing/i-built-craft).*
+
 **Creativity as default. Smart execution follows.**
 
 ## How Craft compares
