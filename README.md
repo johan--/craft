@@ -34,6 +34,26 @@ And not just for code. Here's craft's `muse`, on why technically impressive feat
 
 Same machinery, different domain. You point `/craft:become` at the expertise you wish were in the room, and it crystallizes a mind you can consult - one with beliefs, refusals, and the scar tissue that makes its judgment worth trusting.
 
+## The Notebook
+
+Craft's notebook doesn't store descriptions of work. It stores work, paused.
+
+Every other backlog holds promises - words that wait for you to reload the context and start from zero. This one holds intent with the instructions still alive inside it.
+
+And you never fill out a form to use it. You just talk:
+
+> "Can you check our notebook todos?"
+
+> "Create a notebook entry for adding a `craft:reskin` command with optional token extraction, or a design pairing session with the alchemist and muse."
+
+That second one is a real entry - a feature idea with commands and agents woven into it, captured in one line. It isn't a ticket describing work for a human to interpret later. When you come back, you don't start over. You say go.
+
+Craft holds up its end, too. Say "don't let me forget" in the middle of a story and craft offers the notebook - one ignorable line, never a popup - and the entry lands stamped with the story, cycle, or tweak that produced it. And when a build reaches a step only you can do - a deploy setting, a DNS record - Claude writes the full walkthrough into the book, tied to the work it belongs to, waiting for your hands.
+
+And the book remembers. Every entry knows when it was written and what it became - the one-line thought from three weeks ago is stamped with the story it turned into, and the story knows the line it grew from. Durable facts ride into every session as a dated index, bodies pulled only when they matter. Nothing in it is locked into a shape - a line can become a tweak, a story, an entire cycle, a mockup session - and nothing in it forgets where it came from.
+
+*Capture syntax, lifecycle, and where files live: [Notebook](#notebook), below.*
+
 ## Why we built it this way
 
 Most agent frameworks treat the model as fixed and harden the harness around it: prompt scaffolding, retry logic, validation chains, every guardrail imaginable. Craft makes the opposite bet. Claude keeps getting smarter; we build around the capability curve instead of fighting it. The harness checkpoints for safety, not for control.
