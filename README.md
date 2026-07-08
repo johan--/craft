@@ -94,13 +94,36 @@ Craft is built with craft. This plugin and the projects shipped with it went thr
 
 ## How Craft compares
 
-Frameworks like CrewAI, LangGraph, and claude-flow are SDKs - you write code to assemble agents and wire up orchestration yourself. Standalone agents like OpenHands and Aider bring their own runtime to drive your repo. Cursor is an AI-native editor. Agent OS is a tool-agnostic spec layer you drop into whatever assistant you use. Craft is a different shape: a plugin that runs inside Claude Code and adds an opinionated workflow on top of the session you're already in - creative-first ideation, locked decisions, checkpointed execution, and crystallized expert agents. It doesn't compete with LangGraph at the SDK layer; it opinionates the loop above the model. Reach for a framework when you want to build an agent system. Reach for Craft when you want a paved one inside Claude Code.
+Most tools in this space are a different shape than Craft. Here's the lay of the land:
 
-Closer to home, the comparison people actually ask about is other Claude Code workflow plugins - Superpowers, or spec-driven tools like Kiro. The honest answer: the planning discipline overlaps. Plan first, implement against the plan, review after - several tools deliver that loop, and it's good discipline wherever you get it. What the others don't have is the part that compounds across sessions: a workshop for crystallizing your own expert agents (`/craft:become`), a mockup funnel whose accepted designs solidify into enforced tokens, a notebook that records what you loved as votes for what "good" means in your project - and a harness that doesn't just work with you, it pries at you, pulling the creativity out of your head and onto the page. Every time that works, it pries further: what you loved last session is where the next one starts. A bare Claude session can do any one of these things once; it forgets your reactions when the session ends. Craft writes them to disk and enforces them with hooks - which is why week four feels different from day one. And none of it is frontend-only: the same loop ships legacy C# work as comfortably as greenfield Next.js.
+| Tool | What it is | Reach for it when |
+|------|-----------|-------------------|
+| CrewAI, LangGraph, claude-flow | SDKs - you write the code that assembles agents and wires up orchestration | You want to build an agent system from parts |
+| OpenHands, Aider | Standalone agents that bring their own runtime to drive your repo | You want an agent that owns the terminal |
+| Cursor | An AI-native editor | You want AI woven into where you type |
+| Agent OS | A tool-agnostic spec layer you drop into any assistant | You want portable specs across tools |
+| **Craft** | **A plugin inside Claude Code that opinionates the loop above the model** | **You want a paved workflow inside the session you're already in** |
+
+Craft doesn't compete with LangGraph at the SDK layer - it adds creative-first ideation, locked decisions, checkpointed execution, and crystallized expert agents on top of the Claude Code session you already have.
+
+**Closer to home:** the comparison people actually ask about is other Claude Code workflow plugins - Superpowers, or spec-driven tools like Kiro. The honest answer: the planning discipline overlaps. Plan first, implement against the plan, review after - several tools deliver that loop, and it's good discipline wherever you get it.
+
+What the others don't have is the part that compounds across sessions:
+
+- **A workshop for your own expert agents** (`/craft:become`) - minds that argue from scar tissue, not a system prompt.
+- **A mockup funnel whose accepted designs solidify into enforced tokens** - the taste you approved, enforced from then on.
+- **A notebook that records what you loved** - votes for what "good" means in your project.
+
+And a harness that doesn't just work with you, it pries at you - pulling the creativity out of your head and onto the page. Every time that works, it pries further: what you loved last session is where the next one starts. A bare Claude session can do any one of these things once, then forgets the moment it ends. Craft keeps the record and enforces it - which is why week four feels nothing like day one. None of it is frontend-only: the same loop ships legacy C# as comfortably as greenfield Next.js.
 
 ## How Craft fits with what you already use
 
-Craft is a Claude Code plugin. It runs inside `claude` CLI sessions and adds opinionated workflow on top - it does not replace your editor. Cursor, VS Code, JetBrains, a bare terminal: whatever you write code in stays exactly as it is. Other Claude Code plugins coexist. Your existing prompts still work - Craft replaces the ad-hoc planning and validation prompts you've been hand-rolling, but only if you adopt the full loop. And if you're not using Claude Code at all, Craft doesn't apply to you: it's a layer on Claude Code, not a standalone tool.
+Craft is a Claude Code plugin - it runs inside `claude` CLI sessions and adds opinionated workflow on top. What that means in practice:
+
+- **Your editor stays.** Cursor, VS Code, JetBrains, a bare terminal - whatever you write code in is untouched. Craft doesn't replace it.
+- **Other Claude Code plugins coexist.** Craft layers on; it doesn't take over the session.
+- **Your existing prompts still work.** Craft replaces the ad-hoc planning and validation prompts you've been hand-rolling - but only if you adopt the full loop.
+- **No Claude Code, no Craft.** It's a layer on Claude Code, not a standalone tool. If you're not using Claude Code, this isn't for you.
 
 ## What you can do, and when
 
