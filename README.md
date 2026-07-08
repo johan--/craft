@@ -2,7 +2,7 @@
 
 > Craft is a Claude Code plugin that runs your work through a creative → implement → review loop, with a workshop for building expert agents you consult along the way.
 
-![version](https://img.shields.io/badge/version-1.75.1-blue)
+![version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdrobins25%2Fcraft%2Fmain%2F.claude-plugin%2Fplugin.json&query=%24.version&label=version&color=blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![status](https://img.shields.io/badge/status-actively%20developed-brightgreen)
 ![requires](https://img.shields.io/badge/requires-Claude%20Code%202.1%2B-orange)
@@ -34,13 +34,27 @@ And not just for code. Here's craft's `muse`, on why technically impressive feat
 
 Same machinery, different domain. You point `/craft:become` at the expertise you wish were in the room, and it crystallizes a mind you can consult - one with beliefs, refusals, and the scar tissue that makes its judgment worth trusting.
 
+## The Mockup Funnel
+
+`/craft:mockup` is the fastest way to feel what craft is. Name something visual - a card, a hero, a whole page - and craft's alchemist builds three genuinely different live HTML options. Stances, not variations: at most one option may stay inside your current design language, and at least one has to go further than you dared to ask. Three safe layouts in the current palette counts as a failed round.
+
+From there you converge by reacting in plain words - no forms, no pickers:
+
+- **Diverge.** Three options at real scale, embedded in real surrounding context. Say which one pulls and what's wrong with the others. Hybrids are legal briefs: "B with C's cards."
+- **Refine.** Your pick becomes the base; the alchemist builds variations of it.
+- **Polish.** The live loop: micro-adjustments are injected straight into the open page while you watch in your own browser. React, keep or discard, next one - seconds per iteration.
+
+Acceptance is explicit - "that's it, ship it" - and then the important part happens: the new design values solidify into `tokens.yaml` with provenance, before any downstream artifact exists. Every later story, validator, and analyzer now enforces the design you approved in your own browser. The converged mockup then graduates on your call: tweak it in now, grow it into a story (its CSS ports as-is, never reinterpreted), or park it as a notebook todo that remembers everything.
+
+And the mockup isn't the only door into your project's DNA. Accepted tweaks reconcile the same way: when a tweak's final values drift from your tokens or outgrow a lock, craft asks once - at acceptance, never mid-flow - whether the new taste becomes the documented standard. Say yes and it can snowball, offering to sweep the settled rule across every surface it fits. Whether the change arrived through a mockup or a two-minute tweak, your design system ends the session already agreeing with what you approved.
+
+Your reactions are recorded verbatim along the way - they're the convergence history, and they feed the taste record the notebook builds on.
+
 ## The Notebook
 
-Craft's notebook doesn't store descriptions of work. It stores work, paused.
+The notebook is one-line capture for thoughts that aren't story-shaped yet - ideas that may mature into stories, todos that need doing, and durable project facts future-you will want recalled. Entries land with context attached: the story, cycle, or tweak that produced them rides along, so a thought here is work paused, not a promise you'll have to reconstruct from zero.
 
-Every other backlog holds promises - words that wait for you to reload the context and start from zero. This one holds intent with the instructions still alive inside it.
-
-And you never fill out a form to use it. You just talk:
+You never fill out a form. You just talk:
 
 > "Can you check our notebook todos?"
 
@@ -76,13 +90,15 @@ Craft is built with craft. This plugin and the projects shipped with it went thr
 
 Frameworks like CrewAI, LangGraph, and claude-flow are SDKs - you write code to assemble agents and wire up orchestration yourself. Standalone agents like OpenHands and Aider bring their own runtime to drive your repo. Cursor is an AI-native editor. Agent OS is a tool-agnostic spec layer you drop into whatever assistant you use. Craft is a different shape: a plugin that runs inside Claude Code and adds an opinionated workflow on top of the session you're already in - creative-first ideation, locked decisions, checkpointed execution, and crystallized expert agents. It doesn't compete with LangGraph at the SDK layer; it opinionates the loop above the model. Reach for a framework when you want to build an agent system. Reach for Craft when you want a paved one inside Claude Code.
 
+Closer to home, the comparison people actually ask about is other Claude Code workflow plugins - Superpowers, or spec-driven tools like Kiro. The honest answer: the planning discipline overlaps. Plan first, implement against the plan, review after - several tools deliver that loop, and it's good discipline wherever you get it. What the others don't have is the part that compounds across sessions: a workshop for crystallizing your own expert agents (`/craft:become`), a mockup funnel whose accepted designs solidify into enforced tokens, a notebook that records what you loved as votes for what "good" means in your project - and a harness that doesn't just work with you, it pries at you, pulling the creativity out of your head and onto the page. Every time that works, it pries further: what you loved last session is where the next one starts. A bare Claude session can do any one of these things once; it forgets your reactions when the session ends. Craft writes them to disk and enforces them with hooks - which is why week four feels different from day one. And none of it is frontend-only: the same loop ships legacy C# work as comfortably as greenfield Next.js.
+
 ## How Craft fits with what you already use
 
 Craft is a Claude Code plugin. It runs inside `claude` CLI sessions and adds opinionated workflow on top - it does not replace your editor. Cursor, VS Code, JetBrains, a bare terminal: whatever you write code in stays exactly as it is. Other Claude Code plugins coexist. Your existing prompts still work - Craft replaces the ad-hoc planning and validation prompts you've been hand-rolling, but only if you adopt the full loop. And if you're not using Claude Code at all, Craft doesn't apply to you: it's a layer on Claude Code, not a standalone tool.
 
 ## What you can do, and when
 
-**First session.** Install, run `/craft:init`, and ship one small thing - `/craft:adhoc` for a bug or small tweak, or `/craft:story-new` → `/craft:story-implement` for something new. You'll see the implement → validate → refine loop in action and you'll have real work shipped within the hour.
+**First session.** Install, run `/craft:init`, and ship one small thing - `/craft:mockup` on the surface you most want to elevate, `/craft:adhoc` for a bug or small tweak, or `/craft:story-new` → `/craft:story-implement` for something new. You'll see the implement → validate → refine loop in action and you'll have real work shipped within the hour.
 
 **By week two.** Plan a real cycle and run multiple stories through it. Watch the chunk-validator + refine-chunk loop catch failures and route them to fixes without you babysitting. Run the analyzer agents post-cycle via `/craft:analyze`. Consult one of the crystallized experts via `/craft:ask` when you're stuck on a design call.
 
@@ -109,7 +125,13 @@ claude plugin marketplace add drobins25/craft
 claude plugin install craft@craft
 ```
 
-The first command registers the Craft marketplace by cloning this repo to `~/.claude/plugins/marketplaces/craft/`. The second installs the plugin from it.
+The first command registers the **craft** marketplace by cloning this repo to `~/.claude/plugins/marketplaces/craft/`. The second installs the plugin from it.
+
+Then, inside a Claude Code session:
+
+1. Run `/plugin` - the **craft** marketplace (drobins25/craft) should be listed.
+2. Go to **Browse plugins** > **craft** > **Enable plugin**.
+3. Run `/reload-plugins`.
 
 Verify it worked:
 
@@ -119,15 +141,27 @@ Verify it worked:
 
 You should see the Craft entry-point prompt.
 
+One thing to expect once craft is enabled: Claude starts hinting when a craft feature fits the moment - most visibly at session start, when a story or cycle completes, and when you make small tweaks and fixes. Say "don't let me forget..." mid-session and the orchestrator offers to drop it in your notebook - one ignorable line, never a popup. You don't need to memorize the command table below; the harness surfaces the right door.
+
 ## Getting Started
 
-### Initialize a project
+### New project or existing?
 
-```
-/craft:init
-```
+Both paths start with `/craft:init` - and it's much more than scaffolding. Where you're starting decides what it does:
 
-This walks you through first-run setup: confirms what kind of project you're building, optionally pulls inspiration from a reference site, and seeds the `.craft/` directory with your quality standards and design tokens.
+**Empty folder, brand-new project.** This is by far the funnest route in craft. Full setup walks you through:
+
+- **Your intent, in your words.** Two short questions about what you're building, then craft's muse distills them into the project's Emotional Core - the job, the killer moment, the share trigger. Every cycle you plan later reads it.
+- **Design pulled from inspiration.** Name the sites you admire and craft opens each one in a real browser and extracts what you point at - colors from one site, typography from another, spacing from a third - then assembles them into one design language with a name ("Linear's restraint meets Stripe's confidence"). You riff in plain words - "more warmth," "less corporate" - until it feels right. Lock it, and those tokens are enforced from then on.
+- **The energy.** Steady and solid, move fast, or learning mode - validation and checkpoints adapt to match.
+
+It ends with one question - "What's the first thing we're tackling?" - and you're planning your first cycle.
+
+**Existing project.** `/craft:init` scans your code instead of asking about it: project type, stack, conventions, and the visual patterns already in your files. A mature codebase gets its consistent patterns extracted and locked; an early one isn't guessed at - craft defers tokens and learns your visual language from what you build next. Then start small - ask Claude:
+
+> "Can we redesign this section of my page using a craft mockup?"
+
+or ship one targeted fix through `/craft:adhoc`. You'll see the whole loop without restructuring anything.
 
 *Curious how `/craft` decides what to invoke? See the [decision tree](reference/decision-tree.md).*
 
