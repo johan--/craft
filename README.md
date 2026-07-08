@@ -7,6 +7,12 @@
 ![status](https://img.shields.io/badge/status-actively%20developed-brightgreen)
 ![requires](https://img.shields.io/badge/requires-Claude%20Code%202.1%2B-orange)
 
+**Most AI tools forget what you liked the moment the session ends.** Craft writes it to disk and enforces it with hooks - the design you approved, the decisions you locked, the taste you keep showing. That's why week four feels different from day one.
+
+![Craft building its own repo page live - a terminal conversation on the left drives an adhoc tweak, while on the right the Craft Open Source interface assembles itself in response.](docs/media/craft-caught-in-the-act.gif)
+
+*Craft building its own repo page, live.*
+
 ## Built with Craft
 
 Craft has shipped real, public products across different domains - click through and see working software:
@@ -117,6 +123,8 @@ Craft is a Claude Code plugin. It runs inside `claude` CLI sessions and adds opi
 ## Install
 
 > Requires Claude Code 2.1 or later. Tested on macOS and Linux; on Windows, WSL is recommended (native + Git Bash should work but is untested).
+
+Two commands to install, then a one-time enable in `/plugin` - about a minute, start to finish.
 
 From your terminal, run these two commands:
 
