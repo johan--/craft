@@ -30,6 +30,7 @@ project: [project name]
 agent_session: [filled when the alchemist spawns]
 solidify_outcome: [filled at the solidify beat]
 graduated_to: [filled at the destination fork]
+origin: [origin tweak name when launched from a taste-pass todo - empty otherwise]
 ---
 
 ## Brief
@@ -45,6 +46,8 @@ graduated_to: [filled at the destination fork]
 [currently-unsettled live injections ONLY - self-pruning, normally empty
  outside an active polish loop; each line: target selector + exact change]
 ```
+
+**`origin`:** stamp this at record creation when the mockup was launched from a taste-pass todo - set it to the origin tweak the todo points at (the todo's `source: "[[origin-tweak]]"` carries it into the launch context). Empty for any mockup started directly. This single stamp is what lets a taste-pass outcome trace home through BOTH graduation ramps below, however far the final design diverges from the seed.
 
 Then assemble the brief:
 
@@ -146,7 +149,7 @@ options:
 
 The fork records the graduation, writes BOTH backlinks - record.md `graduated_to:` + the destination artifact's `mockup:` field - updates `status` (`graduated-tweak` / `graduated-story` / `parked`), completes Choose destination, and ENDS. The destination flow (adhoc, story-new, notebook) runs as its own thread with its own tasks:
 
-- **Tweak:** the handoff brief states "direction pre-settled, converged mockup at [path]" so adhoc's classification doesn't re-open exploration.
+- **Tweak:** the handoff brief states "direction pre-settled, converged mockup at [path]" so adhoc's classification doesn't re-open exploration. When the record carries an `origin`, the brief ALSO forwards it ("grew from [origin]") so the ported tweak can stamp its `grew_from` - the read side that keeps lineage alive on the tweak ramp.
 - **Story:** story-new's "From mockup" source (commands/references/story-from-mockup.md) does the pre-fill. The mockup's CSS is NORMATIVE there - ported, never reinterpreted.
 - **Park:** capture a notebook todo naming the mockup path. Pickup = todo done, then re-enter THIS destination choice against the still-converged record. Graduating a long-parked mockup first re-verifies the target surface still exists as mocked - structural drift is surfaced before porting.
 

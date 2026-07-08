@@ -122,8 +122,8 @@ echo ""
 begin_test "Step 3 carries the snowball offer as an ignorable line"
 
 assert_contains_literal \
-  "Step 3 has the snowball offer" \
-  "Snowball offer" \
+  "Step 3 has the snowball sweep line" \
+  "worth a sweep TODO in /craft:notebook" \
   "$STEP3"
 
 assert_contains_literal \
@@ -133,17 +133,62 @@ assert_contains_literal \
 
 echo ""
 
-# Test 7: the no-conflict close-out surface survives - the shipped AUQ options intact
-begin_test "shipped close-out options survive untouched"
+# Test 7: the close-out is the 4-button pure-sentiment gradient
+begin_test "close-out is the 4-button gradient"
 
-assert_contains_literal \
-  "close-out still offers apply-elsewhere" \
+assert_contains_literal "gradient offers Love it" 'label: "Love it"' "$STEP3"
+assert_contains_literal "gradient offers Looks good" 'label: "Looks good"' "$STEP3"
+assert_contains_literal "gradient offers Good enough" 'label: "Good enough"' "$STEP3"
+assert_contains_literal "gradient offers Not quite" 'label: "Not quite"' "$STEP3"
+
+echo ""
+
+# the shipped "apply elsewhere" button is decoupled to a follow-on offer
+begin_test "apply-elsewhere is a follow-on offer, not a button"
+
+assert_not_contains \
+  "the apply-elsewhere button is gone" \
   "Looks good - apply elsewhere" \
   "$STEP3"
 
 assert_contains_literal \
-  "close-out still offers another pass" \
-  "Not quite" \
+  "apply-elsewhere survives as a follow-on line" \
+  "Want to apply this same move to other surfaces" \
+  "$STEP3"
+
+echo ""
+
+# the taste stamp is a holistic love-signal read with no kind gate
+begin_test "taste stamped by holistic judgment + love-signal, no kind gate"
+
+assert_contains_literal \
+  "holistic spreadable-taste rule present" \
+  "spreadable visual taste the user loved" \
+  "$STEP3"
+
+assert_contains_literal \
+  "no kind-in-a-set gate on the stamp" \
+  "NO \`kind\`-in-a-set gate" \
+  "$STEP3"
+
+echo ""
+
+# exactly one propagation offer, resolved by priority
+begin_test "one propagation offer by priority victory-lap > snowball > apply-elsewhere"
+
+assert_contains_literal \
+  "priority ordering stated" \
+  "victory-lap > snowball > apply-elsewhere" \
+  "$STEP3"
+
+echo ""
+
+# the acceptance reconcile beat is separate and still fires on its own
+begin_test "acceptance reconcile beat fires independently of the propagation offer"
+
+assert_contains_literal \
+  "reconcile fires independently of the propagation offer" \
+  "fires independently" \
   "$STEP3"
 
 echo ""

@@ -28,9 +28,12 @@ Target: `.craft/backlog/[story-name].md`, standard frontmatter (see craft-story-
 
 ```markdown
 mockup: [record name, e.g. 2026-07-05-hero-pulse]
+grew_from: [the record's origin tweak, when the record carries one - omit or leave empty otherwise]
 ```
 
 Type is almost always `ui`. Set `alignment: pending` - the alignment check fires at implement time as usual.
+
+**Lineage:** if the mockup record carries an `origin` (it grew from a taste-pass todo), forward it as `grew_from:` on the produced story - so a taste-pass outcome traces home even when it snowballed from a single tweak into a whole story, however far it diverged from the seed.
 
 **Pre-filled sections:**
 
@@ -65,6 +68,6 @@ Type is almost always `ui`. Set `alignment: pending` - the alignment check fires
 
 ## Phase 4: Backlinks and close
 
-Write both directions: the story frontmatter carries `mockup:` (done above); the record gets `graduated_to: [story name]` and `status: graduated-story` (the destination fork may have written these already - verify, don't duplicate).
+Write both directions: the story frontmatter carries `mockup:` and, when the record had an `origin`, `grew_from:` (both done above); the record gets `graduated_to: [story name]` and `status: graduated-story` (the destination fork may have written these already - verify, don't duplicate).
 
 Report the created story path and its pre-filled sections. The parent flow is DONE - the story takes the normal path from here (cycle-assign, plan-chunks, implement).

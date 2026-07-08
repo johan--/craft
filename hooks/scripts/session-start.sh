@@ -210,6 +210,23 @@ if [ -d "${PROJECT_ROOT}.craft/mockups" ]; then
   fi
 fi
 
+# Taste pass: surface when loved tweaks have accrued past the effective threshold.
+# Passive line only (a hook cannot run an AUQ) - the orchestrator turns it into the
+# one-line offer next turn. Both calls are guarded (2>/dev/null || echo <default>) so
+# a non-zero script exit never truncates the rest of the banner; the numeric compare
+# sits in an if-condition, exempt from set -e.
+taste_enabled=""
+if [ -f "${PROJECT_ROOT}.craft/settings.yaml" ]; then
+  taste_enabled=$(grep -m1 '^taste_pass_enabled:' "${PROJECT_ROOT}.craft/settings.yaml" 2>/dev/null | sed 's/^taste_pass_enabled:[[:space:]]*//' | tr -d '"' | tr -d "'")
+fi
+if [ "$taste_enabled" != "false" ]; then
+  taste_threshold=$(CRAFT_PROJECT_ROOT="${PROJECT_ROOT%/}" "$SCRIPT_DIR/taste-pass-state.sh" effective-threshold 2>/dev/null || echo 3)
+  taste_count=$(CRAFT_PROJECT_ROOT="${PROJECT_ROOT%/}" "$SCRIPT_DIR/count-loved-tweaks.sh" "$taste_threshold" 2>/dev/null || echo 0)
+  if [ "${taste_count:-0}" -ge "${taste_threshold:-3}" ]; then
+    context="$context | Taste: >=${taste_threshold} loved tweaks ripe for a pass"
+  fi
+fi
+
 # Report orchestration index status (one-time, SessionStart only)
 ORCH_INDEX="$(dirname "$SCRIPT_DIR")/../reference/orchestration-index.min"
 if [ -f "$ORCH_INDEX" ]; then

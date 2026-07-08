@@ -198,5 +198,116 @@ rm -f "$ENV_FILE"
 cleanup_test_dir
 echo ""
 
+# Helper: write N loved tweak records into a test project
+seed_loved_tweaks() {
+  local root="$1" n="$2" i
+  mkdir -p "$root/.craft/tweaks"
+  for i in $(seq 1 "$n"); do
+    printf -- '---\nname: tweak-%s\nstatus: accepted\ncreated: 2026-07-%02d\ntaste: loved\n---\nbody\n' "$i" "$i" > "$root/.craft/tweaks/tweak-$i.md"
+  done
+}
+
+# Test 6: ripe line appears when enabled and count >= effective threshold (default 3)
+begin_test "ripe >=N line appears when enabled and count >= effective threshold"
+
+TEST_DIR=$(create_minimal_craft)
+ENV_FILE=$(mktemp)
+cat > "$TEST_DIR/.craft/.global-state" << 'EOF'
+ACTIVE_CYCLE=""
+CURRENT_STORY=""
+PLANNING_CYCLE=""
+LAST_ACTIVITY=""
+EOF
+seed_loved_tweaks "$TEST_DIR" 3
+
+set +e
+RESULT=$(cd "$TEST_DIR" && unset PROJECT_ROOT && unset CRAFT_PROJECT_ROOT && unset CRAFT_MULTI_PROJECT && export CLAUDE_ENV_FILE="$ENV_FILE" && bash "$SESSION_SCRIPT" 2>/dev/null)
+set -e
+
+assert_contains "ripe line present at 3 loved records" "Taste: >=" "$RESULT"
+
+rm -f "$ENV_FILE"
+cleanup_test_dir
+echo ""
+
+# Test 7: no ripe line when taste_pass_enabled is false
+begin_test "no ripe line when taste_pass_enabled is false"
+
+TEST_DIR=$(create_minimal_craft)
+ENV_FILE=$(mktemp)
+cat > "$TEST_DIR/.craft/.global-state" << 'EOF'
+ACTIVE_CYCLE=""
+CURRENT_STORY=""
+PLANNING_CYCLE=""
+LAST_ACTIVITY=""
+EOF
+seed_loved_tweaks "$TEST_DIR" 3
+printf 'taste_pass_enabled: false\n' > "$TEST_DIR/.craft/settings.yaml"
+
+set +e
+RESULT=$(cd "$TEST_DIR" && unset PROJECT_ROOT && unset CRAFT_PROJECT_ROOT && unset CRAFT_MULTI_PROJECT && export CLAUDE_ENV_FILE="$ENV_FILE" && bash "$SESSION_SCRIPT" 2>/dev/null)
+set -e
+
+assert_not_contains "no ripe line when disabled" "Taste: >=" "$RESULT"
+
+rm -f "$ENV_FILE"
+cleanup_test_dir
+echo ""
+
+# Test 8: no ripe line when count is below the effective threshold
+begin_test "no ripe line when count < effective threshold"
+
+TEST_DIR=$(create_minimal_craft)
+ENV_FILE=$(mktemp)
+cat > "$TEST_DIR/.craft/.global-state" << 'EOF'
+ACTIVE_CYCLE=""
+CURRENT_STORY=""
+PLANNING_CYCLE=""
+LAST_ACTIVITY=""
+EOF
+seed_loved_tweaks "$TEST_DIR" 2
+
+set +e
+RESULT=$(cd "$TEST_DIR" && unset PROJECT_ROOT && unset CRAFT_PROJECT_ROOT && unset CRAFT_MULTI_PROJECT && export CLAUDE_ENV_FILE="$ENV_FILE" && bash "$SESSION_SCRIPT" 2>/dev/null)
+set -e
+
+assert_not_contains "no ripe line at 2 < 3" "Taste: >=" "$RESULT"
+
+rm -f "$ENV_FILE"
+cleanup_test_dir
+echo ""
+
+# Test 9: .taste-pass-state survives a session-start run (durable, off cleanup)
+begin_test ".taste-pass-state survives a session-start run"
+
+TEST_DIR=$(create_minimal_craft)
+ENV_FILE=$(mktemp)
+cat > "$TEST_DIR/.craft/.global-state" << 'EOF'
+ACTIVE_CYCLE=""
+CURRENT_STORY=""
+PLANNING_CYCLE=""
+LAST_ACTIVITY=""
+EOF
+seed_loved_tweaks "$TEST_DIR" 3
+printf 'last_asked: 2026-01-01\nsnooze_offset: 0\n' > "$TEST_DIR/.craft/tweaks/.taste-pass-state"
+
+set +e
+(cd "$TEST_DIR" && unset PROJECT_ROOT && unset CRAFT_PROJECT_ROOT && unset CRAFT_MULTI_PROJECT && export CLAUDE_ENV_FILE="$ENV_FILE" && bash "$SESSION_SCRIPT" >/dev/null 2>&1)
+set -e
+
+assert_file_exists ".taste-pass-state not cleaned up" "$TEST_DIR/.craft/tweaks/.taste-pass-state"
+
+rm -f "$ENV_FILE"
+cleanup_test_dir
+echo ""
+
+# Test 10: the taste offer never enters the every-prompt routing block
+begin_test "taste offer stays out of inject-craft-context.sh (every-prompt block)"
+
+assert_file_not_contains "no taste_pass logic in the routing block" "taste_pass" "$SCRIPTS_DIR/inject-craft-context.sh"
+assert_file_not_contains "no ripe line in the routing block" "Taste:" "$SCRIPTS_DIR/inject-craft-context.sh"
+
+echo ""
+
 # --- Summary ---
 finish_tests

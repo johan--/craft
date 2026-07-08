@@ -33,6 +33,8 @@ kind: [icon | copy | spacing | color | motion | content]
 source_story: [story that built the element, if known]
 mockup: [name of the converged mockup this tweak ports, e.g. 2026-07-05-hero-pulse - empty for non-mockup tweaks]
 reapplies: [name of the original tweak this reapplies, e.g. tweak-toolbar-stroke-weight - empty for a novel tweak]
+grew_from: [name of the origin tweak this outcome grew from - empty except taste-pass outputs]
+taste: [loved | routine - stamped at close-out; empty until then]
 attempts: 0
 outcome_note:
 files_changed: 0
@@ -52,6 +54,10 @@ lines_changed: 0
 
 **`reapplies`:** backlink to the original tweak when this record applies an already-accepted move to a new surface. Every reapplication gets its OWN record (one file per surface - records never bloat with multi-surface history); the shared `reapplies:` value is what ties the family together. The count of records naming the same original is the graduation vote: a move applied in several places is a standard waiting to be written down (tokens.yaml for value kinds like spacing/color, locked.md via lock-decision for patterns - the graduation pass consumes this).
 
+**`grew_from`:** lineage backlink to the origin tweak this outcome grew out of - always recorded when a tweak was born from a taste-pass propagation, however far the result diverged from the seed (a button move that snowballed into a whole page still traces home). Distinct from `reapplies:`, which is the narrow literal-replication case; `grew_from:` is the broader "this exists because of that" link. Empty for ordinary tweaks; only ever written on taste-pass outputs.
+
+**`taste`:** the close-out sentiment stamp - `loved` when the user loved a spreadable visual change, else `routine`. Empty until the close-out writes it. A token-free script counts the `loved` records to know when enough proven taste has accrued to offer a propagation pass; the stamp is judged by eye once and read by script forever, so this field is the counter's sole input - never re-derive taste from the record body.
+
 **`status` lifecycle:** born `open`, stays `open` until the user explicitly closes it - `accepted` (first attempt landed), `revised-then-accepted` (took 2+ attempts), `abandoned` (user dropped it), or `escalated` (became a story/design question). **Validation passing never closes a tweak. Only the user's reaction does.** A later conversational decline also abandons an open record - name it explicitly before writing ("Closing `tweak-settings-icon` as abandoned"), never guess which record the user means when more than one is open.
 
 ## Step 2: Fit Check
@@ -68,7 +74,7 @@ Write the findings into the `## Fit Check` section: where the element lives, wha
 
 **Escalation (design question):** if the fit check surfaces a genuine design question (multiple plausible directions and no clear fit) - do NOT edit. Same mechanics as the decline path above: update `status: escalated`, say why, suggest a mockup first (the direction needs to be seen to be decided), or design-vibe / a story for bigger questions, hand back to the shell.
 
-**Mockup-ported tweaks:** when the handoff brief states "direction pre-settled, converged mockup at [path]", set the record's `mockup:` field, skip re-opening exploration in the Fit Check (the mockup already settled the direction - the check verifies fit of the PORT, not of the idea), and treat mockup.html's CSS as normative: port values verbatim, never reinterpret from appearance.
+**Mockup-ported tweaks:** when the handoff brief states "direction pre-settled, converged mockup at [path]", set the record's `mockup:` field, skip re-opening exploration in the Fit Check (the mockup already settled the direction - the check verifies fit of the PORT, not of the idea), and treat mockup.html's CSS as normative: port values verbatim, never reinterpret from appearance. **If the handoff also names an `origin` (the mockup grew from a taste-pass todo), stamp this record's `grew_from:` with it** - leave `grew_from:` empty when there is no origin; use `reapplies:` instead only if the outcome was a literal copy of the origin move. This is the read side of the lineage: without it, a taste-pass outcome that snowballed into a mockup and graduated back to a tweak would silently lose its home, however far it diverged from the seed.
 
 ### The inline lock-edit path
 
@@ -104,20 +110,23 @@ Per attempt:
 question: "How does it look?"
 header: "Tweak"
 options:
+  - label: "Love it"
+    description: "Nailed it - close as accepted"
   - label: "Looks good"
-    description: "Close this tweak as accepted"
-  - label: "Looks good - apply elsewhere"
-    description: "Accept it, then reapply the same move to other surfaces"
+    description: "Works - close as accepted"
+  - label: "Good enough"
+    description: "Fine to ship, not a favorite - close as accepted"
   - label: "Not quite"
     description: "Tell me what's off - I'll take another pass"
 ```
 
 6. **Route the reaction - capture it VERBATIM:**
-   - **"Looks good"** (or equivalent typed approval): write it to the attempt's Reaction and to `outcome_note`. Set `status: accepted` (attempt 1) or `revised-then-accepted` (2+). Run the Acceptance reconcile below (skipped when no payload is pending), then continue to Step 4.
-   - **"Looks good - apply elsewhere":** close THIS record exactly as "Looks good" above (the move proved out - propagation never reopens it). Run the Acceptance reconcile below at THIS moment - BEFORE the reapply batch, so propagation only ever copies a fully-legal move - then run Reapplying Elsewhere (Step 3b) inside the same work thread before Step 4.
-   - **Typed criticism** ("the alignment is still off"): write the exact words to the attempt's Reaction. Leave `status: open`. Loop to the next attempt - the reaction is the new brief.
+   - **An accepting answer ("Love it", "Looks good", "Good enough", or equivalent typed approval):** write the chosen label (or the typed words) to the attempt's Reaction and to `outcome_note`. Set `status: accepted` (attempt 1) or `revised-then-accepted` (2+). Stamp `taste:` per the rule below. Run the Acceptance reconcile below (skipped when no payload is pending), then the single propagation offer below, then continue to Step 4.
+   - **"Not quite" / typed criticism** ("the alignment is still off"): write the exact words to the attempt's Reaction. Leave `status: open` and write NO `taste:` stamp. Loop to the next attempt - the reaction is the new brief.
    - **Explicit decline** ("never mind", "drop it", "not worth another pass"): write the exact words to the attempt's Reaction and to `outcome_note`. Set `status: abandoned`. If a mid-pass lock pivot was announced this thread, revert those attempts' edits (the shell's per-attempt commits make this surgical) - an abandoned tweak leaves locked.md untouched and the working tree conforming. Hand back to the shell to close the gate.
    - **No reaction / user changes topic:** leave `status: open` and the record as-is. Do not nag, do not mark accepted. Hand back to the shell to close the gate (the gate closes with the thread; the record's openness is independent bookkeeping). If the user raises it again - this session or any later one - reopen the loop from the recorded reactions.
+
+**The taste stamp (written once, at any accepting answer):** stamp `taste: loved` when you holistically judge this to be spreadable visual taste the user loved AND a love-signal holds (the button was "Love it", OR `attempts >= 2`, OR the user typed genuine enthusiasm) AND the button was not "Good enough"; otherwise stamp `taste: routine`. This is a HOLISTIC read - there is NO `kind`-in-a-set gate, because a single `kind` label misfiles a rich multi-facet tweak (a color+motion+layout port filed `content` must not be wrongly excluded). The loved counter reads only this stamped field; it never re-derives taste from the body. "Not quite" never stamps.
 
 ### Acceptance reconcile (one beat)
 
@@ -127,7 +136,7 @@ The beat is then entered when ANY payload is pending: the token payload just der
 
 Tokens and quality are NOT the same kind of contract. tokens.yaml is descriptive - it records the values in use, so a drift reconciles by updating the doc to the accepted value. quality.yaml is prescriptive - its numbers (touch target, contrast) are FLOORS, so a miss is fixed in the work or tolerated as a noted exception; the floor is never lowered to match a violation. The two questions below reflect that asymmetry.
 
-It fires immediately after either "Looks good" variant closes the record - at the ORIGINAL's acceptance, always BEFORE any Step 3b reapplication. Multi-attempt tweaks reconcile once, here, against the FINAL accepted values.
+It fires immediately after any accepting answer closes the record - at the ORIGINAL's acceptance, always BEFORE the propagation offer and any Step 3b reapplication. Multi-attempt tweaks reconcile once, here, against the FINAL accepted values.
 
 One beat means ONE AskUserQuestion call - include only the questions whose payload is pending (any subset of the four below), never ask them serially:
 
@@ -167,13 +176,23 @@ options:
 
 There is no third door on the lock question: a tweak never CLOSES in a lock-breaking state. "Update the lock" requires the explicit yes the inline lock-edit path demands; anything less conforms the work. The quality question likewise has no "lower the floor" door - quality.yaml is a minimum, so a miss is fixed or tolerated as a noted exception, never solidified downward.
 
-### Snowball offer
+### The propagation offer (one per close-out)
 
-After the reconcile beat settles (or, for a reapplication family, after the batched close-out settles) - and ONLY if a rule changed in this thread (a lock altered/removed, or tokens.yaml updated) - offer the sweep as one ignorable closing line, per notebook conventions, never an AskUserQuestion:
+After the reconcile beat settles, EXACTLY ONE propagation offer may speak, resolved by priority: **victory-lap > snowball > apply-elsewhere.** Whichever claims the slot speaks; the others stay silent. This is separate from the Acceptance reconcile beat, which fires independently whenever a payload is pending. Each offer below is ONE ignorable closing line, per notebook conventions, never an AskUserQuestion; pure silence writes nothing.
 
-> "That changed [rule] - worth a sweep TODO in /craft:notebook to find other surfaces that could inherit it? Otherwise moving on."
+1. **Victory-lap** - only if the record closed `taste: loved`. Read `commands/references/taste-pass.md` inline (never via the Skill tool - `.claude/rules/skill-invocation-chain-breaks.md`) and run its offer gate. If the gate fires the victory lap, that IS this close-out's one offer: snowball and apply-elsewhere stay silent, and taste-pass.md owns the offer, the scout, and the pacing (the `taste-pass-state.sh` calls). If the gate does not fire (count below the effective threshold, or disabled), fall through to the next priority.
 
-On accept, capture the notebook todo silently with session context: the rule that changed, the surfaces already touched - the offer may name the whole family. Silence or decline → nothing. No rule change → no offer. New rules are BORN at the sweep, not here: alter/remove happens at the conflict moment; ADD ("buttons are round now") waits until the sweep proves scope.
+2. **Snowball** - else, and ONLY if a rule changed in this thread (a lock altered/removed, or tokens.yaml updated) - offer the sweep:
+
+   > "That changed [rule] - worth a sweep TODO in /craft:notebook to find other surfaces that could inherit it? Otherwise moving on."
+
+   On accept, capture the notebook todo silently with session context: the rule that changed, the surfaces already touched - the offer may name the whole family. Silence or decline → nothing. New rules are BORN at the sweep, not here: alter/remove happens at the conflict moment; ADD ("buttons are round now") waits until the sweep proves scope.
+
+3. **Apply-elsewhere** - else, the fallback. This is the propagation path the old "apply elsewhere" close-out button used to trigger, now an ignorable follow-on line, not a button:
+
+   > "Want to apply this same move to other surfaces? I can reapply it. Otherwise moving on."
+
+   On accept, run Reapplying Elsewhere (Step 3b) inside the same work thread before Step 4. The reconcile beat has already settled, so propagation only ever copies a fully-legal move.
 
 There is NO lesson-capture step on the tweak path - that belongs to fixes. The record's verbatim reactions ARE the learning payload here.
 
@@ -185,7 +204,7 @@ The user chose to propagate an accepted move. The original record is already clo
 2. **One record per target.** Each target surface gets its own `tweak-[slug].md` with `reapplies:` set to the original's name. One file per surface - the family tree lives in the backlinks, never in one bloated record.
 3. **Abbreviated loop per target:** Fit Check the NEW neighborhood (siblings differ - the move may need local adaptation, and a target where it genuinely doesn't fit gets said out loud, not forced), then run the same per-attempt mechanics as Step 3 on the target's own record: write its `## Attempt 1` block (Change/Validation), increment its `attempts`, update its `files_changed` / `lines_changed`, edit, validate, commit (shell's commit step).
 4. **Batched close-out.** ONE "How do they look?" ask for the whole batch, targets named - not one ask per target. The user's reply closes all records it approves (same verbatim reaction in each); a called-out target ("checkout's still off") loops just that record's attempt cycle. The family close-out fires NO second reconcile beat - the rules were settled at the original's acceptance, and each reapplied target conformed to the now-current rules at its own Fit Check.
-5. When the batch settles, run the Snowball offer (Step 3) if a rule changed this thread - it may name the whole family - then continue to Step 4. The summary covers the family: original + N reapplications.
+5. When the batch settles, run the snowball sweep from the propagation offer (Step 3) if a rule changed this thread - it may name the whole family - then continue to Step 4. The summary covers the family: original + N reapplications.
 
 ## Step 4: Close
 
