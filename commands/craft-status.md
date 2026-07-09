@@ -107,6 +107,22 @@ Render ONE line, only if `.craft/map/` exists (a project that has never needed t
 
 This is render-only: read the cached verdict and print the line in the dashboard's existing style. Do NOT probe, build, or re-derive anything from the status command.
 
+## Gates posture
+
+Render ONE line showing quality-gate coverage. Run the stack probe (sub-100ms, pure filesystem - the one exception to render-only, and it executes no toolchain commands):
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/gate-signals.sh scan
+```
+
+Each output line is `manifest <glob> <count>` (undecided) or `manifest <glob> <count> <state> <date>` (recorded decision). Render:
+- All signals wired or built-in-covered (package.json with runnable scripts) → `Gates: full coverage`
+- Declined signals exist → append them labeled as chosen: `Gates: 1 ungated by choice: *.csproj (declined 2026-07-08)` - the user waived it; this is information, never a prompt
+- Undecided signals exist → `Gates: N undecided: <globs>` - craft will ask at the next attended validation
+- No manifests found or scan unavailable → omit the line entirely
+
+This line never asks anything. Its job is that a declined toolchain stays visible as the user's choice - and quietly reminds that saying "wire up <glob>" reopens it any time.
+
 ## Mockups
 
 Render a Mockups section ONLY when at least one non-abandoned record exists - empty-state silence, never an empty header. Source: glob `.craft/mockups/*/record.md`, read frontmatter only, exclude `status: abandoned`. One line per mockup:

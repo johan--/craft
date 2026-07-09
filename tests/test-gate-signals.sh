@@ -112,6 +112,18 @@ assert_eq "other signals untouched" "declined" "$(run_signals "$TR" lookup "go.m
 rm -rf "$TR"
 echo ""
 
+# --- scan joins reconcile state ---
+begin_test "scan annotates recorded signals with state and date"
+TR=$(new_root)
+touch "$TR/go.mod" "$TR/Makefile"
+run_signals "$TR" record "go.mod" declined
+OUT=$(run_signals "$TR" scan)
+assert_contains "declined signal annotated" "manifest go.mod 1 declined $(date +%Y-%m-%d)" "$OUT"
+assert_contains "unrecorded signal stays bare" "manifest Makefile 1" "$OUT"
+assert_not_contains "unrecorded signal carries no state" "Makefile 1 declined" "$OUT"
+rm -rf "$TR"
+echo ""
+
 # --- root scoping ---
 begin_test "runs scoped to the invoking project dir"
 TR=$(new_root)

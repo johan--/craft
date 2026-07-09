@@ -4,10 +4,15 @@
 #
 # One action per invocation:
 #
-#   scan (default)     -> print one "manifest <glob> <count>" line per manifest
-#                         glob PRESENT in the project (package.json, *.csproj,
-#                         *.sln, composer.json, pyproject.toml, go.mod,
-#                         Cargo.toml, Makefile). Counts only, never file paths.
+#   scan (default)     -> print one line per manifest glob PRESENT in the
+#                         project (package.json, *.csproj, *.sln, composer.json,
+#                         pyproject.toml, go.mod, Cargo.toml, Makefile):
+#                           manifest <glob> <count>                  (unrecorded)
+#                           manifest <glob> <count> <state> <date>   (recorded)
+#                         where <state> is the reconcile record (declined|wired)
+#                         joined from .craft/.gate-signals in the same pass, so
+#                         consumers can render "uncovered by choice" without a
+#                         second lookup. Counts only, never file paths.
 #                         Dependency/build dirs are pruned and the search depth
 #                         is capped so nested vendored manifests never drown the
 #                         output.
@@ -54,7 +59,16 @@ case "$ACTION" in
     for glob in "${MANIFEST_GLOBS[@]}"; do
       count=$(find "$PROJECT_ROOT" -maxdepth 3 "${PRUNE_EXPR[@]}" -o -name "$glob" -type f -print 2>/dev/null | wc -l | tr -d ' ')
       if [ "$count" -ge 1 ] 2>/dev/null; then
-        echo "manifest $glob $count"
+        record=""
+        if [ -f "$STATE_FILE" ]; then
+          # Literal prefix match; emits "<state> <date>" when a record exists.
+          record=$(awk -v key="$glob" 'index($0, key ": ") == 1 { print $(NF-1), $NF; exit }' "$STATE_FILE")
+        fi
+        if [ -n "$record" ]; then
+          echo "manifest $glob $count $record"
+        else
+          echo "manifest $glob $count"
+        fi
       fi
     done
     ;;

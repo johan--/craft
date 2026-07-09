@@ -568,7 +568,7 @@ fi
    **Route by verdict:**
 
    **If PASSED (or PARTIAL on non-final chunk):**
-   - **Gate reconcile beat:** Read [references/gate-reconcile.md](references/gate-reconcile.md) and run it inline (NOT via the Skill tool). Steady state (Gates row `full coverage`, no rot-warnings) exits silently; an uncovered unrecorded signal gets one ignorable offer line. This runs BEFORE complete-chunk.sh and never fires on FAILED.
+   - **Gate reconcile beat:** Read [references/gate-reconcile.md](references/gate-reconcile.md) and run it inline (NOT via the Skill tool). Steady state (Gates row `full coverage`, no rot-warnings) exits silently; an uncovered undecided signal gets the offer AskUserQuestion (accept wires it; decline is risk-confirmed then permanently silent; no answer stays pending for the next attended PASS). This runs BEFORE complete-chunk.sh and never fires on FAILED.
    - Run complete-chunk.sh: `bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/complete-chunk.sh`
    - Write continuation breadcrumb for next chunk:
    ```bash

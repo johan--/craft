@@ -12,7 +12,7 @@ This beat keeps quality gates honest as the project's stack evolves: when the va
    - any Warnings with Type `rot-warning`
 
    If the Gates row is `full coverage` or `coverage unknown (no probe)` AND there are no rot-warnings → nothing to do. Continue to complete-chunk.sh immediately. No output.
-3. **Autonomous runs never prompt.** If RUN_MODE=autonomous: no-op the entire beat — record nothing, offer nothing. The uncovered signal stays visible in every validation report's coverage row and surfaces when a human next steps in. (Mirrors the leftover-triage leave-and-report guard.)
+3. **Autonomous runs never prompt mid-run.** If RUN_MODE=autonomous: no-op the entire beat — record nothing, offer nothing. This guard is nearly unreachable by design: the autonomous LAUNCH is an attended moment, and craft-story-implement-auto's Gate Pre-Flight asks the offer question there, before the run takes off — so the only signals that can reach this guard are ones born during the run itself (e.g. the run scaffolds a new toolchain). Those stay visible in every report's coverage row and are asked at the next attended moment.
 
 ## Uncovered signals: the ask-once check
 
@@ -22,28 +22,49 @@ For each uncovered manifest glob named in the Gates row, check the per-signal re
 bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/gate-signals.sh lookup "<glob>"
 ```
 
-- Non-empty result (`declined` or `wired`) → that signal is settled. Say nothing about it.
+- Non-empty result (`declined` or `wired`) → that signal is settled. Say nothing about it. (Decline permanence is glob-level: more manifests of a declined toolchain are still declined; only a never-seen glob is a new question.)
 - Empty result → the signal is unrecorded. It goes in the offer.
 
 **The never-re-ask check is this script lookup, not your memory.**
 
 If no uncovered signal is unrecorded → continue to complete-chunk.sh. No output.
 
-## The offer (one ignorable line)
+## The offer (a question a human answers)
 
-Say ONE plain inline line naming every unrecorded uncovered signal — NOT an AskUserQuestion:
+An unmeasured toolchain is a hole in the validation promise — craft requires a decision on it. Surface ONE **AskUserQuestion** naming every unrecorded uncovered signal. NEVER an inline line buried under the report (field-verified 2026-07-08: the line fired after a PASSED validation and the user nearly missed it):
 
-> New since gates were last set: *.csproj — wire it up? Otherwise continuing.
+```
+question: "New since gates were last set: [signal list] - code in these toolchains currently passes validation unmeasured. Wire up gate(s)?"
+header: "Gates"
+options:
+  - label: "Wire it up"
+    description: "Propose a command per signal, verify it runs, stamp it into quality.yaml"
+  - label: "Decline"
+    description: "Don't gate [signal list] - craft will confirm what that means first"
+```
 
-Then continue the flow. This line is ignorable by design:
+There are exactly two answers. Route them:
 
-- **No reaction / topic change:** record nothing (nothing is inferred from silence), run complete-chunk.sh, continue the loop. The line may reappear at the next PASS — one line, zero writes.
-- **Decline** ("no", "skip it", "not now"): per declined signal:
+- **Accept** ("Wire it up", or free text naming a subset — wire just those): run the setup beat below, then continue.
+- **Decline:** declining waives measurement permanently, so confirm it consciously — one follow-up AskUserQuestion:
+
+  ```
+  question: "Craft doesn't normally let quality go unwatched, but this is your call: declining means [signal list] passes every future validation unmeasured. The coverage row will keep showing it as '(declined)' so the choice stays visible, and you can wire it up any time by just asking - but craft will never raise the question again. Decline for good?"
+  header: "Confirm"
+  options:
+    - label: "Decline for good"
+      description: "Silence the ask permanently; the coverage row keeps the choice visible"
+    - label: "Actually, wire it up"
+      description: "Run the setup beat instead"
+  ```
+
+  On a confirmed decline, per signal:
   ```bash
   bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/gate-signals.sh record "<glob>" declined
   ```
-  A declined signal never asks again until that signal itself changes.
-- **Accept** ("yes", "wire it up"): run the setup beat below, then continue.
+  Decline permanence is GLOB-LEVEL: a new toolchain (a glob never seen) is a new question; more manifests of a declined toolchain are still declined. If the confirmation is NOT affirmed, record nothing — the decision stays open.
+
+- **No answer / dialog timeout:** a timeout is not a decision. Record NOTHING and continue the flow (complete-chunk.sh runs; the beat never blocks completion). The question stays pending and is asked again at the next attended PASS — an open required decision remains open until a human closes it.
 
 ## The setup beat (on accept only)
 
@@ -84,12 +105,20 @@ The standing escape hatch is untouched by all of this: a user may hand-edit qual
 
 ## Rot re-fire
 
-If the report carries a `rot-warning` (a verified gate's command exited 127 — command not found), the gate's verification is broken, not failing. Offer once, inline:
+If the report carries a `rot-warning` (a verified gate's command exited 127 — command not found), the gate's verification is broken, not failing. Ask via **AskUserQuestion** (same visibility reasoning as the offer — a buried line gets missed):
 
-> The verified gate for [gate-name] no longer runs — re-verify?
+```
+question: "The verified gate for [gate-name] no longer runs (its command can't start - toolchain moved or removed?). Re-verify it?"
+header: "Gate rot"
+options:
+  - label: "Re-verify"
+    description: "Propose the existing command as an editable draft, verify-run it, refresh the stamp"
+  - label: "Leave it"
+    description: "The gate keeps reporting a rot WARN - visible, never silent, never a chunk failure"
+```
 
-- **Accept:** run the setup beat for that gate — propose the existing command as the editable draft, verify-run the (possibly edited) candidate, refresh `verified:` on success.
-- **Decline / no reaction:** leave the gate as written. It keeps reporting rot-warning WARN — visible, never silent, never a chunk failure.
+- **Re-verify:** run the setup beat for that gate — propose the existing command as the editable draft, verify-run the (possibly edited) candidate, refresh `verified:` on success.
+- **Leave it / no answer:** leave the gate as written. It keeps reporting rot-warning WARN — visible, never silent, never a chunk failure. No answer means the question returns with the next rot-warning report.
 
 ## Exit
 

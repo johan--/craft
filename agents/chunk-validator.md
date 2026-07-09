@@ -84,7 +84,7 @@ Before running any checks, read TWO files using the **Read** tool and run ONE Ba
 
 3. **Stack signals** — run exactly ONE Bash call:
    `cd "PROJECT_ROOT" && bash "PLUGIN_ROOT/hooks/scripts/gate-signals.sh" scan`
-   Capture the `manifest <glob> <count>` lines — this is the project's stack fingerprint, used for the Gates coverage row. If PLUGIN_ROOT was not provided or the script is missing, skip this call and set the Gates row to `coverage unknown (no probe)` — a visible note, never a silent omission.
+   Capture the output lines — this is the project's stack fingerprint, used for the Gates coverage row. Each line is `manifest <glob> <count>` (undecided) or `manifest <glob> <count> <state> <date>` (a recorded reconcile decision: `declined` or `wired`). If PLUGIN_ROOT was not provided or the script is missing, skip this call and set the Gates row to `coverage unknown (no probe)` — a visible note, never a silent omission.
 
 ## Checks to Run
 
@@ -240,7 +240,7 @@ After all checks resolve, derive the coverage summary for the report's `Gates` r
 
 Row value:
 - No uncovered signals → `full coverage`
-- Otherwise → `N ran, M skipped, K uncovered: <globs>` where ran = checks (built-in + verified) resolving PASS/WARN/FAIL, skipped = checks resolving SKIP, and `<globs>` lists the uncovered manifest globs.
+- Otherwise → `N ran, M skipped, K uncovered: <globs>` where ran = checks (built-in + verified) resolving PASS/WARN/FAIL, skipped = checks resolving SKIP, and `<globs>` lists the uncovered manifest globs. An uncovered glob whose scan line carries a `declined` record is rendered WITH its record — `*.csproj (declined 2026-07-08)` — so a chosen waiver is never confusable with an unasked gap. Copy the state and date exactly as the scan emitted them.
 - Probe unavailable (no PLUGIN_ROOT or script missing) → `coverage unknown (no probe)`
 
 ## After Checks: Determine Status
