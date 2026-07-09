@@ -1,13 +1,17 @@
+![Craft - a Claude Code plugin. Stop vibe coding, start crafting. Craft steals your best ideas back: you say "that's it!" after working through a tweak, and craft remembers - then brings that taste back on a completely different feature later, elevated.](docs/media/hero.svg)
+
 # Craft
 
-> Craft is a Claude Code plugin that runs your work through a creative → implement → review loop, with a workshop for building expert agents you consult along the way.
+> **Stop Vibe Coding. Start Crafting.**
+
+Craft is a Claude Code plugin that runs your work through a creative → implement → review loop, with a workshop for building expert agents you consult along the way.
 
 ![version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdrobins25%2Fcraft%2Fmain%2F.claude-plugin%2Fplugin.json&query=%24.version&label=version&color=blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![status](https://img.shields.io/badge/status-actively%20developed-brightgreen)
 ![requires](https://img.shields.io/badge/requires-Claude%20Code%202.1%2B-orange)
 
-**Most AI tools forget what you liked the moment the session ends.** Craft writes it to disk and enforces it with hooks - the design you approved, the decisions you locked, the taste you keep showing. That's why week four feels different from day one.
+**It steals your best ideas back.** You say "that's it!" after working through a tweak, and craft remembers. It waits, then brings that same taste back on a completely different feature - elevated. Keep going, and you'll catch yourself asking, "how did I do this?"
 
 ![Craft building its own repo page live - a terminal conversation on the left drives an adhoc tweak, while on the right the Craft Open Source interface assembles itself in response.](docs/media/craft-caught-in-the-act.gif)
 
