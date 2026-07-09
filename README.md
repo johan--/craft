@@ -48,6 +48,12 @@ Same machinery, different domain. You point `/craft:become` at the expertise you
 
 `/craft:mockup` is the fastest way to feel what craft is. Name something visual - a card, a hero, a whole page - and craft's alchemist builds three genuinely different live HTML options. Stances, not variations: at most one option may stay inside your current design language, and at least one has to go further than you dared to ask. Three safe layouts in the current palette counts as a failed round.
 
+You just ask:
+
+> "Can we create a craft mockup of the ecosystem cards?"
+
+and craft opens the funnel - three live options, in your browser, at real scale.
+
 From there you converge by reacting in plain words - no forms, no pickers:
 
 - **Diverge.** Three options at real scale, embedded in real surrounding context. Say which one pulls and what's wrong with the others. Hybrids are legal briefs: "B with C's cards."
@@ -56,7 +62,11 @@ From there you converge by reacting in plain words - no forms, no pickers:
 
 Acceptance is explicit - "that's it, ship it" - and then the important part happens: the new design values solidify into `tokens.yaml` with provenance, before any downstream artifact exists. Every later story, validator, and analyzer now enforces the design you approved in your own browser. The converged mockup then graduates on your call: tweak it in now, grow it into a story (its CSS ports as-is, never reinterpreted), or park it as a notebook todo that remembers everything.
 
-And the mockup isn't the only door into your project's DNA. Accepted tweaks reconcile the same way: when a tweak's final values drift from your tokens or outgrow a lock, craft asks once - at acceptance, never mid-flow - whether the new taste becomes the documented standard. Say yes and it can snowball, offering to sweep the settled rule across every surface it fits. Whether the change arrived through a mockup or a two-minute tweak, your design system ends the session already agreeing with what you approved.
+And the mockup isn't the only door into your project's DNA. A two-minute tweak takes the same one:
+
+> "Tweak the rim around the Start button - gradient glow, maybe?"
+
+craft routes it to `/craft:adhoc`, makes the change in place, shows you, and records what you said. Accepted tweaks reconcile the same way a mockup does: when a tweak's final values drift from your tokens or outgrow a lock, craft asks once - at acceptance, never mid-flow - whether the new taste becomes the documented standard. Say yes and it can snowball, offering to sweep the settled rule across every surface it fits. Whether the change arrived through a mockup or a two-minute tweak, your design system ends the session already agreeing with what you approved.
 
 Your reactions are recorded verbatim along the way - they're the convergence history, and they feed the taste record the notebook builds on.
 
