@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "craft",
-      "description": "Creative-first, feedback-loop-driven development harness",
+      "description": "A Claude Code plugin: build your own expert agents, keep your own taste. Stop vibe coding, start crafting.",
       "source": "./",
       "category": "development"
     }

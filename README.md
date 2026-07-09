@@ -118,7 +118,7 @@ Most tools in this space are a different shape than Craft. Here's the lay of the
 | Agent OS | A tool-agnostic spec layer you drop into any assistant | You want portable specs across tools |
 | **Craft** | **A plugin inside Claude Code that opinionates the loop above the model** | **You want a paved workflow inside the session you're already in** |
 
-Craft doesn't compete with LangGraph at the SDK layer - it adds creative-first ideation, locked decisions, checkpointed execution, and crystallized expert agents on top of the Claude Code session you already have.
+Craft doesn't compete with LangGraph at the SDK layer - it adds creative ideation, locked decisions, checkpointed execution, and crystallized expert agents on top of the Claude Code session you already have.
 
 **Closer to home:** the comparison people actually ask about is other Claude Code workflow plugins - Superpowers, or spec-driven tools like Kiro. The honest answer: the planning discipline overlaps. Plan first, implement against the plan, review after - several tools deliver that loop, and it's good discipline wherever you get it.
 
