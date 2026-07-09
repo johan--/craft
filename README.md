@@ -241,6 +241,8 @@ This runs the story end-to-end. Craft flows through four beats: a creative pass 
 
 ## Commands
 
+You rarely type these. Craft routes plain English to the right one - this table is for when you want to be explicit.
+
 *How `/craft` chooses what to invoke is mapped in [reference/decision-tree.md](reference/decision-tree.md).*
 
 | Command | Purpose |
