@@ -89,7 +89,7 @@ echo ""
 
 # Test 6: BUG — Missing cycle dir with name-based fallback
 # When given an absolute path like /nonexistent/cycle, the script SHOULD exit 1.
-# But it falls through to find-project-root.sh, finds the REAL project,
+# But it falls through to find-workshop.sh, finds the REAL project,
 # then `find ... -name "*cycle*"` wildcard matches real cycle directories.
 # Same class of env contamination bug as complete-chunk.sh.
 # With env isolation, it correctly exits 1.

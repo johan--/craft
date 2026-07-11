@@ -4,7 +4,7 @@
 #
 # SAFETY: Every script invocation runs in a subshell with:
 #   (cd "$TEST_DIR" && unset CRAFT_PROJECT_ROOT && ...)
-# This prevents find-project-root.sh from escaping the temp dir
+# This prevents find-workshop.sh from escaping the temp dir
 # and corrupting the real plugin's .craft/ state.
 
 set -e
@@ -192,15 +192,15 @@ fi
 cleanup_test_dir
 echo ""
 
-# Integration 4: Nearest wins — find-project-root from child resolves to child
+# Integration 4: Nearest wins — find-workshop from child resolves to child
 # NOTE: create_craft_with_shadow() returns $dir; project lives at $dir/project/
-begin_test "INTEGRATION: Nearest wins — find-project-root from child"
+begin_test "INTEGRATION: Nearest wins — find-workshop from child"
 
 TEST_DIR=$(create_craft_with_shadow)
 
-# cd to child directory, run find-project-root
+# cd to child directory, run find-workshop
 set +e
-RESULT=$(cd "$TEST_DIR/project/apps/web" && unset CRAFT_PROJECT_ROOT && source "$SCRIPTS_DIR/find-project-root.sh" 2>/dev/null && echo "$PROJECT_ROOT")
+RESULT=$(cd "$TEST_DIR/project/apps/web" && unset CRAFT_PROJECT_ROOT && source "$SCRIPTS_DIR/find-workshop.sh" 2>/dev/null && echo "$PROJECT_ROOT")
 set -e
 
 # Nearest wins: should resolve to child (apps/web has its own .craft/)

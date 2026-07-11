@@ -9,14 +9,29 @@ A converged mockup is design truth the user approved in their browser. This flow
 
 **Exactly three AskUserQuestion calls exist in this flow: vibe (Brief), solidify (acceptance), destination (fork).** Round picks and reactions are conversational text - a widget between the user and their taste kills the funnel. Never add a fourth.
 
-All writes live under `.craft/` - the write gate never opens for a mockup.
+All writes live under the project's own `.craft/` (cold path: `$MOCKUP_ROOT/.craft/` - see Step 1) - the write gate never opens for a mockup.
 
 ## Step 1: Brief
+
+**Cold-start determination - runs FIRST, before anything is created.** Ask whether this project is onboarded, using find-workshop.sh's exact semantic: `CRAFT_PROJECT_ROOT` is set, OR a walk-up from PWD finds `.craft/.global-state` or `.craft/project.md`.
+
+- **Warm (a craft root resolves):** everything below runs exactly as written - the cold-start machinery does not exist on this path.
+- **Cold (no root resolves):** run one cheap visual-file check - a Glob pass over `.tsx .jsx .vue .svelte .css .scss .sass .less`, excluding `.craft/`, `node_modules`, `.git`, `dist`, `build`, `.next`. Never invoke the project-scanner for this.
+  - **Zero visual files -> route to `/craft:init`.** No confirmation AskUserQuestion (invoking the command is consent - the same rule /craft itself uses to route to init) and no auto-resume: the funnel STOPS here and init takes over. The user re-invokes `/craft:mockup` after init completes. If they already gave rich mockup detail before the gate, capture it to the notebook AFTER init exists (notebook needs a resolvable root) - never at the gate itself.
+  - **Visual files present -> the cold path.** Set `MOCKUP_ROOT` to the git toplevel (`git rev-parse --show-toplevel`) when in a repo, else PWD - never a subdirectory. Every mockup write lives under `$MOCKUP_ROOT/.craft/`, created on demand - only the subdirectories the mockup itself needs. The cold path NEVER writes `.craft/.global-state` or `.craft/project.md`: their absence is craft's "not yet onboarded" signal, and writing either would silently kill the init offer. Run the funnel below reading `${CRAFT_PROJECT_ROOT:-.}` as `$MOCKUP_ROOT`.
+
+**Forbidden locations - both paths, no exceptions:** mockup artifacts never go to `.scratch/`, the session scratchpad, `/tmp`, or any other improvised location. If `.craft/mockups/` does not exist, CREATE it at the anchor above - a missing `.craft/` is never license to divert; diverting is a broken run, not a judgment call.
 
 Create the artifact folder and record first - it is the durable anchor for everything after:
 
 ```bash
 mkdir -p "${CRAFT_PROJECT_ROOT:-.}/.craft/mockups/$(date +%Y-%m-%d)-[slug]/rounds"
+```
+
+On the cold path the anchor is explicit - same folder shape, rooted at `$MOCKUP_ROOT`:
+
+```bash
+mkdir -p "$MOCKUP_ROOT/.craft/mockups/$(date +%Y-%m-%d)-[slug]/rounds"
 ```
 
 Write `record.md` in the mockup folder:
@@ -47,11 +62,13 @@ origin: [origin tweak name when launched from a taste-pass todo - empty otherwis
  outside an active polish loop; each line: target selector + exact change]
 ```
 
+**`project`:** the project name from `.craft/project.md` when it exists; on the cold path (no project.md) use the basename of `$MOCKUP_ROOT`.
+
 **`origin`:** stamp this at record creation when the mockup was launched from a taste-pass todo - set it to the origin tweak the todo points at (the todo's `source: "[[origin-tweak]]"` carries it into the launch context). Empty for any mockup started directly. This single stamp is what lets a taste-pass outcome trace home through BOTH graduation ramps below, however far the final design diverges from the seed.
 
 Then assemble the brief:
 
-1. **Load the constraints** - `.craft/design/tokens.yaml` and `.craft/design/locked.md` (which carries any design-vibe soul statement). These are think-with, not bible: deliberate breaks are licensed, announced when crossed, and tracked toward `## New Values` for the solidify beat.
+1. **Load the constraints** - `.craft/design/tokens.yaml` and `.craft/design/locked.md` (which carries any design-vibe soul statement). These are think-with, not bible: deliberate breaks are licensed, announced when crossed, and tracked toward `## New Values` for the solidify beat. **When either file is absent (the cold path), there are simply no constraints to load** - assemble the brief from the vibe answer, the muse briefing (if invoked), and the alchemist's own reading of the surrounding code. Never fabricate constraints or import template values; no default palette ever reaches a brief.
 2. **Detect mobile - never ask.** Breakpoints in tokens.yaml, media queries in existing components, project.md signals. When detected, every option in every round ships a mobile layout, and verification covers both viewports.
 3. **The vibe question** - the flow's first AskUserQuestion:
 
@@ -127,6 +144,8 @@ options:
     description: "Rework the finalist to respect the lock as written, then re-accept"
 ```
 
+**When tokens.yaml does not exist (the cold path):** every design value in the accepted page is new by definition - the solidify question still fires. On "Solidify", CREATE `.craft/design/tokens.yaml` containing ONLY the accepted values, each placed under the template's section and key path (`colors.*`, `spacing.scale.N`, `radius.*`, `typography.*`, ... - the schema in `templates/craft/design/tokens.yaml`; a net-new value goes under its proper section with a new key, never flat at top level), each carrying the same provenance comment. "Keep mockup-local" leaves NO file. These key paths are the contract a later `/craft:init` merges into - the keys ARE the contract, the comments are decoration.
+
 Lock edits follow the tweak flow's inline lock-edit rules (skills/adhoc/references/tweak.md): explicit yes only, edited in place in locked.md's existing format, at most ONE lock write per mockup, and no third door - a mockup never closes in a lock-breaking state. Write the outcome to `solidify_outcome` (a decline is recorded there too - values stay mockup-local, no silent drift). No payload -> skip the beat entirely, nothing asked.
 
 Set `status: converged`. Mark Polish and Save complete.
@@ -152,5 +171,7 @@ The fork records the graduation, writes BOTH backlinks - record.md `graduated_to
 - **Tweak:** the handoff brief states "direction pre-settled, converged mockup at [path]" so adhoc's classification doesn't re-open exploration. When the record carries an `origin`, the brief ALSO forwards it ("grew from [origin]") so the ported tweak can stamp its `grew_from` - the read side that keeps lineage alive on the tweak ramp.
 - **Story:** story-new's "From mockup" source (commands/references/story-from-mockup.md) does the pre-fill. The mockup's CSS is NORMATIVE there - ported, never reinterpreted.
 - **Park:** capture a notebook todo naming the mockup path. Pickup = todo done, then re-enter THIS destination choice against the still-converged record. Graduating a long-parked mockup first re-verifies the target surface still exists as mocked - structural drift is surfaced before porting.
+
+**Cold path (project not onboarded):** all three destinations stay available. Say ONE ignorable line before the destination question resolves into action - "Heads-up: /craft:init hasn't run here, so this lands in the project's .craft/ and gets picked up by the harness once init wires it in" - plain prose, never a fourth AskUserQuestion, said once. When invoking notebook-capture.sh or create-story.sh, pass the funnel's root explicitly as a command-scoped env var - `CRAFT_PROJECT_ROOT="$MOCKUP_ROOT" ...` - so their root resolution never guesses. Each destination creates only its own subdirectory on demand (`.craft/backlog/`, `.craft/notebook/`, `.craft/tweaks/`) - still no `.global-state`, no `project.md`, no scaffold. A later `/craft:init` discovers these artifacts; it never deletes them.
 
 No choice ("Choose destination" pending) leaves the record converged and the task open - never nag; the record's openness is independent bookkeeping. An explicit drop ("abandon it") sets `status: abandoned` and completes the task with a note. Abandoned mockups stay on disk; cleanup is manual.

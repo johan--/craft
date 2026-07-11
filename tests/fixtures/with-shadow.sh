@@ -11,7 +11,7 @@
 #   $dir/project/apps/web/.craft/              (child sub-project)
 #   $dir/project/apps/web/.craft/.global-state (child sub-project, initialized)
 #
-# "Nearest wins" — from apps/web/, find-project-root resolves to child.
+# "Nearest wins" — from apps/web/, find-workshop resolves to child.
 # From project/, it resolves to parent. Both are legitimate.
 
 create_craft_with_shadow() {

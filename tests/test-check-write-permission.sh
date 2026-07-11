@@ -197,5 +197,24 @@ assert_contains "deny is in output" "deny" "$RESULT"
 cleanup_test_dir
 echo ""
 
+# Test 13: Bare .craft/ (mockups only, no project.md/.global-state) — source write allowed
+# A converged mockup can leave .craft/mockups/ in a never-inited project; that bare
+# directory must NOT resolve as a project root, or the gate would deny every source
+# edit there. Mirrors find-workshop.sh's "created by accident" guard.
+# Same macOS resolved-path note as Test 4. Inited-project deny regression: Test 4.
+begin_test "Bare .craft/ (no project.md) — source write allowed"
+
+BARE_DIR=$(mktemp -d)
+BARE_RESOLVED=$(cd "$BARE_DIR" && pwd -P)
+mkdir -p "$BARE_DIR/.craft/mockups/2026-07-10-sample/rounds"
+mkdir -p "$BARE_DIR/src"
+
+JSON="{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$BARE_RESOLVED/src/app.ts\"},\"cwd\":\"$BARE_RESOLVED\"}"
+RESULT=$(cd "$BARE_DIR" && unset CRAFT_PROJECT_ROOT && run_check_write "$JSON")
+assert_not_contains "no deny for bare .craft/ (never-inited) project" "deny" "$RESULT"
+
+rm -rf "$BARE_DIR"
+echo ""
+
 # --- Summary ---
 finish_tests

@@ -4,12 +4,12 @@
 
 set -e
 
-# Resolve project root (CRAFT_PROJECT_ROOT set by session-start, or find-project-root.sh fallback)
+# Resolve project root (CRAFT_PROJECT_ROOT set by session-start, or find-workshop.sh fallback)
 if [ -n "$CRAFT_PROJECT_ROOT" ]; then
   ROOT="${CRAFT_PROJECT_ROOT%/}"
 else
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  source "$SCRIPT_DIR/find-project-root.sh" 2>/dev/null || true
+  source "$SCRIPT_DIR/find-workshop.sh" 2>/dev/null || true
   ROOT="${PROJECT_ROOT%/}"
 fi
 

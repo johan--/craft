@@ -2,6 +2,13 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.37
+
+- Added cold-start support to /craft:mockup: a project with real UI code runs the full mockup funnel without ever running /craft:init - records persist under the project's own .craft/mockups/, accepting solidify creates tokens.yaml from the values you approved, and all three destinations (tweak / story / park) work cold with a gentle init reminder instead of a forced setup
+- Added an empty-folder route: /craft:mockup in a folder with no visual code hands off to /craft:init directly - init's inspiration session is where an empty project's taste is born
+- Fixed the write gate wrongly arming itself in never-inited projects: a bare .craft/ left by a cold mockup no longer counts as a craft project root, so source edits stay unblocked
+- Renamed the project-root resolver to find-workshop.sh - it answers "is there a craft workshop here?", and the mockup's cold path is literally its no
+
 ## 1.99.36
 
 - Added stack-aware quality gates: craft fingerprints which toolchains your repo actually has (.NET, Go, Python, Rust, Make, and more) and every validation report carries one honest coverage line - "full coverage", or exactly which toolchain no gate measures

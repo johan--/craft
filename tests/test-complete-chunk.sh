@@ -102,7 +102,7 @@ cleanup_test_dir
 echo ""
 
 # Test 4: BUG — complete-chunk.sh picks up CRAFT_PROJECT_ROOT from environment
-# When called with no args from a random directory, find-project-root.sh inherits
+# When called with no args from a random directory, find-workshop.sh inherits
 # CRAFT_PROJECT_ROOT from the parent environment and operates on the REAL project.
 # This is a safety issue: an accidental invocation can corrupt real state.
 # The test verifies the bug exists by checking that env isolation changes behavior.

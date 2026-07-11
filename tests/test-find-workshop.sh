@@ -1,5 +1,5 @@
 #!/bin/bash
-# test-find-project-root.sh — Tests for find-project-root.sh
+# test-find-workshop.sh — Tests for find-workshop.sh
 # Validates project root resolution in monorepo scenarios
 #
 # Key behavior: "nearest wins" — walk up from CWD, first .craft/.global-state wins.
@@ -13,16 +13,16 @@ source "$SCRIPT_DIR/test_helper.sh"
 source "$SCRIPT_DIR/fixtures/with-shadow.sh"
 source "$SCRIPT_DIR/fixtures/minimal.sh"
 
-FIND_SCRIPT="$SCRIPTS_DIR/find-project-root.sh"
+FIND_SCRIPT="$SCRIPTS_DIR/find-workshop.sh"
 
 # --- Tests ---
 
-echo "=== test-find-project-root.sh ==="
+echo "=== test-find-workshop.sh ==="
 echo ""
 
 # Test 1: Nearest .craft/ wins — child found before parent
 # In a monorepo, each sub-project has its own .craft/. When CWD is inside
-# a sub-project, find-project-root should resolve to THAT sub-project.
+# a sub-project, find-workshop should resolve to THAT sub-project.
 begin_test "Nearest wins — resolves to child .craft/ from child dir"
 
 TEST_DIR=$(create_craft_with_shadow)
@@ -30,7 +30,7 @@ trap cleanup_test_dir EXIT
 PARENT_DIR="$TEST_DIR/project"
 CHILD_DIR="$TEST_DIR/project/apps/web"
 
-# Source find-project-root.sh from the child dir in a subshell
+# Source find-workshop.sh from the child dir in a subshell
 RESULT=$(cd "$CHILD_DIR" && unset PROJECT_ROOT && unset CRAFT_PROJECT_ROOT && unset CRAFT_MULTI_PROJECT && source "$FIND_SCRIPT" 2>/dev/null && echo "$PROJECT_ROOT")
 
 assert_eq "resolves to child (nearest) project root" "$CHILD_DIR/" "$RESULT"

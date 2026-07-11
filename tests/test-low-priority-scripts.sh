@@ -4,7 +4,7 @@
 #          track-usage, self-critique, check-polish
 #
 # SAFETY: Script invocations use (cd "$TEST_DIR" && unset CRAFT_PROJECT_ROOT && ...)
-# to prevent find-project-root.sh from escaping the temp dir.
+# to prevent find-workshop.sh from escaping the temp dir.
 
 set -e
 

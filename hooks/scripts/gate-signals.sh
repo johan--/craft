@@ -31,7 +31,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Resolve the project root (handles monorepo + CRAFT_PROJECT_ROOT); exports
 # PROJECT_ROOT with a trailing slash.
-source "$SCRIPT_DIR/find-project-root.sh" 2>/dev/null || {
+source "$SCRIPT_DIR/find-workshop.sh" 2>/dev/null || {
   echo "Error: could not resolve project root" >&2
   exit 1
 }

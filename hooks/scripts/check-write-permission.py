@@ -58,10 +58,15 @@ def _find_nearest_craft():
             return d.rstrip("/") + "/"
         d = os.path.dirname(d)
 
-    # Fallback: .craft/ directory without .global-state
+    # Fallback: .craft/ with project.md but no .global-state (mirrors
+    # find-workshop.sh). A bare .craft/ — e.g. only mockups/ in a
+    # never-inited project — is not a project root; treating it as one
+    # would arm the write gate against every source edit there.
     d = os.getcwd()
     while d != os.path.dirname(d):
-        if os.path.isdir(os.path.join(d, ".craft")):
+        if os.path.isdir(os.path.join(d, ".craft")) and os.path.isfile(
+            os.path.join(d, ".craft", "project.md")
+        ):
             return d.rstrip("/") + "/"
         d = os.path.dirname(d)
 
@@ -138,7 +143,7 @@ def _find_active_sub_project(repo_root):
     return None
 
 
-def find_project_root():
+def find_workshop():
     """Resolve the active Craft project root (monorepo-aware).
 
     Resolution order:
@@ -236,7 +241,7 @@ def main():
         return
 
     # Resolve project root (monorepo-aware)
-    project_root = find_project_root()
+    project_root = find_workshop()
 
     # If no .craft directory found, allow (not a craft project)
     if not project_root or not os.path.isdir(os.path.join(project_root, ".craft")):

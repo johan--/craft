@@ -7,7 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Resolve project root (handles monorepo with multiple .craft/ dirs)
-source "$SCRIPT_DIR/find-project-root.sh" 2>/dev/null || exit 0
+source "$SCRIPT_DIR/find-workshop.sh" 2>/dev/null || exit 0
 
 # No .craft/ found anywhere — not a craft project
 if [ -z "$PROJECT_ROOT" ] || [ ! -d "${PROJECT_ROOT}.craft" ]; then

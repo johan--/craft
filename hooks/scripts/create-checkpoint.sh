@@ -34,7 +34,7 @@ if [ -z "$PROJECT_ROOT" ]; then
     PROJECT_ROOT="$CRAFT_PROJECT_ROOT"
   else
     PROJECT_ROOT=""
-    source "$SCRIPT_DIR/find-project-root.sh"
+    source "$SCRIPT_DIR/find-workshop.sh"
   fi
 fi
 

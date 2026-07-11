@@ -87,12 +87,12 @@ def main():
     tool_name = input_data.get("tool_name", "unknown")
     error = input_data.get("error", "")
 
-    # Resolve project root (CRAFT_PROJECT_ROOT set by session-start, or find-project-root.sh fallback)
+    # Resolve project root (CRAFT_PROJECT_ROOT set by session-start, or find-workshop.sh fallback)
     project_root = os.environ.get("CRAFT_PROJECT_ROOT", "").rstrip("/")
     if not project_root:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         result = subprocess.run(
-            ["bash", "-c", f"source '{script_dir}/find-project-root.sh' && printf '%s' \"$PROJECT_ROOT\""],
+            ["bash", "-c", f"source '{script_dir}/find-workshop.sh' && printf '%s' \"$PROJECT_ROOT\""],
             capture_output=True, text=True
         )
         project_root = result.stdout.strip().rstrip("/")

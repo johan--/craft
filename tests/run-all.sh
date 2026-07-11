@@ -98,7 +98,7 @@ echo "    - move-story.sh awk insertion fixed with fallback + post-insertion val
 echo ""
 echo "  Story 9 (scripts using relative .craft paths): ALL FIXED"
 echo "    - export-progress.sh, handle-tool-failure.py, create-story.sh, statusline.sh"
-echo "    - All use CRAFT_PROJECT_ROOT with find-project-root.sh fallback"
+echo "    - All use CRAFT_PROJECT_ROOT with find-workshop.sh fallback"
 echo ""
 echo "  Other known bugs (not yet in a story):"
 echo "    - create-story.sh: {{PRIORITY}} and {{STORY_NUMBER}} placeholders never substituted"

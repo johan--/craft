@@ -276,7 +276,7 @@ All hooks defined in `hooks/hooks.json`. Scripts in `hooks/scripts/`.
 | `update-cycle-state.sh` | Update cycle .state file |
 | `update-story-status.sh` | Change story status in frontmatter |
 | `statusline.sh` | Generate status line display |
-| `find-project-root.sh` | Locate .craft/ directory |
+| `find-workshop.sh` | Locate .craft/ directory |
 | `discover-projects.sh` | Find all craft projects |
 | `count-requests.sh` | Count pending items in requests queue |
 | `process-request.sh` | Route a request to a story or cycle |

@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Walk up to find project root (handles monorepo subdirectories)
 PROJECT_ROOT=""
-source "$SCRIPT_DIR/find-project-root.sh" 2>/dev/null || exit 0
+source "$SCRIPT_DIR/find-workshop.sh" 2>/dev/null || exit 0
 
 if [ ! -f "${PROJECT_ROOT}.craft/.global-state" ]; then
   exit 0

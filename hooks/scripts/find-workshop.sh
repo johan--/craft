@@ -1,5 +1,7 @@
 #!/bin/bash
-# find-project-root.sh — Resolve the active Craft project root
+# find-workshop.sh — Find the workshop: resolve the active Craft project root.
+# This is craft's "is there a workshop here?" oracle - resolution failing means
+# the project is not onboarded, and callers may branch on that (cold paths).
 # Usage: source this file, then use $PROJECT_ROOT
 #
 # Resolution order:

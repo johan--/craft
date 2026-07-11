@@ -38,7 +38,7 @@ fi
 # Find cycle directory if name provided instead of path
 if [ ! -d "$CYCLE_DIR" ]; then
   # Resolve project root for lookup
-  source "$SCRIPT_DIR/find-project-root.sh" 2>/dev/null || {
+  source "$SCRIPT_DIR/find-workshop.sh" 2>/dev/null || {
     echo "Error: Cycle directory not found: $CYCLE_DIR"
     exit 1
   }

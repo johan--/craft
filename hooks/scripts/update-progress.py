@@ -10,7 +10,7 @@ import sys
 from datetime import datetime, timezone
 
 
-def find_project_root():
+def find_workshop():
     """Find the nearest Craft project root by walking up from cwd.
 
     Resolution order:
@@ -83,7 +83,7 @@ def main():
         return
 
     # Find project root
-    project_root = find_project_root()
+    project_root = find_workshop()
     if not project_root:
         return
 

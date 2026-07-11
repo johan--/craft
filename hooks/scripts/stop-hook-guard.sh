@@ -20,7 +20,7 @@ SESSION_ID=$(echo "$PWD" | md5sum | cut -c1-8 2>/dev/null || echo "$PWD" | md5 |
 
 # Resolve project root for state checks
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/find-project-root.sh" 2>/dev/null || exit 0
+source "$SCRIPT_DIR/find-workshop.sh" 2>/dev/null || exit 0
 
 if [ -z "$PROJECT_ROOT" ] || [ ! -d "${PROJECT_ROOT}.craft" ]; then
   exit 0

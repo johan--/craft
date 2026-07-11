@@ -7,7 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Resolve project root (handles monorepo)
-source "$SCRIPT_DIR/find-project-root.sh" 2>/dev/null || {
+source "$SCRIPT_DIR/find-workshop.sh" 2>/dev/null || {
   echo "Error: Could not resolve project root"
   exit 1
 }

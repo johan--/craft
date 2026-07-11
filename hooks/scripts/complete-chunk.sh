@@ -30,7 +30,7 @@ if [ -n "$CYCLE_DIR" ]; then
 else
   # Walk up to find project root (handles monorepo subdirectories)
   PROJECT_ROOT=""
-  source "$SCRIPT_DIR/find-project-root.sh"
+  source "$SCRIPT_DIR/find-workshop.sh"
 fi
 
 # If no cycle provided, get from global state

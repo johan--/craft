@@ -2,7 +2,7 @@
 # test-session-start.sh — Tests for session-start.sh
 # Validates session bootstrap resolves correct project root
 #
-# Key behavior: "nearest wins" — session-start sources find-project-root.sh
+# Key behavior: "nearest wins" — session-start sources find-workshop.sh
 # which walks up from CWD and finds the nearest .craft/.global-state.
 # In a monorepo with multiple .craft/ dirs, each sub-project owns its own.
 
