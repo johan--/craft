@@ -209,7 +209,7 @@ Both paths start with `/craft:init` - and it's much more than scaffolding. Where
 - **Design pulled from inspiration.** Name the sites you admire and craft opens each one in a real browser and extracts what you point at - colors from one site, typography from another, spacing from a third - then assembles them into one design language with a name ("Linear's restraint meets Stripe's confidence"). You riff in plain words - "more warmth," "less corporate" - until it feels right. Lock it, and those tokens are enforced from then on.
 - **The energy.** Steady and solid, move fast, or learning mode - validation and checkpoints adapt to match.
 
-It ends with one question - "What's the first thing we're tackling?" - and you're planning your first cycle.
+It ends with a real first move, not a blank prompt: **mock up a screen**, **describe a feature**, or take it from here. On a blank canvas craft recommends the mockup - three live options in your browser before a line of code, and the one that clicks becomes your first story.
 
 **Existing project.** `/craft:init` scans your code instead of asking about it: project type, stack, conventions, and the visual patterns already in your files. A mature codebase gets its consistent patterns extracted and locked; an early one isn't guessed at - craft defers tokens and learns your visual language from what you build next. Then start small - ask Claude:
 
@@ -504,7 +504,7 @@ After initialization, your project will have:
 │   ├── tokens.yaml       # Design tokens (enforced)
 │   ├── components.md     # Component patterns
 │   ├── locked.md         # Approved patterns (enforced)
-│   └── .confidence-signals.yaml  # Token confidence scores (written by project-scanner)
+│   └── .confidence-signals.yaml  # Scan signals: token confidence + total_files (init's kickoff menu reads it)
 ├── workflows/            # Reusable multi-step workflows
 │   └── {workflow-name}/
 │       ├── definition.md # Routing table for stages

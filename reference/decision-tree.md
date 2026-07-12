@@ -445,6 +445,8 @@ flowchart TD
 
 ## Mockup Flow: `/craft:mockup`
 
+Reached two ways: the user invokes `/craft:mockup` directly, or `/craft:init`'s First Cycle Kickoff routes here - init ends in a deterministic first-move question (Mock up a screen / Describe a feature / I'll take it from here) where the mockup option appears only for ui/hybrid projects and carries (Recommended) when the project was empty at scan time (`total_files == 0` in `.craft/design/.confidence-signals.yaml`).
+
 ```mermaid
 %%{init: {'theme': 'dark'}}%%
 flowchart TD

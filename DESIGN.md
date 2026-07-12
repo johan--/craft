@@ -341,7 +341,7 @@ project-root/
 │   │   ├── components.md      ← Component patterns
 │   │   ├── locked.md          ← Approved patterns (enforced)
 │   │   ├── animations.md      ← Animation patterns
-│   │   └── .confidence-signals.yaml ← Token confidence scores (use_count, file_count, consistency_score, recency)
+│   │   └── .confidence-signals.yaml ← Scan signals: token confidence (use_count, file_count, consistency_score, recency) + total_files (drives init's first-move recommendation)
 │   ├── workflows/             ← Reusable multi-step workflows
 │   │   └── {workflow-slug}/
 │   │       ├── definition.md  ← Routing table for stages
