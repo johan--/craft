@@ -46,7 +46,9 @@ Users shouldn't have to tell Claude what language their project is written in �
 Get a complete picture of what's in the project.
 
 ```
-# Count files by type (exclude node_modules, .git, dist, build, .next)
+# Count files by type (exclude node_modules, .git, dist, build, .next, .craft)
+# .craft/ is craft's own state - mockup HTML (.craft/mockups/*.html, rounds/*.html)
+# must never count toward VISUAL_FILE_COUNT or be read for pattern extraction
 Glob "**/*.ts" → count → TS_FILES
 Glob "**/*.tsx" → count → TSX_FILES
 Glob "**/*.js" → count → JS_FILES
@@ -282,7 +284,7 @@ Scan visual files for recurring design values across 8 categories. The goal is t
 
 **Scanning approach per category:**
 
-1. Use Grep to find all occurrences of category-specific patterns across visual files only
+1. Use Grep to find all occurrences of category-specific patterns across visual files only. `.craft/` is excluded from this scope (same as node_modules/.git/dist/build/.next) - a converged mockup's HTML lives there, and extracting design values from it would feed the mockup's own guesses back as if they were codebase truth
 2. For each unique value found, count:
    - `use_count`: total number of occurrences across all files
    - `file_count`: number of distinct files containing this value
@@ -307,6 +309,14 @@ Scan visual files for recurring design values across 8 categories. The goal is t
 ---
 
 ## Output Format
+
+**If `.craft/design/tokens.yaml` already exists:** it is a MERGE TARGET for init's keyed
+merge, not a defect to flag. Report extracted values as merge input - which keys agree
+with the existing file, which conflict (same key, different value), which are new. NEVER
+frame the existing file as "contradicting the code", "stale", or something extraction
+will "overwrite" or "reconcile" - that framing licensed a destructive regeneration in a
+live run (2026-07-11). The existing values are user-approved (mockup or inspiration);
+the merge decides per-key, and only the user resolves conflicts.
 
 Return your findings in this exact structure:
 

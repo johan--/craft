@@ -2,6 +2,14 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.38
+
+- Added tokens.yaml merging to /craft:init: when a mockup (or you) already created tokens.yaml, init merges extracted values into it instead of skipping extraction or overwriting the file - your approved values always win by default, and same-key conflicts are listed per-key for you to resolve explicitly
+- Added merge-tokens.py, a deterministic merge engine behind that behavior: it diffs extracted values against your file before you're asked anything, writes surgically (untouched lines and their provenance comments cannot change), backfills missing sections from template defaults, and verifies its own result - restoring your original file if anything is off
+- Added a write-gate guard for tokens.yaml: whole-file rewrites of an existing tokens.yaml are blocked at the tool level with a pointer to the merge engine - targeted single-key updates and first-time creation are unaffected
+- Fixed the project scanner counting a mockup's own HTML toward the visual-file count and reading design values from it - .craft/ is now excluded from scans
+- Fixed setup preserving an existing tokens.yaml on CLI and hybrid projects instead of replacing it with the conventions template
+
 ## 1.99.37
 
 - Added cold-start support to /craft:mockup: a project with real UI code runs the full mockup funnel without ever running /craft:init - records persist under the project's own .craft/mockups/, accepting solidify creates tokens.yaml from the values you approved, and all three destinations (tweak / story / park) work cold with a gentle init reminder instead of a forced setup

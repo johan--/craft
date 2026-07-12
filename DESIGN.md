@@ -235,7 +235,8 @@ All hooks defined in `hooks/hooks.json`. Scripts in `hooks/scripts/`.
 - **`post-compact-reinject.sh`** (on compact) - Re-injects craft context after context compaction
 
 ### PreToolUse (Write|Edit)
-- **`check-write-permission.py`** - Enforces write permission gating. Checks for active story/cycle context, `CRAFT_WRITE_ENABLED` flag, active workflow session, and allowed paths. Uses hardcoded logic (no external config file).
+- **`check-write-permission.py`** - Enforces write permission gating. Checks for active story/cycle context, `CRAFT_WRITE_ENABLED` flag, active workflow session, and allowed paths. Also denies the Write tool on an existing `.craft/design/tokens.yaml` (merge target - redirects to `merge-tokens.py`; Edit and creation stay allowed). Uses hardcoded logic (no external config file).
+- **`merge-tokens.py`** - Not a hook: a CLI invoked by craft-init's token phases. The sole writer for merges into an existing tokens.yaml - `report` mode emits a mechanical per-key CONFLICT/NEW/SAME diff for the token AUQs; `merge` mode does a line-surgical keyed union (snapshot, self-verify, restore-on-violation). Lives here beside the hook that enforces it.
 
 ### PreToolUse (Bash)
 - **`auto-approve-plugin-scripts.sh`** - Auto-approves bash invocations of plugin scripts to reduce permission prompts.

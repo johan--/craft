@@ -411,6 +411,8 @@ Continue to Phase 2b.
 
 > "Your project has [N] visual files - enough to start seeing patterns. Let me extract what I can find..."
 
+**Pre-existing tokens.yaml check:** if `.craft/design/tokens.yaml` already exists (e.g. born from a converged `/craft:mockup`), set `PREEXISTING_TOKENS=1`. Phase 5 will merge extracted values into it - see "Reference: Keyed tokens.yaml merge". Run the script's report mode over the extracted values NOW and paste its CONFLICT/NEW/SAME output verbatim into the presentation below - the conflict list comes from code, never from your own comparison.
+
 Extract visual patterns from the scanner's findings (colors, fonts, spacing mentioned in the Key Patterns table). Present them to the user:
 
 > "Here's what I found in your code:
@@ -435,11 +437,30 @@ options:
 If "Yes": Set `SKIP_TOKENS=0`. The scanner findings feed into Phase 5 file generation (tokens.yaml gets populated from extracted values, not the generic template).
 If "Skip": Set `SKIP_TOKENS=1`.
 
+**If `PREEXISTING_TOKENS=1` and conflicts exist**, extend this same widget in place - never a new one. List the conflict set in the question's presentation text:
+
+> "Your tokens.yaml already has values for [conflicting keys]. The scan found different values: [key: existing value vs scanned value]. Existing values stay unless you review each conflict."
+
+and add one option to the two above:
+
+```
+  - label: "Save + review conflicts"
+    description: "Add non-conflicting values, then walk each conflicting key individually"
+```
+
+If "Save + review conflicts": walk each conflicting key with an individual AskUserQuestion (keep existing value / take scanned value), record each "take scanned" choice as a `--resolve section.key=incoming` flag for Phase 5's merge invocation, then set `SKIP_TOKENS=0`.
+
+With `PREEXISTING_TOKENS=1`, "Yes, save and enforce" adds only non-conflicting scan keys - every conflicting key keeps its existing value. A bulk choice never overwrites an existing (mockup-owned) key; only the per-key conflict walk can. Phase 5's keyed merge performs the actual write - this branch's job is extraction and conflict resolution only.
+
 Continue to Phase 2b.
 
 **Branch: UI existing mature (20+ visual files)**
 
 > "Your project has [N] visual files - rich enough for confident pattern extraction."
+
+**Pre-existing tokens.yaml check:** if `.craft/design/tokens.yaml` already exists (e.g. born from a converged `/craft:mockup`), set `PREEXISTING_TOKENS=1`. Phase 5 will merge extracted values into it - see "Reference: Keyed tokens.yaml merge". Run the script's report mode over the extracted values NOW and paste its CONFLICT/NEW/SAME output verbatim into the presentation below - the conflict list comes from code, never from your own comparison. Frame it e.g.:
+
+> "Your tokens.yaml already has values for [conflicting keys]. The scan found different values: [key: existing value vs scanned value]. Bulk options below won't touch those - pick 'Review each' to resolve them."
 
 Extract visual patterns from scanner findings. Split into high-confidence (consistent, widely used) and low-confidence (inconsistent, few usages):
 
@@ -468,10 +489,14 @@ options:
     description: "Don't save any tokens now"
 ```
 
-If "Lock high-confidence": Write high-confidence to tokens.yaml, skip low-confidence. Set `SKIP_TOKENS=0`.
-If "Lock all": Write all to tokens.yaml. Set `SKIP_TOKENS=0`.
+If "Lock high-confidence": lock the high-confidence patterns, skip low-confidence. Set `SKIP_TOKENS=0`.
+If "Lock all": lock all patterns. Set `SKIP_TOKENS=0`.
 If "Review each": Walk through each pattern with individual AskUserQuestion. Set `SKIP_TOKENS=0` if any approved, `1` if all skipped.
 If "Skip all": Set `SKIP_TOKENS=1`.
+
+The locked set feeds Phase 5's `#### tokens.yaml` step - the single write site for extracted tokens. This branch's job is extraction and conflict resolution, not writing.
+
+With `PREEXISTING_TOKENS=1`: "Lock high-confidence" and "Lock all" apply to **non-conflicting scan keys only** - bulk choices generate NO `--resolve` flags, so the merge script keeps every existing (mockup-owned) value. Conflicting keys change only via "Review each": record each "take scanned" choice as a `--resolve section.key=incoming` flag for Phase 5's merge invocation - the only path that can change an existing value.
 
 Continue to Phase 2b.
 
@@ -526,6 +551,34 @@ options:
 Proceed to Phase 3 (Inspiration Design Session).
 
 **If "No":** Skip Phase 3. Continue to Phase 4 (setup-craft.sh).
+
+---
+
+### Reference: Keyed tokens.yaml merge
+
+When a `.craft/design/tokens.yaml` already exists before this init run (most often born from a converged `/craft:mockup`), the file is a **merge target** - never skip extraction because of it, never regenerate over it. The Write tool is DENIED on an existing tokens.yaml (write-permission hook enforces this); `merge-tokens.py` is the only writer. This block owns the decisions; the script owns every write mechanic - see `${CLAUDE_PLUGIN_ROOT}/hooks/scripts/merge-tokens.py` (docstring) for exact behavior. Do not restate or improvise write mechanics at any call site.
+
+**Signal:** the Phase 2 extracting branches (mid/mature UI) set `PREEXISTING_TOKENS=1` when `.craft/design/tokens.yaml` exists at branch time. This signal is distinct from `SKIP_TOKENS` on purpose: `SKIP_TOKENS=1` tells setup-craft.sh not to copy the template over the file, while `PREEXISTING_TOKENS=1` tells Phase 5 to merge into it. One protects the file; the other drives the merge.
+
+**The decisions:**
+
+- **The per-key diff comes from code, not interpretation.** Before any token AskUserQuestion, run report mode and paste its output verbatim into the presentation:
+  ```bash
+  echo "$EXTRACTED_VALUES" | python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/merge-tokens.py report .craft/design/tokens.yaml
+  # stdin: one line per value - section.key=value|provenance comment
+  # stdout: CONFLICT / NEW / SAME per key
+  ```
+- **Precedence:** extraction path (Phase 5) = existing wins - a mockup value is the user's approved browser-reaction choice, a scanned value is inferred from code. Inspiration Lock (Phase 3) = incoming wins - the user's explicit fresh choice supersedes the earlier mockup. Precedence direction is the ONLY thing that varies by call site.
+- **Conflicts (same key, different value) resolve only through the calling path's sanctioned resolution.** Extraction path: the user's per-key AUQ choices, passed to the script as `--resolve section.key=incoming` flags. Bulk options ("Lock all", "Lock high-confidence") generate NO `--resolve` flags - the script keeps existing values for unresolved conflicts, so a bulk choice structurally cannot overwrite an existing key. Inspiration path: precedence itself is the resolution, no prompt. The script hard-errors on any `--resolve` naming a key outside its derived conflict set.
+- **The write:**
+  ```bash
+  echo "$LOCKED_VALUES" | python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/merge-tokens.py merge .craft/design/tokens.yaml \
+    --template ${CLAUDE_PLUGIN_ROOT}/templates/craft/design/tokens.yaml \
+    [--precedence incoming] [--resolve section.key=incoming ...]
+  ```
+  The script snapshots first, merges by key (union: scan-only keys added, existing keys kept, untouched lines byte-preserved with their provenance comments), backfills absent template sections with literals (never a `{{...}}` placeholder), self-verifies, and restores + exits non-zero on any violation. **A non-zero exit means the merge did NOT happen** - report the script's error to the user; never fall back to the Write tool.
+
+Echo the script's summary line (kept/added/replaced/backfilled) to the user after a successful merge.
 
 ---
 
@@ -928,12 +981,23 @@ Step 1 - Read the current assembly tokens from the session file.
 
 Step 2 - Read the tokens.yaml template from `${CLAUDE_PLUGIN_ROOT}/templates/craft/design/tokens.yaml`. This is the target structure.
 
-Step 3 - Generate the final tokens.yaml by filling in the template structure with the assembled values. For each token in the template:
+Step 3 - Branch on whether `.craft/design/tokens.yaml` already exists:
+
+**If no tokens.yaml exists:** Generate the final tokens.yaml by filling in the template structure with the assembled values. For each token in the template:
 - If the assembly has a value for this token, use the assembly value
 - If the assembly doesn't have a value, keep the template default
 - Add a comment noting the source: `# from [source name]` or `# default`
 
-Step 4 - Write the populated tokens.yaml to `.craft/design/tokens.yaml` using the Write tool.
+**If tokens.yaml already exists (e.g. born from a converged `/craft:mockup`):** run the **Keyed tokens.yaml merge** script with reversed precedence - the inspiration-locked value wins on same-key collisions, and keys the session didn't cover survive with their provenance comments:
+
+```bash
+echo "$ASSEMBLY_VALUES" | python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/merge-tokens.py merge .craft/design/tokens.yaml \
+  --template ${CLAUDE_PLUGIN_ROOT}/templates/craft/design/tokens.yaml --precedence incoming
+```
+
+`$ASSEMBLY_VALUES` = one `section.key=value|from [source name]` line per assembled token. No `--resolve` flags here - precedence IS the resolution. On a non-zero exit the merge did NOT happen - report the script's error; never fall back to the Write tool.
+
+Step 4 - On the no-pre-existing-file branch ONLY: write the populated tokens.yaml to `.craft/design/tokens.yaml` using the Write tool (creation is allowed; the deny applies only to an existing file). On the merge branch, Step 3's script already wrote the file - echo its summary line and skip this step.
 
 Step 5 - Set `SKIP_TOKENS=0` so the setup script preserves the file.
 
@@ -962,7 +1026,11 @@ Run the setup script with detected project type:
 Export `SKIP_TOKENS` and `SKIP_INSPIRATION` before calling the setup script. If Phase 3's inspiration session wrote `tokens.yaml` or captured `inspiration/sites.md`, those flags prevent the setup script from overwriting them:
 
 ```bash
-# If inspiration session already wrote tokens.yaml, tell setup to skip
+# tokens.yaml already exists (inspiration session wrote it this run, or a mockup/user
+# created it earlier). It is a MERGE TARGET, not a file to regenerate: SKIP_TOKENS=1
+# only stops setup-craft.sh from copying the template over it. It does NOT mean "skip
+# extraction" - when PREEXISTING_TOKENS=1, Phase 5 still merges extracted values into
+# this file (see "Reference: Keyed tokens.yaml merge").
 if [ -f "${CRAFT_PROJECT_ROOT:-.}/.craft/design/tokens.yaml" ]; then
   SKIP_TOKENS=1
 fi
@@ -1142,13 +1210,27 @@ Approved patterns for [Project Name]. Follow these exactly.
 
 #### tokens.yaml
 
-**If SKIP_TOKENS was set (from-scratch or early UI):** tokens.yaml was not created by setup-craft.sh. Do NOT create it manually. Tokens can be added later via `/craft:init` with inspiration, or by creating tokens.yaml manually.
+This is the single write site for extraction-path tokens: Phase 2's mid/mature branches decide WHAT gets locked; the write happens here.
 
-**If tokens were extracted from existing code (mid/mature UI):** Use the extracted values to populate tokens.yaml instead of the generic template values. Replace `{{PRIMARY_COLOR}}` etc. with actual extracted values.
+**If PREEXISTING_TOKENS=1 (tokens.yaml existed before this run) and tokens were extracted (mid/mature UI):** run the **Keyed tokens.yaml merge** script (the only writer - the Write tool is denied on this file):
+
+```bash
+echo "$LOCKED_VALUES" | python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/merge-tokens.py merge .craft/design/tokens.yaml \
+  --template ${CLAUDE_PLUGIN_ROOT}/templates/craft/design/tokens.yaml \
+  [--resolve section.key=incoming ...for each Phase 2 "Review each" take-scanned choice]
+```
+
+`$LOCKED_VALUES` = one `section.key=value|provenance comment` line per value the user locked in Phase 2. Default precedence (existing wins) is correct here. Echo the script's summary line to the user. On a non-zero exit the merge did NOT happen - report the script's error; never fall back to the Write tool.
+
+**If tokens were extracted from existing code (mid/mature UI) and no tokens.yaml pre-existed:** Use the extracted values to populate tokens.yaml instead of the generic template values. Replace `{{PRIMARY_COLOR}}` etc. with actual extracted values.
+
+**If SKIP_TOKENS was set and no tokens.yaml exists (from-scratch or early UI, or the user chose to skip):** tokens.yaml was not created by setup-craft.sh. Do NOT create it manually. Tokens can be added later via `/craft:init` with inspiration, or by creating tokens.yaml manually. (A pre-existing tokens.yaml on these non-extracting branches simply stands untouched - nothing to merge.)
+
+**If PREEXISTING_TOKENS=1 but the user chose to skip on the mid/mature branch (`SKIP_TOKENS=1`):** nothing was locked, so there is nothing to merge - do not touch tokens.yaml. The pre-existing (mockup) file stands exactly as it was.
 
 **For CLI projects:** tokens.yaml was created from the CLI template (Project Conventions). Enhance with scanner findings as before.
 
-**For UI projects (when tokens exist):** Use inspiration extraction results or defaults.
+**For UI projects where Phase 3's inspiration session wrote tokens.yaml this run:** the file is already final (the Lock step wrote it) - do not rewrite it here.
 
 **For CLI projects:** Use agent's convention findings:
 

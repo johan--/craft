@@ -74,7 +74,10 @@ fi
 # For UI projects: SKIP_TOKENS=1 means from-scratch or early - don't generate speculative tokens
 # For CLI projects: always generate (these are conventions, not visual design)
 if [ "$PROJECT_TYPE" = "cli" ]; then
-  if [ -f "$DESIGN_TEMPLATES/tokens.yaml" ]; then
+  if [ -f ".craft/design/tokens.yaml" ]; then
+    # An existing tokens.yaml (e.g. written by a converged mockup) is never overwritten
+    echo -e "  ${GREEN}✓${NC} Preserved existing design/tokens.yaml"
+  elif [ -f "$DESIGN_TEMPLATES/tokens.yaml" ]; then
     cp "$DESIGN_TEMPLATES/tokens.yaml" .craft/design/tokens.yaml
     echo -e "  ${GREEN}✓${NC} Created design/tokens.yaml (project conventions)"
   fi

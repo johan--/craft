@@ -62,7 +62,7 @@ origin: [origin tweak name when launched from a taste-pass todo - empty otherwis
  outside an active polish loop; each line: target selector + exact change]
 ```
 
-**`project`:** the project name from `.craft/project.md` when it exists; on the cold path (no project.md) use the basename of `$MOCKUP_ROOT`.
+**`project`:** the project name from `.craft/project.md` when it exists; when it is absent (cold path, or a warm quick-setup project that never writes project.md), use the basename of the resolved root.
 
 **`origin`:** stamp this at record creation when the mockup was launched from a taste-pass todo - set it to the origin tweak the todo points at (the todo's `source: "[[origin-tweak]]"` carries it into the launch context). Empty for any mockup started directly. This single stamp is what lets a taste-pass outcome trace home through BOTH graduation ramps below, however far the final design diverges from the seed.
 
@@ -124,7 +124,7 @@ The finalist iterates until explicit acceptance. This round runs differently: th
 
 ### The solidify beat (one AskUserQuestion)
 
-Re-derive the payload from the FINAL accepted page - never from memory of the rounds: scan mockup.html's design values against tokens.yaml (new values, overridden values) and collect any locks crossed en route that the finalist still breaks. Update `## New Values` to match. Include only the questions with pending payload, in ONE AskUserQuestion:
+Re-derive the payload from the FINAL accepted page - never from memory of the rounds: scan mockup.html's design values against tokens.yaml (new values, overridden values) and collect any locks crossed en route that the finalist still breaks. Update `## New Values` to match. (On "Solidify" against an EXISTING tokens.yaml, write the accepted values with targeted Edits on the specific keys - never a whole-file Write; the write-permission hook denies Write on an existing tokens.yaml so unnamed keys and provenance comments survive.) Include only the questions with pending payload, in ONE AskUserQuestion:
 
 ```
 question (if new/changed values): "This mockup introduced [values] - solidify to tokens.yaml?"
@@ -172,6 +172,6 @@ The fork records the graduation, writes BOTH backlinks - record.md `graduated_to
 - **Story:** story-new's "From mockup" source (commands/references/story-from-mockup.md) does the pre-fill. The mockup's CSS is NORMATIVE there - ported, never reinterpreted.
 - **Park:** capture a notebook todo naming the mockup path. Pickup = todo done, then re-enter THIS destination choice against the still-converged record. Graduating a long-parked mockup first re-verifies the target surface still exists as mocked - structural drift is surfaced before porting.
 
-**Cold path (project not onboarded):** all three destinations stay available. Say ONE ignorable line before the destination question resolves into action - "Heads-up: /craft:init hasn't run here, so this lands in the project's .craft/ and gets picked up by the harness once init wires it in" - plain prose, never a fourth AskUserQuestion, said once. When invoking notebook-capture.sh or create-story.sh, pass the funnel's root explicitly as a command-scoped env var - `CRAFT_PROJECT_ROOT="$MOCKUP_ROOT" ...` - so their root resolution never guesses. Each destination creates only its own subdirectory on demand (`.craft/backlog/`, `.craft/notebook/`, `.craft/tweaks/`) - still no `.global-state`, no `project.md`, no scaffold. A later `/craft:init` discovers these artifacts; it never deletes them.
+**Cold path (project not onboarded):** all three destinations stay available. Say ONE ignorable line before the destination question resolves into action - "Heads-up: /craft:init hasn't run here, so this lands in the project's .craft/ and gets picked up by the harness once init wires it in" - plain prose, never a fourth AskUserQuestion, said once. When invoking notebook-capture.sh or create-story.sh, pass the funnel's root explicitly as a command-scoped env var - `CRAFT_PROJECT_ROOT="$MOCKUP_ROOT" ...` - so their root resolution never guesses. The Tweak destination needs the same anchoring by a different route: the handoff to adhoc is a skill session, not a single script call, and on the cold path no session-persistent `CRAFT_PROJECT_ROOT` exists for its later bash commands to fall back on. Include the resolved root in the handoff brief ("cold project, root: [$MOCKUP_ROOT]") and instruct adhoc to prefix `CRAFT_PROJECT_ROOT="$MOCKUP_ROOT"` on every bash command it runs for this invocation - otherwise its bare `${CRAFT_PROJECT_ROOT:-.}` expansions resolve to whatever directory it happens to run from. Each destination creates only its own subdirectory on demand (`.craft/backlog/`, `.craft/notebook/`, `.craft/tweaks/`) - still no `.global-state`, no `project.md`, no scaffold. A later `/craft:init` discovers these artifacts; it never deletes them.
 
 No choice ("Choose destination" pending) leaves the record converged and the task open - never nag; the record's openness is independent bookkeeping. An explicit drop ("abandon it") sets `status: abandoned` and completes the task with a note. Abandoned mockups stay on disk; cleanup is manual.

@@ -94,6 +94,31 @@ assert_eq "exits 0" "0" "$EXIT_CODE"
 assert_dir_exists ".craft/ created" "$TEST_DIR/.craft"
 # CLI projects don't get inspiration directory
 assert_dir_not_exists "no inspiration for CLI" "$TEST_DIR/.craft/inspiration"
+# CLI branch creates the conventions tokens.yaml when none exists
+assert_file_exists "tokens.yaml created when absent" "$TEST_DIR/.craft/design/tokens.yaml"
+
+rm -rf "$TEST_DIR"
+echo ""
+
+# Test 4b: setup-craft CLI — preserves existing tokens.yaml
+begin_test "setup-craft CLI — preserves existing tokens.yaml"
+
+TEST_DIR=$(mktemp -d)
+
+# Seed a pre-existing tokens.yaml (e.g. mockup-born) with a sentinel value
+mkdir -p "$TEST_DIR/.craft/design"
+SENTINEL="colors:
+  primary: \"#C0FFEE\"  # Locked: 2026-07-10 - from mockup sentinel-test"
+echo "$SENTINEL" > "$TEST_DIR/.craft/design/tokens.yaml"
+
+set +e
+RESULT=$(cd "$TEST_DIR" && unset CRAFT_PROJECT_ROOT && CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" bash "$SCRIPTS_DIR/setup-craft.sh" "cli" 2>/dev/null)
+EXIT_CODE=$?
+set -e
+
+assert_eq "exits 0" "0" "$EXIT_CODE"
+assert_contains_literal "sentinel value preserved" "#C0FFEE" "$(cat "$TEST_DIR/.craft/design/tokens.yaml")"
+assert_contains_literal "provenance comment preserved" "from mockup sentinel-test" "$(cat "$TEST_DIR/.craft/design/tokens.yaml")"
 
 rm -rf "$TEST_DIR"
 echo ""

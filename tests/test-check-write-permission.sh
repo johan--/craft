@@ -216,5 +216,45 @@ assert_not_contains "no deny for bare .craft/ (never-inited) project" "deny" "$R
 rm -rf "$BARE_DIR"
 echo ""
 
+# Test 14: Write to EXISTING tokens.yaml — denied with merge-tokens.py redirect
+# An existing tokens.yaml is a merge target (live-run incident 2026-07-11): whole-file
+# Write regeneration destroys unnamed keys and provenance comments.
+begin_test "Write to existing tokens.yaml — denied with redirect"
+
+TOK_DIR=$(mktemp -d)
+TOK_RESOLVED=$(cd "$TOK_DIR" && pwd -P)
+mkdir -p "$TOK_DIR/.craft/design"
+echo 'colors:' > "$TOK_DIR/.craft/design/tokens.yaml"
+
+JSON="{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$TOK_RESOLVED/.craft/design/tokens.yaml\"},\"cwd\":\"$TOK_RESOLVED\"}"
+set +e
+RESULT=$(cd "$TOK_DIR" && unset CRAFT_PROJECT_ROOT && run_check_write "$JSON")
+EXIT_CODE=$?
+set -e
+assert_eq "exits 0 even when denying" "0" "$EXIT_CODE"
+assert_contains "deny fires" "deny" "$RESULT"
+assert_contains "redirect names merge-tokens.py" "merge-tokens.py" "$RESULT"
+assert_contains "redirect offers Edit for single keys" "Edit tool" "$RESULT"
+
+# Test 14b: Edit on the SAME existing file — allowed (targeted updates keep working)
+JSON="{\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"$TOK_RESOLVED/.craft/design/tokens.yaml\"},\"cwd\":\"$TOK_RESOLVED\"}"
+RESULT=$(cd "$TOK_DIR" && unset CRAFT_PROJECT_ROOT && run_check_write "$JSON")
+assert_not_contains "Edit on existing tokens.yaml allowed" "deny" "$RESULT"
+
+# Test 14c: Write when tokens.yaml is ABSENT — allowed (mockup cold-path creation)
+rm "$TOK_DIR/.craft/design/tokens.yaml"
+JSON="{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$TOK_RESOLVED/.craft/design/tokens.yaml\"},\"cwd\":\"$TOK_RESOLVED\"}"
+RESULT=$(cd "$TOK_DIR" && unset CRAFT_PROJECT_ROOT && run_check_write "$JSON")
+assert_not_contains "Write allowed when file absent (creation)" "deny" "$RESULT"
+
+# Test 14d: Write to a DIFFERENT existing .craft/design file — unaffected
+echo 'x' > "$TOK_DIR/.craft/design/locked.md"
+JSON="{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$TOK_RESOLVED/.craft/design/locked.md\"},\"cwd\":\"$TOK_RESOLVED\"}"
+RESULT=$(cd "$TOK_DIR" && unset CRAFT_PROJECT_ROOT && run_check_write "$JSON")
+assert_not_contains "other .craft/design writes unaffected" "deny" "$RESULT"
+
+rm -rf "$TOK_DIR"
+echo ""
+
 # --- Summary ---
 finish_tests

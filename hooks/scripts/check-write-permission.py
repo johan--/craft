@@ -230,6 +230,40 @@ def main():
     # Get the working directory from input
     cwd = input_data.get("cwd", ".")
 
+    # Check 0: an EXISTING .craft/design/tokens.yaml is a merge target - the Write
+    # tool regenerates whole files, which destroys every key and comment it didn't
+    # think about (live-run incident 2026-07-11). Deny Write (not Edit) and carry the
+    # correct action in the message. Creation (file absent) stays allowed - the
+    # mockup cold path depends on it.
+    tool_name = input_data.get("tool_name", "")
+    if tool_name == "Write" and (
+        file_path.endswith("/.craft/design/tokens.yaml")
+        or file_path == ".craft/design/tokens.yaml"
+    ):
+        resolved_tokens = file_path if file_path.startswith("/") else os.path.join(cwd, file_path)
+        if os.path.isfile(resolved_tokens):
+            result = {
+                "hookSpecificOutput": {
+                    "hookEventName": "PreToolUse",
+                    "permissionDecision": "deny",
+                    "permissionDecisionReason": (
+                        "BLOCKED: .craft/design/tokens.yaml already exists - it is a "
+                        "merge target, never regenerated. For a keyed merge "
+                        "(init extraction or inspiration Lock): run "
+                        "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/merge-tokens.py "
+                        "merge .craft/design/tokens.yaml --template "
+                        "${CLAUDE_PLUGIN_ROOT}/templates/craft/design/tokens.yaml "
+                        "with values on stdin as section.key=value|comment lines "
+                        "(--precedence incoming for inspiration; --resolve only for "
+                        "user-chosen conflict keys). For a single accepted-value "
+                        "update (tweak reconcile, lock-decision): use the Edit tool "
+                        "on the specific key's line."
+                    ),
+                }
+            }
+            print(json.dumps(result, indent=2))
+            return
+
     # Check 1: Is this a .craft/ or .craft-director/ file? Always allow
     if "/.craft/" in file_path or file_path.startswith(".craft/"):
         return

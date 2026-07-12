@@ -78,6 +78,8 @@ Depending on what's being locked:
 
 **When locking colors, typography, or spacing values, update `.craft/design/tokens.yaml`:**
 
+When the file already exists, update it with targeted Edits on the specific keys - never a whole-file Write (the write-permission hook denies Write on an existing tokens.yaml; unnamed keys and their provenance comments must survive).
+
 ```yaml
 colors:
   primary: "#6366F1"  # Locked: [Date] - [Context]
