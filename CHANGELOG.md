@@ -2,6 +2,12 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.39
+
+- Added a deterministic first-move menu to /craft:init: every init now ends with the same three options (Mock up a screen / Describe a feature / I'll take it from here) instead of an open-ended prompt the model improvised around - the mockup option appears only for visual projects, and craft recommends a mockup on empty projects or a feature when code already exists
+- Fixed Quick setup ending in its own improvised kickoff - both setup paths now land on the same first-move menu
+- Added a greenfield floor for first stories: when a story is planned on a project with no runnable skeleton, its first chunk scaffolds the framework - and when the story came from a mockup, the approved mockup.html is ported in verbatim as the base route, so the design approved in the browser becomes the foundation instead of getting reinterpreted
+
 ## 1.99.38
 
 - Added tokens.yaml merging to /craft:init: when a mockup (or you) already created tokens.yaml, init merges extracted values into it instead of skipping extraction or overwriting the file - your approved values always win by default, and same-key conflicts are listed per-key for you to resolve explicitly

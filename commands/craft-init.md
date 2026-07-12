@@ -47,19 +47,19 @@ Then:
    - The user chose quick setup because they have strong existing docs. Tokens can be added later when you have visual code to reference.
 2. **For CLI projects:** Run `${CLAUDE_PLUGIN_ROOT}/hooks/scripts/setup-craft.sh cli`
    - CLI conventions are always generated.
-3. Skip straight to Phase 6 (First Cycle Kickoff)
+3. Go to Phase 6 (First Cycle Kickoff) and present its AskUserQuestion. Do NOT improvise a kickoff prompt here - Phase 6 owns the kickoff on every path.
 
 The `.craft/` structure is created with sensible template defaults. The project's existing CLAUDE.md serves as the source of truth for stack, patterns, and conventions - no need to duplicate into project.md. Run `/craft:update-docs` later when there's code to scan.
 
-> "Craft is ready! Directory structure created.
+Show this recap before the Phase 6 question:
+
+> "Directory structure created.
 >
 > Your CLAUDE.md is your project DNA - Craft will use it alongside `.craft/` state.
 > [If UI:] Design tokens can be added later when you're ready - no guessing upfront.
-> [If CLI:] Project conventions are set up and ready to enforce.
->
-> What's the first thing we're tackling?"
+> [If CLI:] Project conventions are set up and ready to enforce."
 
-→ Creates first cycle → Enters Creative Phase
+Quick setup never scans, so `.craft/design/.confidence-signals.yaml` carries no `total_files` key on this path - per Phase 6's marker rule, NO option carries (Recommended). `PROJECT_TYPE` comes from the type question above (UI / Web app -> `ui`; CLI / Backend / Plugin -> `cli`) and gates the mockup option as usual.
 
 **If "Full setup":** Continue to Phase 0a below.
 
@@ -145,10 +145,13 @@ mkdir -p "${CRAFT_PROJECT_ROOT:-.}/.craft/design"
 Write `.craft/design/.confidence-signals.yaml` directly using the Write tool with this content (replace `[ISO timestamp]` with the current UTC timestamp in the form `YYYY-MM-DDTHH:MM:SSZ`):
 
 ```yaml
+total_files: 0
 visual_file_count: 0
 scanned_at: "[ISO timestamp]"
 patterns: []
 ```
+
+The `total_files` key is read back by Phase 6 to place its (Recommended) marker - it must land in this file, not just in conversation memory.
 
 Set the in-memory state for the rest of init:
 - `PROJECT_TYPE` is undetermined (will be asked in Phase 0b)
@@ -197,8 +200,9 @@ If the agent's output contains a `## Confidence Signals (YAML)` section:
 1. Extract the YAML content from the fenced code block in that section
 2. Write it to `.craft/design/.confidence-signals.yaml` at the project root
 3. This file is consumed by craft-init for project-state matrix branching.
+4. Add `total_files: [the Phase 0a Glob sum]` as a key in that file.
 
-If the section is missing (agent failed, non-UI project), skip this step. The file's absence is a valid state - consumers handle it gracefully.
+If the section is missing (agent failed, non-UI project), skip steps 1-3 but still write `.craft/design/.confidence-signals.yaml` containing the `total_files` key (create the file and `.craft/design/` if needed). The other signals' absence is a valid state - consumers handle it gracefully - but `total_files` must be on disk on every Full-setup path: Phase 6 reads it from this file to place its (Recommended) marker, and conversation memory across the intervening phases is not a reliable carrier.
 
 **Fallback:** If the agent fails or returns empty, fall back to manual detection (Phase 0b).
 
@@ -1298,21 +1302,45 @@ After muse completes, continue to Phase 6 (First Cycle Kickoff). The first cycle
 
 ### Phase 6: First Cycle Kickoff
 
-> "Craft is ready!
->
-> **Project:** [name]
+On the Full-setup path, show the recap first (Quick setup shows its own recap before arriving here):
+
+> "**Project:** [name]
 > **Type:** [ui/cli]
 > **Energy:** [selected energy]
 >
-> I've documented [X] patterns in locked.md and captured your conventions.
->
-> What's the first thing we're tackling?"
+> I've documented [X] patterns in locked.md and captured your conventions."
 
-[User describes first feature/epic]
+Then ask the first-move question. This kickoff is DETERMINISTIC: present the AskUserQuestion below exactly as written - never a free-text "what are we tackling" prompt, never an improvised option set.
 
-→ Creates first cycle
-→ Enters Creative Phase
-→ Starts riffing on stories
+**Read the empty/has-code signal first:** Read `.craft/design/.confidence-signals.yaml` and take its `total_files` key (written at Phase 0a). Do not recompute the count, do not rely on conversation memory, and do not substitute `visual_file_count` - it measures something narrower. If the file or key is absent (Quick setup never writes it), no option carries (Recommended).
+
+Use **AskUserQuestion**:
+```
+question: "Craft's ready. What's the first move?"
+header: "First move"
+options:
+  - label: "Mock up a screen"
+    description: "Three live options in your browser, before a line of code. React your way to the one that clicks - it becomes your first story."
+  - label: "Describe a feature"
+    description: "Tell me what we're building. We shape it into a story and get to work."
+  - label: "I'll take it from here"
+    description: "You're set up. Run `/craft` whenever you're ready to start."
+```
+
+**Option rules (deterministic - no judgment calls):**
+- "Mock up a screen" renders ONLY when `PROJECT_TYPE` is `ui` or `hybrid`. For `cli`, `api`, or any other value (including free-text types from Phase 0b such as "static site" or "library"), omit that option entirely.
+- Append `(Recommended)` to exactly one label:
+  - `PROJECT_TYPE` ui/hybrid and `total_files == 0` -> "Mock up a screen (Recommended)"
+  - `PROJECT_TYPE` ui/hybrid and `total_files > 0` -> "Describe a feature (Recommended)"
+  - `PROJECT_TYPE` cli/api or any non-enum value -> "Describe a feature (Recommended)"
+  - `total_files` absent (Quick setup) -> no option carries (Recommended)
+  - "I'll take it from here" NEVER carries (Recommended)
+- Option labels and descriptions are verbatim - regular dashes only, no rewording.
+
+**Routing:**
+- **"Mock up a screen"** -> invoke `/craft:mockup`
+- **"Describe a feature"** -> [User describes it] -> creates first cycle -> enters Creative Phase -> starts riffing on stories
+- **"I'll take it from here"** -> clean exit; init is complete
 
 ---
 
