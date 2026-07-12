@@ -535,7 +535,24 @@ Store the captured energy as `ENERGY_LEVEL`.
 
 **If PROJECT_TYPE is `cli` or `api`:** Skip to Phase 4 (setup-craft.sh). No inspiration session for CLI/backend projects.
 
-**If PROJECT_TYPE is `ui` or `hybrid`:** Ask the inspiration question.
+**If PROJECT_TYPE is `ui` or `hybrid`:** Ask the inspiration question. The gate is conditional on whether Phase 0.5 captured intent - the suggest option only exists when there is substrate to seed it.
+
+**If INTENT_CAPTURED=true:**
+
+Use **AskUserQuestion**:
+```
+question: "Do you have design inspiration to draw from?"
+header: "Inspiration"
+options:
+  - label: "Suggest some for me (Recommended)"
+    description: "I'll find live reference sites from what you told me about the project - starting points to react against"
+  - label: "Yes, I have reference sites"
+    description: "Pull colors, typography, spacing from sites I admire"
+  - label: "No, continue with what we have"
+    description: "Use the token decision from Phase 2"
+```
+
+**If INTENT_CAPTURED=false:** The suggest option does not appear - there are no intent answers to seed it. Render today's two-option gate:
 
 Use **AskUserQuestion**:
 ```
@@ -548,6 +565,10 @@ options:
     description: "Use the token decision from Phase 2"
 ```
 
+**Routing (both branches):**
+
+**If "Suggest some for me":** Run the suggestion beat below.
+
 **If "Yes":**
 
 > "Let's build your design from inspiration. You can pull colors from one site, typography from another, spacing from a third - and iterate until it feels right."
@@ -555,6 +576,42 @@ options:
 Proceed to Phase 3 (Inspiration Design Session).
 
 **If "No":** Skip Phase 3. Continue to Phase 4 (setup-craft.sh).
+
+**Step 2b - The suggestion beat** (reached only from "Suggest some for me"):
+
+Spawn EXACTLY ONE subagent via the Task tool. Do not run WebSearch in the main loop, and do not spawn a second agent except for the single re-roll defined below.
+
+```
+Task tool:
+  subagent_type: "general-purpose"
+  model: "haiku"
+  description: "Find inspiration sites"
+  prompt: |
+    Find up to 3 live reference websites to inspire this project's visual design.
+
+    PROJECT INTENT (the user's own words - your only seed):
+    Q1 - what the app helps people do: [PROJECT_INTENT_Q1 verbatim]
+    Q2 - the moment they're most excited to build: [PROJECT_INTENT_Q2 verbatim]
+
+    Rules:
+    - Use WebSearch to find candidates. NEVER suggest a URL from model memory.
+    - Verify EVERY candidate with WebFetch before including it: the URL must load real
+      content right now. Silently drop anything that errors, 404s, or is a parked domain.
+    - The 3 must be genuinely different stances, not variations - and at least one must
+      sit outside the obvious category for this kind of project.
+    - Return your result INLINE as your final text output. Do NOT write any file.
+    - Format: one line per candidate - URL | stance name | one-line why it fits.
+    - If fewer than 3 verify, return only what verified (minimum 1). If nothing
+      verifies, return exactly: NO_VERIFIED_CANDIDATES
+```
+
+**Present the candidates as prose** - these are starting points to react against, not picks. Never auto-select one. Name each stance and its one-line why, then invite a reaction conversationally ("Which one pulls? What's wrong with the others?") - **no AskUserQuestion widget at this beat.** The user can always bring their own URL here instead; that is a first-class answer.
+
+**On a pick (or a user-supplied URL):** proceed to Phase 3 with that URL as the first source - Phase 3a skips its opening URL ask and goes straight to the aspects question. Unpicked candidates stay visible in the conversation; the user can feed them into the existing "Add another source" loop later, which needs no changes.
+
+**On reject-all:** fire exactly ONE re-roll - a second spawn of the same Task block, with the user's rejections appended to the prompt as constraints ("The user rejected: [candidates + verbatim reasons]. Avoid these directions."). If the user rejects the re-roll too, stop suggesting: fall back to the "Yes" path's prose and Phase 3's normal URL ask.
+
+**Degrade rules:** If WebSearch is unavailable, the spawn fails, or the agent returns NO_VERIFIED_CANDIDATES, say one line ("I couldn't verify live suggestions - let's use yours instead.") and fall back to the "Yes" path's flow. **Never show an unverified URL** - a dead link hard-fails Phase 3a's navigation at the most fragile moment of onboarding, worse than no suggestion at all.
 
 ---
 
@@ -590,6 +647,7 @@ Echo the script's summary line (kept/added/replaced/backfilled) to the user afte
 
 **Entry conditions:**
 - User selected "Yes, I have reference sites" in Phase 2's inspiration AskUserQuestion, OR
+- User picked a suggested candidate (or brought their own URL) in the Phase 2b suggestion beat - that URL enters as the first source and Phase 3a skips its opening URL ask, OR
 - Craft was invoked with `RESUME_INSPIRATION=true` (resuming interrupted session)
 
 **If RESUME_INSPIRATION=true:** Read `.craft/design/.inspiration-session`, check `phase` field, and jump to the matching sub-phase (3a if collecting, 3b if assembling, 3c if riffing). Present a brief summary of what's already captured before continuing.
@@ -611,6 +669,10 @@ YAML
 ```
 
 **Source collection loop:**
+
+**If arriving from the Phase 2b suggestion beat with a URL already in hand (picked candidate or user-supplied):** use that URL as the first source - skip the prompt below and go straight to the aspects question.
+
+**Otherwise:**
 
 > "Let's build your design from inspiration. Give me a URL to start with."
 
