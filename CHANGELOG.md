@@ -4,6 +4,7 @@ Notable, user-facing changes per version. Internal changes (tests, refactors, co
 
 ## 1.99.42
 
+- Added a live progress checklist to /craft:init's Full setup - six beats (Intent, Scan, Shape, Design, Scaffold, Kickoff) shown as tasks in the terminal, the same rail pattern /craft:mockup uses: beats the flow skips complete with a note instead of disappearing, the whole inspiration session lives in one Design task however many sources and riffs it takes, and resuming a saved inspiration session rebuilds the rail with earlier beats marked done. Quick setup stays checklist-free - it's seconds long.
 - Changed the init muse session to lead every turn with prose in the message body - the widget below only collects your answer, and the Emotional Core synthesis is presented as formatted prose instead of being crammed into the question line as an unreadable wall.
 - Added the horizon line: after your Emotional Core locks during init, the muse closes with one forward-looking image drawn from your killer moment - never a feature list, never a commitment, just a door left ajar on the way into your first move.
 - Changed muse and alchemist briefings in creative-spark and the mockup flow to be quoted to you verbatim ("Muse's take: ...") before they enrich the brief - previously the agents you invoked were consumed silently and you never read a word they said.
