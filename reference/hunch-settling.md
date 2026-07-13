@@ -73,6 +73,17 @@ People correct far better than they generate:
 reaction than anything an open question would have produced. Two or three throws usually crosses the threshold - the moment you
 can write the one-line brief in their words, stop settling and go build.
 
+**Throw at the screen, not at concepts.**
+Every throw names something visible in the current work - an element, a
+color, a size relationship - and what it's doing. The user judges pixels,
+not abstractions: if they can't verify your interpretation in one glance
+at the page, it isn't a throw yet.
+"Is it the density?" is interrogation wearing a throw's clothes -
+it hands the translation work back to the user (density of what?).
+"The six equal-size cards give your eye nowhere to start - is that the
+off?" is a throw: whatever they answer, the correction comes back in
+screen terms too, because the throw set the vocabulary at pixels.
+
 In a hunch, below the executable threshold, riffing is the good move - not a
 detour from the flow but the flow converging. That is the point of this gate:
 the pause IS the progress.

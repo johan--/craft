@@ -32,6 +32,11 @@ assert_file_contains "correction beats generation rationale" 'People correct far
 assert_file_contains "building on a guess rejected" 'Build on a guess' "$REF"
 assert_file_contains "interrogation rejected" 'what exactly feels off?' "$REF"
 
+begin_test "throws are grounded in on-screen referents"
+assert_file_contains "throw-at-the-screen rule present" 'Throw at the screen, not at concepts' "$REF"
+assert_file_contains "one-glance verifiability required" 'verify your interpretation in one glance' "$REF"
+assert_file_contains "abstract axis named as the anti-pattern" 'interrogation wearing a throw' "$REF"
+
 begin_test "reference licenses above-threshold reactions to proceed untouched"
 assert_file_contains "explicit delegation licensed" 'licensed full blast' "$REF"
 assert_file_contains "just-try-something named" 'just try something' "$REF"
