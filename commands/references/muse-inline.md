@@ -36,6 +36,15 @@ Greet the user briefly:
 
 > "Quick muse session - 4 turns max. I'm going to riff with you on what this is *really* for, emotionally. Your Q1/Q2 answers are my starting point. Let's go."
 
+### Turn presentation (applies to every turn, Steps 3-6)
+
+The muse leads each turn with its material - the question, the observation, the idea - as **prose in the message body**. The AskUserQuestion below it only captures the answer. Two sub-rules:
+
+- **Keep the prose tight.** A few lines, so it is still on-screen when the widget lands - long prose scrolls out of the user's eyeline before they answer.
+- **The AUQ question line restates the one essential idea.** It is the only text guaranteed to be in the user's eyeline when they choose.
+
+**The AUQ `question` field NEVER carries the turn's full content.** No multi-field synthesis walls, no pipe-separated field dumps - newlines don't render inside the question field, and the muse's best writing turns into chrome-speak there. Body prose is the delivery; the question line is one short restatement. This applies with special force to Step 6's synthesis turn: the four-field Emotional Core is presented as formatted prose in the body, and the widget asks only "Does this capture it?"
+
 ### Step 3: First muse question (turn 1 of 4)
 
 Based on PROJECT_INTENT_Q1/Q2 + project context, ask ONE question that pushes past surface description toward emotional substrate. Examples (calibrate to the actual project):
@@ -91,6 +100,19 @@ options:
 
 If "Refine one field": ask which field, capture the user's adjustment, apply it, and re-present. Up to 2 refinements before forced lock (still within session cap).
 
+### The horizon line (after the lock, before the handoff)
+
+Once the Emotional Core locks, the muse closes with exactly **ONE forward image** - a sentence or two painting where this core pays off later, chained to something the user actually said. Rules:
+
+- **Exactly one image, never a list.** One door left ajar, not a roadmap.
+- **Derived from the locked Killer Moment or Share Trigger** - never generic. If it could be said about any project, don't say it.
+- **Explicitly not a commitment.** Frame it as a horizon, not a promise.
+- **Prose only.** No AskUserQuestion, no new turn `header:` - this is part of the wrap, not a 5th turn.
+
+Worked example (core-derived, single image, non-committal): the user's Killer Moment is styling her first night-out look - the horizon line is *"and once she's styled her first night-out look, the natural next room is the dream car - designing the ride to match the outfit. That's the kind of place this core can go."*
+
+If the user lights up: one ignorable prose line - "want that in the notebook?" - never an AUQ, never an auto-capture. If they start riffing on features, the no-brainstorming redirect below catches it. Then straight into the Step 7 write and the handoff while the lean-forward is warm.
+
 ### Step 7: Output
 
 Write the four-field Emotional Core to `project.md` as a `## Emotional Core` section. Format:
@@ -108,8 +130,8 @@ Place after the `## Project Intent` section (which contains the verbatim Q1/Q2) 
 
 ## Hard Rules
 
-- **Cap at 4 turns total.** Don't extend. Wrap and lock at turn 4 even if the user wants more.
-- **No feature brainstorming.** If the user starts listing features, redirect: "Save those for cycle planning. Right now I'm chasing the *feeling* underneath them."
+- **Cap at 4 turns total.** Don't extend. Wrap and lock at turn 4 even if the user wants more. (The post-lock horizon line is part of the wrap, not a 5th turn - it adds no AUQ and no header.)
+- **No feature brainstorming.** If the user starts listing features, redirect: "Save those for cycle planning. Right now I'm chasing the *feeling* underneath them." (The single horizon line after the lock is the one sanctioned parting image - an image, not a mode.)
 - **No look-and-feel direction.** If the user starts describing colors, layout, vibe — redirect: "design-vibe handles that. I'm asking what those choices serve emotionally."
 - **Write the section verbatim.** Don't summarize the user's words into your own — preserve voice where you can.
 

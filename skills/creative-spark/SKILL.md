@@ -190,8 +190,9 @@ Task tool:
 **After agent(s) return:**
 
 1. Clean up the breadcrumb: `rm -f "${CRAFT_PROJECT_ROOT:-.}/.craft/.continuation"`
-2. Store the agent briefing(s) as `ENRICHED_BRIEF` - this feeds into Step 2
-3. Proceed immediately to Step 2
+2. **Show the user the take before it disappears into the brief.** Quote 2-3 verbatim lines of the muse briefing in the message body, prefixed "Muse's take: ..." - pull the vivid lines (the Underlying Emotional Job and the Mechanic That Carries Feeling), not boilerplate. In Full Workshop, the alchemist briefing gets the identical treatment, prefixed "Alchemist's take: ..." (quote the Physical Metaphor / easing personality lines) - both briefings surfaced when both return. This is prose only - it adds no AskUserQuestion and no confirmation beat; the user reads it and the flow moves on. The user invoked these agents; this is the one moment they hear them speak.
+3. Store the agent briefing(s) as `ENRICHED_BRIEF` - this feeds into Step 2
+4. Proceed immediately to Step 2
 
 ### 2. Reframe and Find the Tension
 

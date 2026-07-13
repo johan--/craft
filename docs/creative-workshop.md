@@ -33,7 +33,7 @@ The `muse` agent reads your story and returns a structured briefing on the emoti
 - What mechanic would carry that feeling - not describe it, but create it?
 - Will anyone tell their friend about this? What would they say?
 
-The briefing feeds into Step 2 (Reframe and Find the Tension) as an enriched constraint set. Creative-spark still generates all options - muse just makes the options sharper.
+When the briefing returns, you see 2-3 verbatim lines of it first ("Muse's take: ...") before it feeds into Step 2 (Reframe and Find the Tension) as an enriched constraint set. Creative-spark still generates all options - muse just makes the options sharper.
 
 Use muse when:
 - You're building something user-facing that has an emotional dimension
@@ -104,7 +104,7 @@ Constraints for Option Generation:
 
 ## The Agents Are Interrogators, Not Generators
 
-This is important: muse and alchemist do NOT generate your creative options. They enrich the brief that creative-spark uses to generate options. Creative-spark still produces the 2-3 options with trade-offs and visual direction.
+This is important: muse and alchemist do NOT generate your creative options. Each returned briefing is quoted to you first - 2-3 verbatim lines ("Muse's take: ..." / "Alchemist's take: ...") - and then it enriches the brief that creative-spark uses to generate options. Creative-spark still produces the 2-3 options with trade-offs and visual direction.
 
 The purpose of the interrogation is to catch the question you weren't asking. A muse briefing might reveal that users aren't asking for a dashboard - they're asking to feel in control. That reframe doesn't change the options list dramatically, but it changes which dimension each option optimizes for, and it changes how you evaluate which option to pick.
 

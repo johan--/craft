@@ -86,7 +86,7 @@ question: "Want to capture your project intent now? Two short questions about wh
 header: "Intent"
 options:
   - label: "Yes, capture intent (Recommended)"
-    description: "Two prompts about what this app does for people - takes 30 seconds"
+    description: "Two short answers the muse distills into your project's Emotional Core - every cycle you plan later reads it"
   - label: "Skip - just scaffold"
     description: "No intent capture - skip the muse session later too"
 ```

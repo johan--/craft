@@ -2,6 +2,14 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.42
+
+- Changed the init muse session to lead every turn with prose in the message body - the widget below only collects your answer, and the Emotional Core synthesis is presented as formatted prose instead of being crammed into the question line as an unreadable wall.
+- Added the horizon line: after your Emotional Core locks during init, the muse closes with one forward-looking image drawn from your killer moment - never a feature list, never a commitment, just a door left ajar on the way into your first move.
+- Changed muse and alchemist briefings in creative-spark and the mockup flow to be quoted to you verbatim ("Muse's take: ...") before they enrich the brief - previously the agents you invoked were consumed silently and you never read a word they said.
+- Improved init's intent question to say what saying yes gets you: the muse distills your two answers into the project's Emotional Core that every later cycle reads. The muse is no longer introduced only by the option that skips it.
+- Added a conditional recommendation for "Include the muse" in the mockup vibe question: recommended when the project has no design constraints yet (no tokens.yaml, no locked.md), unmarked once a design language exists.
+
 ## 1.99.41
 
 - Fixed notebook todos that graduate into a story being left open forever - graduating a todo now closes it as done in the same confirmation and records the story it's tracked by, so your open-todo list only shows work that still needs a home.
