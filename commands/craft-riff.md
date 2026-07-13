@@ -85,6 +85,7 @@ Riff's presignal offer must never stack on top of notebook, creative-spark, or d
 - **This skill** (`commands/craft-riff.md`) is the sensor/router: focus gate, gear-sensing, the presignal offer, the nag floor, silence. It runs the tight gear itself and hands the wide gear off.
 - **The agent** (`agents/riff.md`) is the crystallized partner that does the actual riffing. It is the wide-gear destination and is unchanged by this skill.
 - **The calibration loop** (`reference/calibration-loop.md`) is a standalone reusable technique the tight gear invokes - not riff-specific, also available to content-spark / design-vibe / lock-decision.
+- **Hunch settling** (`reference/hunch-settling.md`) is the second shared technique distilled from the agent's throw/pull craft - the executable-threshold gate the mockup funnel runs on round reactions (consumed inline by `commands/references/mockup-inline.md`); same contract as the calibration loop: it distills, `agents/riff.md` stays canonical.
 
 <!--
 ACCEPTANCE RUBRIC (the 6 calibration lenses - do not weaken on future edits).

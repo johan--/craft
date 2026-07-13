@@ -106,7 +106,9 @@ plugins/craft/
 │   ├── story-full.md          ← Full story template (with chunks)
 │   └── story-roadmap.md       ← Roadmap-only story template
 ├── reference/                 ← Orchestration-critical (injected by hooks, drives routing)
+│   ├── calibration-loop.md    ← Shared technique: boundary elicitation (riff tight gear +)
 │   ├── decision-tree.md
+│   ├── hunch-settling.md      ← Shared technique: executable-threshold gate (mockup funnel +)
 │   └── orchestration-index.min
 ├── docs/                      ← Generated documentation (informational, not auto-loaded)
 │   ├── agent-catalog.md
@@ -450,6 +452,8 @@ Riff exists as a **skill** and an **agent** that work as a pair, not as one repl
 The skill mirrors the notebook trigger discipline exactly: ignorable inline offers (never AskUserQuestion), bounded triggers, silence as the default, and at most one inline offer per turn so riff never stacks nudges on notebook / creative-spark / design-vibe.
 
 The skill's **tight gear** runs the **calibration loop** (`reference/calibration-loop.md`) - a standalone, reusable boundary-elicitation technique (the "optometrist flip test") that converts a tacit "I know it when I see it" into an encodable rule. It is deliberately written skill-agnostic so content-spark, design-vibe, and lock-decision can point to it too.
+
+A second shared technique, **hunch settling** (`reference/hunch-settling.md`), distills the agent's throw/pull craft into an executable-threshold gate for reaction-driven revision loops: can the one-line builder brief be written using only the user's words? Its first consumer is the mockup funnel (`commands/references/mockup-inline.md`), which Reads it inline and settles a below-threshold reaction conversationally before briefing the alchemist - the first cross-skill consumption of riff machinery, chain-safe because it runs in the main loop with no agent spawn and no Skill-tool call.
 
 ---
 

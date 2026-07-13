@@ -37,7 +37,7 @@ Type is almost always `ui`. Set `alignment: pending` - the alignment check fires
 
 **Pre-filled sections:**
 
-- **`## Spark`** - from the record's `## Brief` (what was mocked and why) + the accepted finalist's character from `## Reactions` (the user's own accepting words are the best spark material there is).
+- **`## Spark`** - from the record's `## Brief` (what was mocked and why) + the accepted finalist's character from `## Reactions` (the user's own accepting words are the best spark material there is). Pull voice from verbatim reaction lines only - `Settled:` sub-lines are derived convergence context, never quoted as the user's words.
 
 - **`## Visual Direction`** - cites the mockup as the authority:
   ```markdown

@@ -2,6 +2,10 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.43
+
+- Added hunch settling to the mockup funnel: when your reaction to a round is a feeling without a nameable fix ("B is close but something's off"), craft now riffs it into a sharp direction with you - one concrete interpretation at a time, you correct it - before rebuilding, instead of burning a whole revision on its own guess about what you meant. Clear reactions ("header's too heavy, lighten it", "B with C's cards", "just try something") proceed exactly as fast as before, and the mockup record keeps your words verbatim with the settled direction noted beneath them.
+
 ## 1.99.42
 
 - Added a live progress checklist to /craft:init's Full setup - six beats (Intent, Scan, Shape, Design, Scaffold, Kickoff) shown as tasks in the terminal, the same rail pattern /craft:mockup uses: beats the flow skips complete with a note instead of disappearing, the whole inspiration session lives in one Design task however many sources and riffs it takes, and resuming a saved inspiration session rebuilds the rail with earlier beats marked done. Quick setup stays checklist-free - it's seconds long.

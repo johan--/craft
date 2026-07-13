@@ -3,7 +3,10 @@
 <!-- DO NOT SIMPLIFY THIS SCHEMA. Mockup records anchor agent recovery, graduation
      backlinks, and status surfacing. Every frontmatter field below is read by name
      somewhere (status, craft:status; agent_session, recovery; graduated_to, ramps).
-     Verbatim reactions are the convergence history - paraphrasing destroys them. -->
+     Verbatim reactions are the convergence history - paraphrasing destroys them.
+     One sanctioned exception: a labeled `Settled:` sub-line beneath a verbatim
+     reaction (see the settle gate) - explicitly derived, marked as derived, and
+     never replacing or rewording the verbatim line above it. -->
 
 A converged mockup is design truth the user approved in their browser. This flow gets there through three rounds of real reactions - diverge, refine, polish - then solidifies new design values to tokens.yaml BEFORE any destination artifact exists, so every downstream gate (binding contracts, chunk-validator, style-analyzer) enforces the mockup because the bible already agrees with it. The shell has already parsed the subject and run the single-session guard - this file owns everything else.
 
@@ -98,21 +101,32 @@ Spawn the alchemist ONCE via the Agent tool (`subagent_type: "craft:alchemist"`)
 
 **Verification is orchestrator-owned.** The alchemist builds and self-reports; reports never count as verification. After every handoff, the orchestrator loads the page and verifies in TEXT - console errors listed, one evaluate_script assertion pass (expected sections/ids present, body has height, option count matches the brief) - before pointing the user at it. Screenshots are NOT the verification medium when the user is watching a headed browser: the user's own screen is the display, and pixels are reserved for what they can't see - mobile emulation, unattended sessions (no visible browser) - or their explicit request (including disambiguating a reaction the DOM can't resolve from words).
 
+### The settle gate (every reaction, silent)
+
+Before ANY reaction becomes an alchemist brief, silently classify it against the executable threshold: can the one-line brief be written using only the user's words - a target and a direction? The technique lives in `${CLAUDE_PLUGIN_ROOT}/reference/hunch-settling.md` - Read it ONCE per mockup session (or after recovery) and hold it; never re-Read per reaction.
+
+- **Above threshold** (target + direction in their words, a named donor like "B with C's cards", or explicit delegation - "just try something"): proceed full-blast exactly as today. A clear reaction is never settled, slowed, or second-guessed. Polish micro-injections never classify at all - try/see/discard in seconds IS the settle mechanism there.
+- **Below threshold** (a hunch - verdict without target, a hedged attribution, conflicting pulls, a comparative with no axis, an energy drop): settle BEFORE briefing. Throw/pull conversationally in the main loop per the reference - throw a concrete interpretation, let them correct it, brief only once the direction is in their words. The gate is invisible: never announce, name, or explain it mid-funnel - the user just gets a natural throw.
+- **No escalation, ever:** never spawn the riff agent and never invoke a skill via the Skill tool from inside the funnel (chain break - control never returns). If throw/pull won't settle it, say so plainly and suggest parking the mockup or riffing separately via /craft:riff.
+- **Recording:** the verbatim reaction is written exactly as spoken. When a settle ran, append ONE labeled derived sub-line beneath it - `Settled: [direction]` - append, never replace; the verbatim line above stays untouched (the schema comment's sanctioned exception).
+
+The gate covers Diverge and Refine reactions and Polish structural rebriefs - the three points below where a reaction becomes a brief.
+
 ## Step 3: Diverge (Round 1)
 
 Brief the alchemist: 3 genuinely different options - stances, not variations - each embedded in real surface context, seeded by the vibe answer (or muse briefing) as the divergence axis. **Diverge is the licensed-to-break round.** Each option names its stance/metaphor up front; at most ONE option may stay inside the project's current design language, and at least one must go further than the brief dared. Tokens and locks discipline Refine and Polish - the user's pick and the solidify beat are where boldness gets domesticated, never here. Three safe layouts in the current palette is a failed round. Verify, show the user, collect the reaction **conversationally** - which one pulls, what's wrong with the others, hybrids welcome.
 
-Write the verbatim reaction to `## Reactions`. Mark Diverge complete. If the user's pick is already final-grade ("that's exactly it, don't touch it"), Refine and Polish may complete-with-note - acceptance still runs Step 5's beats.
+Every reaction passes the settle gate above before it becomes the next round's brief. Write the verbatim reaction to `## Reactions`. Mark Diverge complete. If the user's pick is already final-grade ("that's exactly it, don't touch it"), Refine and Polish may complete-with-note - acceptance still runs Step 5's beats.
 
 ## Step 4: Refine (Round 2)
 
-The pick becomes the base; brief the alchemist with variations of it. Hybrids are legal briefs ("B with C's cards"). Same mechanics: archive the outgoing round, then EDIT the living page toward the new round - never a from-scratch rewrite; the surrounding context and base CSS that didn't change are not regenerated - then verify, show, collect the reaction conversationally, record verbatim. Mark Refine complete.
+The pick becomes the base; brief the alchemist with variations of it. Hybrids are legal briefs ("B with C's cards"). Same mechanics: archive the outgoing round, then EDIT the living page toward the new round - never a from-scratch rewrite; the surrounding context and base CSS that didn't change are not regenerated - then verify, show, collect the reaction conversationally, record verbatim - the settle gate applies here exactly as in Diverge. Mark Refine complete.
 
 **Mid-round lock crossings (any round):** when a direction crosses a locked.md decision, say ONE ignorable line - "that crosses the [X] lock; trying it anyway - we'll settle the lock if this is what you accept" - and proceed. No question, no AUQ, no locked.md write mid-round. The lock settles once, at the solidify beat.
 
 ## Step 5: Polish (Round 3) - the live loop
 
-The finalist iterates until explicit acceptance. This round runs differently: the ORCHESTRATOR drives micro-adjustments live via `evaluate_script` on the loaded page (CSS/style/class injection) - try/see/discard in seconds, the user watches the change land in their own browser and reacts, next adjustment. No per-injection screenshots - the user's screen is the display; pixels only for viewports they can't see or on request. The alchemist re-enters only for structural work (new sections, choreography), which follows the same archive-then-edit discipline as any round.
+The finalist iterates until explicit acceptance. This round runs differently: the ORCHESTRATOR drives micro-adjustments live via `evaluate_script` on the loaded page (CSS/style/class injection) - try/see/discard in seconds, the user watches the change land in their own browser and reacts, next adjustment. No per-injection screenshots - the user's screen is the display; pixels only for viewports they can't see or on request. The alchemist re-enters only for structural work (new sections, choreography), which follows the same archive-then-edit discipline as any round. A structural rebrief starts from a reaction too: record it verbatim to `## Reactions` first, pass it through the settle gate, then brief the alchemist - micro-injections stay outside the gate entirely.
 
 **Tell the user ONCE when the loop starts:** "Changes are live in the page only - don't refresh until they're written."
 

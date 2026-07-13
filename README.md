@@ -69,6 +69,8 @@ From there you converge by reacting in plain words - no forms, no pickers:
 - **Refine.** Your pick becomes the base; the alchemist builds variations of it.
 - **Polish.** The live loop: micro-adjustments are injected straight into the open page while you watch in your own browser. React, keep or discard, next one - seconds per iteration.
 
+And when a reaction is only a feeling - "B is close but something's off" - craft riffs the fuzzy reaction into a sharp direction with you before rebuilding, instead of burning a round on its own guess about what you meant.
+
 Acceptance is explicit - "that's it, ship it" - and then the important part happens: the new design values solidify into `tokens.yaml` with provenance, before any downstream artifact exists. Every later story, validator, and analyzer now enforces the design you approved in your own browser. The converged mockup then graduates on your call: tweak it in now, grow it into a story (its CSS ports as-is, never reinterpreted), or park it as a notebook todo that remembers everything.
 
 And the mockup isn't the only door into your project's DNA. A two-minute tweak takes the same one:
