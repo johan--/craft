@@ -34,6 +34,7 @@ source_story: [story that built the element, if known]
 mockup: [name of the converged mockup this tweak ports, e.g. 2026-07-05-hero-pulse - empty for non-mockup tweaks]
 reapplies: [name of the original tweak this reapplies, e.g. tweak-toolbar-stroke-weight - empty for a novel tweak]
 grew_from: [name of the origin tweak this outcome grew from - empty except taste-pass outputs]
+satisfied_todo: [stamped by the todo-satisfaction beat - <todo-slug> or none-matched]
 taste: [loved | routine - stamped at close-out; empty until then]
 attempts: 0
 outcome_note:
@@ -70,6 +71,8 @@ Before editing anything, answer "will it fit?" - the tweak equivalent of the fix
 
 Write the findings into the `## Fit Check` section: where the element lives, what its siblings look like, which conventions apply, and how the requested change fits them.
 
+**Todo satisfaction detection (always-on):** in the same beat, run the shell's `## Todo Satisfaction Detection` (SKILL.md) - one `notebook-list.sh todos` call, a semantic match of this tweak's request/surface against the open todos, named-referent discipline by arity. **Zero matches:** stamp `satisfied_todo: none-matched` in the record frontmatter immediately and move on - nothing is said. **On a match** (after the disambiguation AskUserQuestion if multiple): write the pending match - the todo's file path and slug - into the `## Fit Check` section itself, so it survives a multi-attempt loop; the close-out reads it from the record, never from conversational memory. The close consent rides Step 3's acceptance ask - detection here asks the user nothing beyond multi-match disambiguation.
+
 **Lock conflict (pre-edit):** if the requested change would break a locked decision, do NOT edit yet. The tweak is the user's taste showing up live - the lock may be what's stale. Present a recommendation: alter the lock, remove it, or reshape the tweak to fit it - whichever the neighborhood evidence supports. On the user's explicit yes, update locked.md FIRST via the inline lock-edit path below, then proceed with the tweak - the edit never exists in a lock-breaking state. On decline, fall back to escalation: update `status: escalated`, tell the user why, and suggest a mockup first (the direction needs to be seen to be decided), or design-vibe / a story for bigger questions. Hand back to the shell to close the gate. (Mention the option; do not invoke another skill from inside this flow.)
 
 **Escalation (design question):** if the fit check surfaces a genuine design question (multiple plausible directions and no clear fit) - do NOT edit. Same mechanics as the decline path above: update `status: escalated`, say why, suggest a mockup first (the direction needs to be seen to be decided), or design-vibe / a story for bigger questions, hand back to the shell.
@@ -104,7 +107,7 @@ Per attempt:
 2. **Change.** Make the edits with Edit/Write. Increment `attempts`, update `files_changed` / `lines_changed`.
 3. **Validate.** Run the project's tests/build. For anything visual, use the browser: navigate to the surface, take the after screenshot, and confirm the change landed as the fit check intended. Record it in the attempt's Validation.
 4. **Commit.** Hand back to the shell's commit step (manifest staging, `tweak:` prefix). Every validated attempt commits - the custody chain holds even if the record stays open.
-5. **Close-out ask.** Use **AskUserQuestion**:
+5. **Close-out ask.** When the `## Fit Check` carries a pending todo match, the question line names BOTH effects - append to it: "Accepting also closes todo '[todo-slug]' - this work satisfies it." One consent covers both (the graduate-flow precedent, commands/craft-notebook.md); never add a second AskUserQuestion for the close. Only an accepting answer closes the todo - "Not quite", explicit decline, abandonment, and bare validation never do. Use **AskUserQuestion**:
 
 ```
 question: "How does it look?"
@@ -121,9 +124,9 @@ options:
 ```
 
 6. **Route the reaction - capture it VERBATIM:**
-   - **An accepting answer ("Love it", "Looks good", "Good enough", or equivalent typed approval):** write the chosen label (or the typed words) to the attempt's Reaction and to `outcome_note`. Set `status: accepted` (attempt 1) or `revised-then-accepted` (2+). Stamp `taste:` per the rule below. Run the Acceptance reconcile below (skipped when no payload is pending), then the single propagation offer below, then continue to Step 4.
+   - **An accepting answer ("Love it", "Looks good", "Good enough", or equivalent typed approval):** write the chosen label (or the typed words) to the attempt's Reaction and to `outcome_note`. Set `status: accepted` (attempt 1) or `revised-then-accepted` (2+). Stamp `taste:` per the rule below. If the Fit Check carries a pending todo match, the acceptance also closes it (the ask named both effects): run the shell's close call - `notebook-done.sh "<todo-file>" "<record-name>"` with this record's `name:` as the ref - and stamp `satisfied_todo: <todo-slug>`. Run the Acceptance reconcile below (skipped when no payload is pending), then the single propagation offer below, then continue to Step 4.
    - **"Not quite" / typed criticism** ("the alignment is still off"): write the exact words to the attempt's Reaction. Leave `status: open` and write NO `taste:` stamp. Loop to the next attempt - the reaction is the new brief.
-   - **Explicit decline** ("never mind", "drop it", "not worth another pass"): write the exact words to the attempt's Reaction and to `outcome_note`. Set `status: abandoned`. If a mid-pass lock pivot was announced this thread, revert those attempts' edits (the shell's per-attempt commits make this surgical) - an abandoned tweak leaves locked.md untouched and the working tree conforming. Hand back to the shell to close the gate.
+   - **Explicit decline** ("never mind", "drop it", "not worth another pass"): write the exact words to the attempt's Reaction and to `outcome_note`. Set `status: abandoned`. If a todo match was pending, stamp `satisfied_todo: none-matched` - the todo stays open. If a mid-pass lock pivot was announced this thread, revert those attempts' edits (the shell's per-attempt commits make this surgical) - an abandoned tweak leaves locked.md untouched and the working tree conforming. Hand back to the shell to close the gate.
    - **No reaction / user changes topic:** leave `status: open` and the record as-is. Do not nag, do not mark accepted. Hand back to the shell to close the gate (the gate closes with the thread; the record's openness is independent bookkeeping). If the user raises it again - this session or any later one - reopen the loop from the recorded reactions.
 
 **The taste stamp (written once, at any accepting answer):** stamp `taste: loved` when you holistically judge this to be spreadable visual taste the user loved AND a love-signal holds (the button was "Love it", OR `attempts >= 2`, OR the user typed genuine enthusiasm) AND the button was not "Good enough"; otherwise stamp `taste: routine`. This is a HOLISTIC read - there is NO `kind`-in-a-set gate, because a single `kind` label misfiles a rich multi-facet tweak (a color+motion+layout port filed `content` must not be wrongly excluded). The loved counter reads only this stamped field; it never re-derives taste from the body. "Not quite" never stamps.

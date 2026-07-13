@@ -1,6 +1,6 @@
 # Adhoc Fix Flow (reference - read inline by the craft:adhoc shell)
 
-This is the FIX flavor: something is broken, there is a symptom, and you can see the root cause. You investigate, reason about the root cause, confirm your confidence, make the edit, and verify the symptom is gone. The shell has already classified the request, opened the write gate, and created the close-obligation tasks - this file owns the fix record, the confidence gate, the edits, and validation. Hand back to the shell for the commit and gate close.
+This is the FIX flavor: something is broken, there is a symptom, and you can see the root cause. You investigate, reason about the root cause, confirm your confidence, make the edit, and verify the symptom is gone. The shell has already classified the request, opened the write gate, and created the close-obligation tasks - this file owns the fix record, the confidence gate, the edits, validation, and the todo-satisfaction beat. Hand back to the shell for the commit and gate close.
 
 The fix file you create in `.craft/fixes/` is permanent record. A month from now, these files across all projects reveal patterns - what keeps breaking, which story types produce bugs, where the pipeline has gaps. Write them with that future reader in mind.
 
@@ -27,6 +27,7 @@ files_changed: 0
 lines_changed: 0
 trigger: [how the problem was discovered]
 lesson_scope:
+satisfied_todo: [stamped by the todo-satisfaction beat - <todo-slug> or none-matched]
 ---
 
 ## Symptom
@@ -136,7 +137,27 @@ Also update the fix file frontmatter: add `lesson_scope: craft` or `lesson_scope
 
 If the user's description is brief, fill in the structured fields based on what you know from the root cause. Show it to them for confirmation before writing.
 
-## Step 7: Close
+## Step 7: Todo Satisfaction
+
+Run the shared detection from the shell's `## Todo Satisfaction Detection` section (SKILL.md): one `notebook-list.sh todos` call, a semantic match of this fix's symptom/root cause against the open todos, named-referent discipline by arity. The mechanism, discipline, close-call shape, and receipt semantics all live there - this step owns only the fix-path consent surface.
+
+- **No match:** stamp `satisfied_todo: none-matched` in the fix record frontmatter and continue to Step 8. No surface, no friction.
+- **Match found** (after disambiguation if multiple): fixes have no acceptance gate to ride, so consent is a match-triggered AskUserQuestion - it fires ONLY when a match exists:
+
+```
+question: "This fix satisfies the open todo '[todo-slug]' - close it?"
+header: "Todo"
+options:
+  - label: "Yes, close it"
+    description: "Mark the todo done with graduated_to pointing at this fix record."
+  - label: "No, leave it open"
+    description: "The todo isn't fully satisfied by this fix."
+```
+
+**On yes:** run the shell's close call - `notebook-done.sh "<todo-file>" "<record-name>"` with this record's `name:` as the ref - then stamp `satisfied_todo: <todo-slug>`.
+**On no:** stamp `satisfied_todo: none-matched`. The todo stays open.
+
+## Step 8: Close
 
 Output a summary:
 
@@ -147,6 +168,7 @@ Files: [N] changed, [N] lines
 Root cause: [one sentence]
 Validation: [what was checked, result]
 Lesson: [one sentence, or "none"]
+Todo: [closed <todo-slug> / none matched]
 ```
 
 Then hand back to the shell to close the gate (Step 6 there).

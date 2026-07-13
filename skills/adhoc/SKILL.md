@@ -5,8 +5,8 @@ allowed-tools: ["Read", "Edit", "Write", "Glob", "Grep", "Bash", "AskUserQuestio
 ---
 
 <!-- EDITORS: This file is the shared SHELL only - guards, classification, write gate,
-     commit step. The actual flows live in references/fix.md (bugs) and
-     references/tweak.md (enhancements). Flow changes go THERE, not here. -->
+     todo-satisfaction detection, commit step. The actual flows live in references/fix.md
+     (bugs) and references/tweak.md (enhancements). Flow changes go THERE, not here. -->
 
 # Adhoc
 
@@ -95,3 +95,36 @@ rm -f "${CRAFT_PROJECT_ROOT:-.}/.craft/.active-fix"
 Then complete both tasks (work task, then "Close write gate").
 
 A tweak record left `status: open` does NOT keep the gate open - the record's openness is bookkeeping in `.craft/tweaks/`; the gate closes with the thread. Cross-session state lives ONLY in the record.
+
+## Todo Satisfaction Detection
+
+Adhoc work sometimes does exactly what an open notebook todo asked for - and today nobody notices, so the todo stays open forever. This section defines the shared detection mechanism ONCE; both flavor references point here and own only their consent surface (fix.md Step 7, tweak.md Step 2 + Step 3).
+
+**When it runs:** at record-write time, on every fix and every tweak. Always-on - never judgment-gated, and never a codebase scan. One cheap call:
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/notebook-list.sh todos
+```
+
+**The match is a semantic content judgment, not a string match:** does the work this record describes satisfy what the todo asks for? It is the same read the notebook's graduate/done flows already make (commands/craft-notebook.md, Lifecycle Trigger Framework). Judge the record's subject - a fix's symptom/root cause, a tweak's request/surface - against each open todo's PREVIEW.
+
+**Named-referent discipline, by match arity** (ported from craft-notebook.md; the silent-close prohibition carries over unchanged):
+
+- **Zero matches:** say nothing, stamp the receipt (below), continue the flow. This is the common case and it adds zero friction.
+- **Single match:** name the todo by slug in the consent surface. Never silent-close.
+- **Multiple plausible matches:** fire a disambiguation AskUserQuestion FIRST ("Which todo does this satisfy?", options labeled by slug + date), then proceed with the picked one. **One todo per record, by design** - disambiguation resolves to ONE; a second genuinely-satisfied todo is a separate manual close, never an implicit one.
+
+**The close call** (only after the flavor's consent surface says yes):
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/notebook-done.sh "<todo-file>" "<record-name>"
+```
+
+`<todo-file>` is the FILE the list emitted for the matched todo; `<record-name>` is this record's `name:` frontmatter value. It lands in the todo's `graduated_to:` - the same generic artifact ref the notebook graduate flow writes.
+
+**The receipt - stamped on EVERY run:** write `satisfied_todo:` into the record's frontmatter at the beat, every time it runs:
+
+- `satisfied_todo: <todo-slug>` when a todo was closed
+- `satisfied_todo: none-matched` when the beat ran and nothing closed (zero matches, declined consent, or abandoned disambiguation)
+
+A record whose `satisfied_todo:` is missing or empty means the beat never fired - an auditable skip, not a valid state. (Mirrors the mockup record's stamp-every-beat schema.)

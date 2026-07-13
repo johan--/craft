@@ -2,6 +2,10 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.45 - 2026-07-13
+
+- Added todo satisfaction detection to adhoc work: when a quick fix or tweak does what an open notebook todo asked for, craft now notices and offers to close the todo with a link to the fix/tweak record - no more todos that quietly stay open after the work already happened. Tweaks fold the close into the existing "How does it look?" acceptance (one consent, both effects); fixes ask only when a match is found, so the common no-match case adds zero friction. Every record now carries a `satisfied_todo:` receipt showing the check ran.
+
 ## 1.99.43 - 2026-07-12
 
 - Added hunch settling to the mockup funnel: when your reaction to a round is a feeling without a nameable fix ("B is close but something's off"), craft now riffs it into a sharp direction with you - one concrete interpretation at a time, you correct it - before rebuilding, instead of burning a whole revision on its own guess about what you meant. Clear reactions ("header's too heavy, lighten it", "B with C's cards", "just try something") proceed exactly as fast as before, and the mockup record keeps your words verbatim with the settled direction noted beneath them.
