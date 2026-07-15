@@ -111,13 +111,16 @@ echo "    - start-cycle.sh: empty PROJECT_ROOT in name-based lookup"
 echo "    - statusline.sh: malformed UTF-8 in progress bar (e2e2 byte sequence)"
 echo ""
 
-# Timing check
-if [ "$TOTAL_TIME" -gt 30 ]; then
-  echo "  TIMING: FAIL — ${TOTAL_TIME}s exceeds 30s limit"
-elif [ "$TOTAL_TIME" -gt 25 ]; then
-  echo "  TIMING: WARN — ${TOTAL_TIME}s approaching 30s limit"
+# Timing check. Budget is process-spawn headroom, not a hang detector: the suite is
+# 60+ separate bash subprocesses (git, python3, mktemp per file), so wall-clock grows
+# with the file count. Raised from 30s to 60s once the suite legitimately reached ~32s
+# across 61 files - no test spins up a live model or hits the network.
+if [ "$TOTAL_TIME" -gt 60 ]; then
+  echo "  TIMING: FAIL — ${TOTAL_TIME}s exceeds 60s limit"
+elif [ "$TOTAL_TIME" -gt 45 ]; then
+  echo "  TIMING: WARN — ${TOTAL_TIME}s approaching 60s limit"
 else
-  echo "  TIMING: OK — ${TOTAL_TIME}s (limit: 30s)"
+  echo "  TIMING: OK — ${TOTAL_TIME}s (limit: 60s)"
 fi
 echo ""
 
