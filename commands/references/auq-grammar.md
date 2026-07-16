@@ -39,8 +39,6 @@ _The brief, once, before the first finding:_
 
 _The finding:_
 
-> Finding 1 of 1.
->
 > You want the new address check on the checkout form. The same check would fit the
 > two other forms that take an address - the account page and the shipping-book
 > editor.
@@ -88,8 +86,6 @@ No brief, no lean, no argued case - a dead end decides itself.
 
 _The finding:_
 
-> Finding 1 of 1.
->
 > The saved-cart reminder this story asks for already exists - checkout builds
 > it and sends it on the schedule the spark describes. I read the reminder job
 > end to end to confirm.
