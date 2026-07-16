@@ -172,6 +172,11 @@ Agent tool:
     **What I found:** [2-3 sentences]
     **Product question:** [the specific question only the user can answer]
 
+    Write every finding in plain language the user can read cold: no terms coined
+    during your investigation, and never a bare file path, line number, or symbol
+    name standing in for an explanation - say what the thing IS in words from the
+    story or the user's own request, then cite the location once.
+
     If you find nothing noteworthy, say so. Don't manufacture findings.
     Report in under 500 words."
 ```
@@ -180,29 +185,29 @@ Agent tool:
 
 **Do not proceed to Step 2 until you have the Explore agent's findings in hand.**
 
-### Step 2: Process Findings
+### Step 2: Filter - What Actually Deserves to Interrupt the User
 
-Read the Explore agent's findings. For each finding, decide:
-- Is this a genuine product question? (Surface it)
-- Is this an engineering question you can answer yourself? (Don't surface it)
-- Is this informational with no ambiguity? (Don't surface it)
+This is the most important step, and the gate's whole quality lives here. AskUserQuestion is for disambiguation between multiple legitimate paths - not for narrating what you found, not for permission, not for caution. Most codebase observations are NOT product questions; they are facts you act on.
 
-Filter to only genuine product questions.
+**Surface a finding ONLY if BOTH are true:**
+1. There are multiple legitimate paths and only the user can choose between them (a real fork in intent, not in mechanism).
+2. The plan would be meaningfully worse if you decided it yourself and moved on.
+
+**If either fails, do NOT surface it. Decide it and let the user veto later.** A fact ("there's no CLI to wire into - `index.js` is a library") is not a fork; you just don't wire a CLI that isn't there. An engineering call (test structure, key order) is yours. The bar is agent-judgment-plus-veto, not agent-question-plus-guidance.
+
+**"Only the user can decide" means the CHOICE is theirs - not that you have no opinion on it.** When a finding DOES pass this filter, you still bring your recommendation to it. Restraint decides *whether* to ask; it never means going neutral once you do. Every surfaced fork ends on your lean and marks the recommended option `(Recommended)` in the widget (Step 3) - "here's what I'd do, your call," never a menu with no pointer.
+
+**The removal test:** for each candidate, ask "if I delete this question, is the plan actually worse?" If not, it was overhead - cut it. (After the third or fourth question a user stops reading and starts clicking; every needless one spends that budget.)
+
+**Collapse before you surface.** Two findings that share one underlying decision are ONE question. "warn already exists" and "the CLI it names doesn't" are not two forks - they are one: "your premise is already built; what is this story now?" Fold the second into the first's options; never ask it twice.
 
 ### Step 3: Surface Gaps via AskUserQuestion
 
 **Before constructing the AskUserQuestion(s)**, Read `commands/references/agent-finding-handoff.md` and apply the Self-Contained Test to each finding the Explore agent surfaced. The user does NOT have the Explore agent's codebase-research context. A finding that names a file path, function, locked-decision number, or pattern identifier without semantic context will force the user to re-investigate what the finding means before answering. Expand identifiers per the Translation Table in that file, then construct the question(s) with expanded content.
 
-**Group related findings in a single message.** Don't pepper the user with one-at-a-time questions. Present them conversationally:
+**Then Read `commands/references/auq-grammar.md`** (resolve it against the absolute path you Read this file from - it is a sibling of this file) and mirror it. That file holds the one complete worked gate - the brief, the finding prose, the widget - and you mirror its shape, never its content: visible prose in short airy paragraphs ending on a bold lean, the recommended option first with `(Recommended)` in its label, an honest one-line verdict on each alternative, and `Let's discuss` closing the set.
 
-> "Before I plan the chunks, I looked at the codebase where this work lands. A few things came up:"
-
-Then list findings with context:
-
-> "1. **[Finding type]:** [What you found in file X]. [Product question]"
-> "2. **[Finding type]:** [What you found in file Y]. [Product question]"
-
-Use **AskUserQuestion** with options that map to the product questions. If findings are independent, you can use multiple AskUserQuestions. If they're interrelated (answer to Q1 affects Q2), ask them together or sequentially.
+**One finding per AskUserQuestion, sequenced.** Present a finding, ask its one question, and record the answer before surfacing the next finding - an answer often changes what the next question should be (that reassessment is Step 4). Never stack multiple decisions into one widget.
 
 ### Step 4: Reassess After Answers
 
