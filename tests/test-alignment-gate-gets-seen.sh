@@ -36,7 +36,9 @@ assert_file_contains "every surfaced fork ends on the lean" 'ends on your lean a
 # --- Step 3: reads the exemplar, one finding at a time ---
 begin_test "Step 3 reads the worked exemplar at gate time"
 assert_file_contains "exemplar Read mandate present" 'auq-grammar.md' "$ALIGN"
-assert_file_contains "exemplar named as the one worked gate" 'the one complete worked gate' "$ALIGN"
+assert_file_contains "mirror matched to the finding kind" 'mirror the worked gate that matches your finding' "$ALIGN"
+assert_file_contains "both gate kinds named" 'That file holds two' "$ALIGN"
+assert_file_contains "dead end named as a kind" 'a fact that decides itself is a dead end' "$ALIGN"
 
 begin_test "Step 3 heading frozen for the agent-finding-handoff hardcode"
 assert_file_contains "Step 3 heading byte-identical" '### Step 3: Surface Gaps via AskUserQuestion' "$ALIGN"
@@ -52,6 +54,11 @@ assert_file_not_contains "no inline checkout widget in alignment-check" 'Checkou
 assert_file_contains "checkout widget lives in the exemplar" 'Checkout only (Recommended)' "$GRAMMAR"
 
 # --- The exemplar models the full gate ---
+begin_test "exemplar models the dead-end gate"
+assert_file_contains "dead-end worked example present" '## The worked dead end' "$GRAMMAR"
+assert_file_contains "dead ends decide themselves" 'a dead end decides itself' "$GRAMMAR"
+assert_file_contains "story-fate question modeled" 'What should this story become' "$GRAMMAR"
+
 begin_test "exemplar models the full gate shape"
 assert_file_exists "auq-grammar.md exists" "$GRAMMAR"
 assert_file_contains "shape-not-content rule" 'mirror the shape, not the content' "$GRAMMAR"
