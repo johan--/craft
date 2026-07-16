@@ -68,3 +68,35 @@ is an honest one-line verdict - the endorsement on the runner-up, the cost state
 plainly. `Let's discuss` closes the set. The evidence was cited once, as a
 coordinate ("three call sites"), never as a claim of diligence. Every option was
 already argued in the prose; none is filler invented to round out the list.
+
+## The worked dead end
+
+Not every finding is a fork. When the investigation shows the story's premise
+is already built (or void as written), there is nothing to weigh - the only
+real question is what the story becomes. Mirror this shape: state the fact in
+a few sentences, cite the location once, and ask the story-fate question.
+No brief, no lean, no argued case - a dead end decides itself.
+
+_The finding:_
+
+> Finding 1 of 1.
+>
+> The saved-cart reminder this story asks for already exists - checkout builds
+> it and sends it on the schedule the spark describes. I read the reminder job
+> end to end to confirm.
+>
+> The only gap is that no test covers it.
+
+_The widget:_
+
+```
+AskUserQuestion:
+  question: "The reminder this story describes is already built and running. What should this story become?"
+  options:
+    - label: "Close it - already built (Recommended)"
+      description: "Mark it done; the missing test lands as a quick fix, not a story."
+    - label: "Re-scope to the unbuilt part"
+      description: "Keep the story, rewrite the spark around what's genuinely missing - if you had more in mind."
+    - label: "Let's discuss"
+      description: "Walk me through what you found first."
+```
