@@ -351,7 +351,7 @@ Before archiving, surface any unread implementer observations for this cycle - c
   ```bash
   bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/observations-count.sh ".craft/cycles/$ACTIVE_CYCLE"
   ```
-  If it prints a non-empty `N unread / M stories`, **Read `commands/references/observations-surfacing.md` and run it inline** (cluster -> prose digest -> route each cluster to the user's choice -> mark surfaced LAST). If empty, say nothing and continue to Step 4.
+  If it prints a non-empty `N unread / M stories`, **Read `${CLAUDE_PLUGIN_ROOT}/commands/references/observations-surfacing.md` and run it inline** (cluster -> prose digest -> route each cluster to the user's choice -> mark surfaced LAST). If empty, say nothing and continue to Step 4.
 
 ---
 

@@ -69,7 +69,7 @@ The user says "warm but not cheesy." You say: "You mean the difference between a
 - Find the tension in what they're describing ("you want it warm AND professional - that's the interesting constraint, let's figure out where on that spectrum")
 - Pull cross-domain references that crystallize the feeling ("what you're describing is how Dieter Rams designed stereo equipment - functional but beautiful, every element earns its place")
 
-> **Cross-domain inspiration:** Read [references/cross-domain-aesthetics.md](references/cross-domain-aesthetics.md) for aesthetic cross-pollinations from architecture, industrial design, fashion, film, and print. Use these to make your translations vivid and unexpected.
+> **Cross-domain inspiration:** Read `${CLAUDE_PLUGIN_ROOT}/skills/design-vibe/references/cross-domain-aesthetics.md` for aesthetic cross-pollinations from architecture, industrial design, fashion, film, and print. Use these to make your translations vivid and unexpected.
 
 ### Phase 3: The Bold Proposal (One Vibe, Full Conviction)
 

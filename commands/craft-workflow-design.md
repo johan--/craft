@@ -21,7 +21,7 @@ Set `PROJECT` to `${CRAFT_PROJECT_ROOT:-.}`.
 
 ## Format Reference
 
-Every workflow definition uses stages-v1 format: a `definition.md` routing table plus per-stage files in `stages/NN-slug.md`. For the definitive specification of the routing-table schema, stage file frontmatter (execution, agent, produces, consumes, human_gate), and session frontmatter, see [references/workflow-formats.md](references/workflow-formats.md). That file is a cold-path schema lookup; all create/edit/archive procedure lives in this file.
+Every workflow definition uses stages-v1 format: a `definition.md` routing table plus per-stage files in `stages/NN-slug.md`. For the definitive specification of the routing-table schema, stage file frontmatter (execution, agent, produces, consumes, human_gate), and session frontmatter, see `${CLAUDE_PLUGIN_ROOT}/commands/references/workflow-formats.md`. That file is a cold-path schema lookup; all create/edit/archive procedure lives in this file.
 
 ---
 

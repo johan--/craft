@@ -318,7 +318,7 @@ options:
 
 Before defining acceptance criteria or planning chunks, investigate the codebase where this work will land and surface every product question that only the user can answer.
 
-⛔ **DO NOT skip this step.** Read `commands/references/alignment-check.md` and follow the alignment loop.
+⛔ **DO NOT skip this step.** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/alignment-check.md` and follow the alignment loop.
 
 **Summary:** Spawn an Explore agent to investigate the codebase. Process findings. Surface genuine product questions via AskUserQuestion. If answers expand scope, use SendMessage to the same agent for follow-up investigation. Loop until zero unasked product questions remain. Then record the `## Alignment` receipt in the story and set `alignment: complete` in frontmatter.
 

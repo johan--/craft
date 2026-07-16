@@ -20,11 +20,11 @@ Per chunk 1..N:
 1.create-checkpoint.sh [story] [chunk]
 2.INVOKE implementer via Task (NEVER implement directly)
 3.INVOKE chunk-validator via Task (haiku)
-4.PASSED:complete-chunk.sh→next chunk | FAILED:Read validate-fix-loop.md→fix(Skill)→re-validate
+4.PASSED:complete-chunk.sh→next chunk | FAILED:Read commands/references/validate-fix-loop.md→fix(Skill)→re-validate
 5.Loop to 1
 After all: chunk-validator final→claims-audit→self-critique→complete-story.sh
 =CHAINS
-story-implement→[checkpoint→implementer(Task)→chunk-validator(haiku)→pass:complete-chunk.sh→fail:Read validate-fix-loop.md→fix(Skill)→re-validate]×N→chunk-validator final→claims-audit→complete-story.sh
+story-implement→[checkpoint→implementer(Task)→chunk-validator(haiku)→pass:complete-chunk.sh→fail:Read commands/references/validate-fix-loop.md→fix(Skill)→re-validate]×N→chunk-validator final→claims-audit→complete-story.sh
 test-fix→triage→HAND BACK TO story-implement
 refine-chunk→surgical fix→HAND BACK TO story-implement
 cycle-design→content-spark(per story)→creative-spark(opt)→design-vibe→plan-chunks MODE=batch
@@ -39,6 +39,8 @@ notebook→capture | notebook→capture→done (conversational, AUQ always) | no
 !override FAILED verdict—FAILED means FAILED
 !present story content from memory—Read file fresh
 !batch concerns—surface each via AskUserQuestion
+!run a craft flow from memory when its reference Read fails—"File does not exist" (a tool fact) means: resolve against the plugin root stated above, retry once
+!hard-wall on a Read that fails twice—disclose in ONE line (file, expected path, plugin version from .claude-plugin/plugin.json; "reinstall may fix; if not it's a craft bug—this message is the report: github.com/drobins25/craft/issues"), then AskUserQuestion: continue best-effort | stop
 +checkpoint before each chunk (create-checkpoint.sh)
 +transition scripts for state changes
 +breadcrumb before nested skill invocation

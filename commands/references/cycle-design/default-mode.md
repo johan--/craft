@@ -90,7 +90,7 @@ If `source_concept` is `[]` or empty: this cycle is freeform. Skip the rest of t
 If `source_concept` is populated (e.g., `[planning/04-company-onboarding.md]`): the cycle is planning-sourced. For each story being created, apply the **action-moment framing**:
 
 - **Planning-extraction moment** ("I'm producing this story from the planning concept's content"):
-  Instead of running default-mode's normal Step 3 spark-capture flow for this story, **Read `${CLAUDE_PLUGIN_ROOT}/commands/references/story-from-planning.md` and execute its phases** against the cycle's source_concept. The protocol already:
+  Instead of running default-mode's normal Step 3 spark-capture flow for this story, **Read `story-from-planning.md` (one directory up from this file, in `commands/references/`) and execute its phases** against the cycle's source_concept. The protocol already:
   - Reads the planning concept file
   - Extracts content per the 9-section taxonomy
   - Asks gap-fill AskUserQuestions where planning is silent
@@ -143,7 +143,7 @@ After writing all files (both planning-extracted via the protocol and freeform v
 
 **Cycle planning is high-level.** Capture the spark for each story — detailed planning happens later via `plan-chunks`.
 
-**Before each story:** apply Step 2.7 (Planning-Source Routing) above. If the story is planning-extraction, Read `commands/references/story-from-planning.md` and execute its phases for that story instead of running Step 3a-3e below. The protocol writes the story file directly (including spark drawn from planning content). For freeform stories, continue with the Step 3 flow below.
+**Before each story:** apply Step 2.7 (Planning-Source Routing) above. If the story is planning-extraction, Read `story-from-planning.md` (one directory up from this file, in `commands/references/`) and execute its phases for that story instead of running Step 3a-3e below. The protocol writes the story file directly (including spark drawn from planning content). For freeform stories, continue with the Step 3 flow below.
 
 **CRITICAL: Questions vs Answers**
 
@@ -581,7 +581,7 @@ Skill tool:
 
 This hands off to `design-vibe` which reviews visual cohesion. Do NOT replicate this work inline.
 
-**Before planning any story**, check `alignment` in frontmatter. If `alignment: pending`, run the alignment check first. Read `commands/references/alignment-check.md` and follow the loop for each story before invoking plan-chunks. The alignment check surfaces product questions from codebase investigation - it must complete before chunking begins.
+**Before planning any story**, check `alignment` in frontmatter. If `alignment: pending`, run the alignment check first. Read `alignment-check.md` (one directory up from this file, in `commands/references/`) and follow the loop for each story before invoking plan-chunks. The alignment check surfaces product questions from codebase investigation - it must complete before chunking begins.
 
 **If user wants to plan all stories:**
 

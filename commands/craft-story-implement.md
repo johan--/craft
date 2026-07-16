@@ -26,7 +26,7 @@ If you find yourself about to write code → STOP → use Task tool instead.
 Do NOT invoke the validate-chunk skill (`craft:validate-chunk`) during the implementation loop. The validate-chunk skill exists for manual user invocation only. story-implement owns the validation chain directly:
 - Invoke chunk-validator agent via Task tool
 - Route PASSED/PARTIAL inline
-- Route FAILED via Read [references/validate-fix-loop.md](references/validate-fix-loop.md)
+- Route FAILED via Read `${CLAUDE_PLUGIN_ROOT}/commands/references/validate-fix-loop.md`
 
 ---
 
@@ -568,7 +568,7 @@ fi
    **Route by verdict:**
 
    **If PASSED (or PARTIAL on non-final chunk):**
-   - **Gate reconcile beat:** Read [references/gate-reconcile.md](references/gate-reconcile.md) and run it inline (NOT via the Skill tool). Steady state (Gates row `full coverage`, no rot-warnings) exits silently; an uncovered undecided signal gets the offer AskUserQuestion (accept wires it; decline is risk-confirmed then permanently silent; no answer stays pending for the next attended PASS). This runs BEFORE complete-chunk.sh and never fires on FAILED.
+   - **Gate reconcile beat:** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/gate-reconcile.md` and run it inline (NOT via the Skill tool). Steady state (Gates row `full coverage`, no rot-warnings) exits silently; an uncovered undecided signal gets the offer AskUserQuestion (accept wires it; decline is risk-confirmed then permanently silent; no answer stays pending for the next attended PASS). This runs BEFORE complete-chunk.sh and never fires on FAILED.
    - Run complete-chunk.sh: `bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/complete-chunk.sh`
    - Write continuation breadcrumb for next chunk:
    ```bash
@@ -585,7 +585,7 @@ fi
    - **Do NOT stop between chunks.**
 
    **If FAILED:**
-   > **FAILED path:** Read [references/validate-fix-loop.md](references/validate-fix-loop.md) for the error routing loop (error classification, REFINE_COUNT tracking, fix skill invocation, re-validation, and escalation). Follow its instructions.
+   > **FAILED path:** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/validate-fix-loop.md` for the error routing loop (error classification, REFINE_COUNT tracking, fix skill invocation, re-validation, and escalation). Follow its instructions.
    - After the loop exits with PASSED, return to the PASSED path above (run complete-chunk.sh, write breadcrumb, continue).
    - After the loop exits with escalation (REFINE_COUNT >= 4), offer rollback or stop.
 
@@ -710,7 +710,7 @@ After all chunks:
    Continue to the Claims Audit (Step 5.1b). **Do NOT stop here.**
 
    **If FAILED:**
-   > **FAILED path:** Read [references/validate-fix-loop.md](references/validate-fix-loop.md) for the error routing loop. Follow its instructions (pass `MODE: story-final` to re-validation). Fix must succeed before story can complete.
+   > **FAILED path:** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/validate-fix-loop.md` for the error routing loop. Follow its instructions (pass `MODE: story-final` to re-validation). Fix must succeed before story can complete.
 
    **ALL tests must pass before a story completes. No exceptions.**
 
@@ -788,7 +788,7 @@ After all chunks:
    Learnings should already be in `.craft/.learnings.yaml` (written incrementally after each chunk).
    Verify the file exists and any final learnings from the last chunk are captured.
 
-   > **Schema and examples:** Read [commands/references/learnings-schema.md](commands/references/learnings-schema.md) for the full `.learnings.yaml` data structure (6 categories: conventions, enforcements, behaviors, automations, skills, workflows) and merge logic.
+   > **Schema and examples:** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/learnings-schema.md` for the full `.learnings.yaml` data structure (6 categories: conventions, enforcements, behaviors, automations, skills, workflows) and merge logic.
 
    **If learnings captured:**
    > "Captured [N] learnings from this story.
@@ -992,7 +992,7 @@ After all chunks:
      ```bash
      bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/observations-count.sh ".craft/cycles/$ACTIVE_CYCLE"
      ```
-     If it prints a non-empty `N unread / M stories`, **Read `commands/references/observations-surfacing.md` and run it inline.** The routine clusters the basket, presents the prose digest, routes each cluster to the user's choice, and runs `mark-observations-surfaced.sh` LAST (only after the user acknowledges and routes).
+     If it prints a non-empty `N unread / M stories`, **Read `${CLAUDE_PLUGIN_ROOT}/commands/references/observations-surfacing.md` and run it inline.** The routine clusters the basket, presents the prose digest, routes each cluster to the user's choice, and runs `mark-observations-surfaced.sh` LAST (only after the user acknowledges and routes).
 
 ## Parallel Stories (Max 2)
 

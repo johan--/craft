@@ -121,13 +121,13 @@ When re-validation reveals new errors, report them and loop (attempt another fix
 
 For TypeScript errors (missing props, wrong types, null safety), lint errors (unused imports, missing dependencies), build errors, and test failures:
 
-> **Common patterns:** Read [references/refinement-patterns.md](references/refinement-patterns.md) for TypeScript, lint, build, and test fix patterns with diff examples.
+> **Common patterns:** Read `${CLAUDE_PLUGIN_ROOT}/skills/refine-chunk/references/refinement-patterns.md` for TypeScript, lint, build, and test fix patterns with diff examples.
 
 ## Refinement Output Format
 
 Report fixes using one of three templates: Simple Fix, Multiple Fixes, or Complex Fix (Needs Review). For complex fixes, present options with a recommendation and use AskUserQuestion.
 
-> **Output format:** Read [references/output-templates.md](references/output-templates.md) for the three output format templates (simple/multiple/complex).
+> **Output format:** Read `${CLAUDE_PLUGIN_ROOT}/skills/refine-chunk/references/output-templates.md` for the three output format templates (simple/multiple/complex).
 
 **Every template MUST end with:**
 ```

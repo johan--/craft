@@ -103,7 +103,7 @@ Read the user's response to the selection AUQ and route:
 - **Wants more** ("none of these land") -> generate 3 more options with a narrower brief.
 - **Wants to combine** ("A's layout with B's motion") -> synthesize a hybrid from the named pieces.
 - **Unsure** - route by language:
-  - **Resonated, can't name which** ("they're all good, I can't tell which", "a mix I can't see") -> run the calibration loop: Read `reference/calibration-loop.md` and run it inline, one either/or at a time, until the pick clicks. The loop SURFACES a direction; it does NOT commit it - close it with an explicit pick before writing to the story file.
+  - **Resonated, can't name which** ("they're all good, I can't tell which", "a mix I can't see") -> run the calibration loop: Read `reference/calibration-loop.md` (at the plugin root this file lives under, two directories up) and run it inline, one either/or at a time, until the pick clicks. The loop SURFACES a direction; it does NOT commit it - close it with an explicit pick before writing to the story file.
   - **Nothing landed** ("all feel expected") -> generate 3 more, narrower brief. Not the loop.
   - **Explicit delegation** ("just pick for me") -> recommend + commit (the only auto-pick case).
   - **Named hybrid** -> synthesize the combine.

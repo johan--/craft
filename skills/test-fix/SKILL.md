@@ -168,7 +168,7 @@ Use **AskUserQuestion** with these options. After the user decides and the fix i
 
 For worked examples of each triage outcome (stale assertions, renamed exports, changed props, changed API shapes, new validation, side-effect changes):
 
-> **Common scenarios:** Read [references/scenario-catalog.md](references/scenario-catalog.md) for worked examples of each triage outcome with diff examples.
+> **Common scenarios:** Read `${CLAUDE_PLUGIN_ROOT}/skills/test-fix/references/scenario-catalog.md` for worked examples of each triage outcome with diff examples.
 
 ## Handoff Protocol
 

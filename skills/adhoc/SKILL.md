@@ -53,8 +53,8 @@ The gate stays open for the whole work thread - including follow-up requests and
 
 Read the matching reference file and execute it inline (never via the Skill tool):
 
-- **Fix** -> Read `references/fix.md`
-- **Tweak** -> Read `references/tweak.md`
+- **Fix** -> Read `${CLAUDE_PLUGIN_ROOT}/skills/adhoc/references/fix.md`
+- **Tweak** -> Read `${CLAUDE_PLUGIN_ROOT}/skills/adhoc/references/tweak.md`
 
 The reference owns the record file, the gate question (confidence vs fit), the edits, and validation. It hands back here for each commit.
 

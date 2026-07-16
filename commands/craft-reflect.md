@@ -60,7 +60,7 @@ options:
     description: "Skip - the offer returns next reflect (the counter does not reset on decline)"
 ```
 
-**If "Run the rule pass":** Read [references/rule-pass.md](references/rule-pass.md) and follow its instructions completely (agent invocation, presentation, review, write, receipt, watermark). When the pass completes, continue below.
+**If "Run the rule pass":** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/rule-pass.md` and follow its instructions completely (agent invocation, presentation, review, write, receipt, watermark). When the pass completes, continue below.
 
 **If "Not now":** Do NOT touch `.craft/fixes/.rule-pass-state` - the watermark only advances on a completed pass. Continue below.
 

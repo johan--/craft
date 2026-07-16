@@ -55,7 +55,7 @@ Set `PROJECT` to `${CRAFT_PROJECT_ROOT:-.}`.
 
 ## Format Reference
 
-For the definitive specification of workflow definition frontmatter, stage file structure, session frontmatter, and Progress table format, see [references/workflow-formats.md](references/workflow-formats.md). That file is a cold-path schema lookup - read it when you need to verify the shape of a frontmatter field or the exact format of the Progress table. All procedural steps for executing a session live in this file, not the schema reference.
+For the definitive specification of workflow definition frontmatter, stage file structure, session frontmatter, and Progress table format, see `${CLAUDE_PLUGIN_ROOT}/commands/references/workflow-formats.md`. That file is a cold-path schema lookup - read it when you need to verify the shape of a frontmatter field or the exact format of the Progress table. All procedural steps for executing a session live in this file, not the schema reference.
 
 ---
 
@@ -116,7 +116,7 @@ mkdir -p "$PROJECT/.craft/workflows/{workflow-slug}/sessions/{date}-{session-slu
 mkdir -p "$PROJECT/.craft/workflows/{workflow-slug}/sessions/{date}-{session-slug}/artifacts"
 ```
 
-Write `session.md` with the hybrid format (see [references/workflow-formats.md](references/workflow-formats.md) New Session Format Reference for the exact schema). The session contains:
+Write `session.md` with the hybrid format (see `${CLAUDE_PLUGIN_ROOT}/commands/references/workflow-formats.md` New Session Format Reference for the exact schema). The session contains:
 
 - **Frontmatter:** workflow, name, status, mode, started, completed, current_stage, variables (including system variable `session_dir` set to the full session directory path)
 - **H1 title**

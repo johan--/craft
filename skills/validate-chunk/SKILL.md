@@ -119,7 +119,7 @@ Phase 3 (verdict routing) and Phase 4 (CLI error detection) run independently - 
 
 ### If PASSED
 
-**Gate reconcile beat (both per-chunk branches):** Read `commands/references/gate-reconcile.md` and run it inline (NOT via the Skill tool) BEFORE complete-chunk.sh. Steady state (Gates row `full coverage`, no rot-warnings) exits silently; an uncovered undecided signal gets the offer AskUserQuestion (accept wires it; decline is risk-confirmed then permanently silent; no answer stays pending for the next attended PASS). Never fires on FAILED.
+**Gate reconcile beat (both per-chunk branches):** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/gate-reconcile.md` and run it inline (NOT via the Skill tool) BEFORE complete-chunk.sh. Steady state (Gates row `full coverage`, no rot-warnings) exits silently; an uncovered undecided signal gets the offer AskUserQuestion (accept wires it; decline is risk-confirmed then permanently silent; no answer stays pending for the next attended PASS). Never fires on FAILED.
 
 Per-chunk mode (non-final):
 - Run complete-chunk.sh: `bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/complete-chunk.sh`

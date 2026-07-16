@@ -182,6 +182,8 @@ assert_contains "has routing section" "=ROUTING" "$RESULT"
 assert_contains "has rules section" "=RULES" "$RESULT"
 assert_contains "has chains section" "=CHAINS" "$RESULT"
 assert_contains "has version line" "v1|craft-orchestration-index" "$RESULT"
+assert_contains "states the resolved plugin root" "Craft plugin root:" "$RESULT"
+assert_contains "carries the failed-Read stop-rule" "File does not exist" "$RESULT"
 
 cleanup_test_dir
 echo ""
@@ -197,6 +199,7 @@ set -e
 
 assert_not_contains "no routing section" "=ROUTING" "$RESULT"
 assert_not_contains "no rules section" "=RULES" "$RESULT"
+assert_not_contains "no plugin-root line" "Craft plugin root:" "$RESULT"
 
 rm -rf "$TEST_DIR"
 echo ""

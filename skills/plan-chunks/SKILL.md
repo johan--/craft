@@ -86,7 +86,7 @@ Read the story file path from args or context. Verify the file exists. Identify 
 
 **Otherwise**, scan sibling stories in the cycle for relevance (file path overlap, keyword overlap, component overlap). For related siblings, extract files, decisions, and overlap areas. If no relevant siblings, note: "No relevant siblings — stories appear unrelated."
 
-> **Details:** Read [references/research-integration.md](references/research-integration.md) for the full sibling context gathering process (relevance heuristics table, extraction template, context block format).
+> **Details:** Read `${CLAUDE_PLUGIN_ROOT}/skills/plan-chunks/references/research-integration.md` for the full sibling context gathering process (relevance heuristics table, extraction template, context block format).
 
 ### 0.2 Determine Planning Mode
 
@@ -151,14 +151,14 @@ Read the story file's `alignment` frontmatter field.
 
 **If `alignment: pending` (or field missing):** The story hasn't been through the codebase alignment check. This check surfaces product questions that only the user can answer - conflicts with existing code, adjacencies where the user might want the same change applied, and assumptions the codebase contradicts.
 
-Read `commands/references/alignment-check.md` and follow the alignment loop:
+Read `${CLAUDE_PLUGIN_ROOT}/commands/references/alignment-check.md` and follow the alignment loop:
 1. Spawn an Explore agent to investigate the codebase
 2. Surface genuine product questions via AskUserQuestion
 3. If answers expand scope, use SendMessage to the same agent for follow-up
 4. Loop until zero unasked product questions remain
 5. Record the `## Alignment` receipt in the story and set `alignment: complete` in the frontmatter
 
-**Batch mode (`MODE: batch`):** Flag stories with `alignment: pending` during triage. Ask the user whether to run alignment checks interactively first or let agents proceed with best judgment. See `commands/references/alignment-check.md` "Batch Planning" section.
+**Batch mode (`MODE: batch`):** Flag stories with `alignment: pending` during triage. Ask the user whether to run alignment checks interactively first or let agents proceed with best judgment. See `${CLAUDE_PLUGIN_ROOT}/commands/references/alignment-check.md` "Batch Planning" section.
 
 **If `alignment: complete`:** Continue to Phase 0.46.
 
@@ -271,7 +271,7 @@ This is the default path for all existing invocations. The plan-chunks-agent doe
 
 **INVOKE the plan-chunks-agent using the Task tool** with `subagent_type: "craft:plan-chunks-agent"`.
 
-> **Agent prompt template:** Read [references/research-integration.md](references/research-integration.md) for the full agent launch prompt with scope notes.
+> **Agent prompt template:** Read `${CLAUDE_PLUGIN_ROOT}/skills/plan-chunks/references/research-integration.md` for the full agent launch prompt with scope notes.
 
 Include in the prompt:
 - Story file path (full path)
@@ -705,7 +705,7 @@ Parse dependencies from each planning story to determine which can plan in paral
 
 #### Mode: Agent Teams (when `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` is `1`)
 
-> **Details:** Read [references/team-planning.md](references/team-planning.md) for agent teams spawn templates, monitoring patterns, and result collection.
+> **Details:** Read `${CLAUDE_PLUGIN_ROOT}/skills/plan-chunks/references/team-planning.md` for agent teams spawn templates, monitoring patterns, and result collection.
 
 1. Use the dependency graph levels from M-1b as your batches
 2. For each level (starting from Level 0):
@@ -868,7 +868,7 @@ Pass the lightweight metadata and output file registry to the batch triage flow.
 
 ## Batch Triage
 
-> **Full flow details:** Read [references/batch-triage.md](references/batch-triage.md) for AskUserQuestion templates, concern tier definitions, cohesion heuristics, and edge cases.
+> **Full flow details:** Read `${CLAUDE_PLUGIN_ROOT}/skills/plan-chunks/references/batch-triage.md` for AskUserQuestion templates, concern tier definitions, cohesion heuristics, and edge cases.
 
 The batch triage flow (BT-1 through BT-7) reviews all plans with the user after parallel agents complete. The core principle:
 

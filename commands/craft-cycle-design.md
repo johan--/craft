@@ -11,7 +11,7 @@ Create a new cycle or detail an existing one — this IS the planning phase. Sto
 
 **If args specify an existing planning cycle directory** (e.g., `/craft:cycle-design 5-auth-flow` AND `.craft/cycles/5-auth-flow/cycle.yaml` exists with `status: planning`):
 
-→ Read [references/cycle-design/detailing-mode.md](references/cycle-design/detailing-mode.md) for the flesh-out flow.
+→ Read `${CLAUDE_PLUGIN_ROOT}/commands/references/cycle-design/detailing-mode.md` for the flesh-out flow.
 
 **If args are provided AND `.craft/cycles/[arg]/cycle.yaml` exists but status is NOT `planning`** (i.e., cycle is `ready`, `active`, or `complete`):
 
@@ -257,9 +257,9 @@ options:
 
 **If user provides custom text:** Ask a clarifying AskUserQuestion to understand their preference.
 
-**If "Add stories now":** → Read [references/cycle-design/default-mode.md](references/cycle-design/default-mode.md) for the full story planning flow.
+**If "Add stories now":** → Read `${CLAUDE_PLUGIN_ROOT}/commands/references/cycle-design/default-mode.md` for the full story planning flow.
 
-**If "Quick sketch (Roadmap)":** → Read [references/cycle-design/roadmap-mode.md](references/cycle-design/roadmap-mode.md) for the roadmap quick-sketch flow.
+**If "Quick sketch (Roadmap)":** → Read `${CLAUDE_PLUGIN_ROOT}/commands/references/cycle-design/roadmap-mode.md` for the roadmap quick-sketch flow.
 
 ## Story Order
 

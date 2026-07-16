@@ -253,7 +253,7 @@ This is where the magic happens. The crystallizer writes the agent file directly
 - Slugify input for filename: `$PROJECT/.claude/agents/become-{slug}.md`
 - This may be renamed in Phase 4
 
-**Read 2-3 existing crystallized agents** from the plugin's `agents/` directory as format exemplars. Pick agents that are well-structured (e.g., `pr-reviewer-expert.md`, `crystallizer.md`).
+**Read 2-3 existing crystallized agents** from `${CLAUDE_PLUGIN_ROOT}/agents` as format exemplars. Pick agents that are well-structured (e.g., `pr-reviewer-expert.md`, `crystallizer.md`).
 
 **Invoke the crystallizer agent via the Task tool:**
 

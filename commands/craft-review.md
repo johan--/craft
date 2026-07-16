@@ -111,6 +111,9 @@ Build the prompt with:
 ```
 You are reviewing code for [project name].
 
+PLUGIN_ROOT: ${CLAUDE_PLUGIN_ROOT}
+(The agent cannot resolve this variable itself - this line passes the resolved path.)
+
 ## Mode: [Branch|Story|Project]
 
 ## Focus: [correctness, security, ...]
@@ -227,6 +230,9 @@ The runner gets FULL context (unlike the architect) - but its mission is answeri
 
 ```
 You are reviewing code for [project name].
+
+PLUGIN_ROOT: ${CLAUDE_PLUGIN_ROOT}
+(The agent cannot resolve this variable itself - this line passes the resolved path.)
 
 ## Mode: Maze Review - Targeted Investigation
 

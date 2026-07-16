@@ -57,7 +57,7 @@ The launch is the last attended moment before craft runs unwatched — the user 
    bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/gate-signals.sh scan
    ```
 2. For each reported manifest with NO state annotation (no `declined`/`wired` on its line): it is uncovered-and-undecided unless a verified gate in quality.yaml covers it (package.json counts as covered when the built-ins can run against it).
-3. **If any signal is undecided:** Read [references/gate-reconcile.md](references/gate-reconcile.md) and surface its offer AskUserQuestion here, before any story starts. Accept → run the setup beat now, while the user is watching. Decline → the confirmation, then the record. Timeout → proceed with the run (never block the launch), and note in the final report: "N toolchain(s) ran unmeasured and undecided: [globs] — craft will ask at the next attended validation."
+3. **If any signal is undecided:** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/gate-reconcile.md` and surface its offer AskUserQuestion here, before any story starts. Accept → run the setup beat now, while the user is watching. Decline → the confirmation, then the record. Timeout → proceed with the run (never block the launch), and note in the final report: "N toolchain(s) ran unmeasured and undecided: [globs] — craft will ask at the next attended validation."
 4. **If all signals are decided (or none exist):** launch silently.
 
 This is the ONLY gate prompt an autonomous run makes. Mid-run, the reconcile beat's autonomous guard no-ops as always — signals born during the run wait for the next attended moment.

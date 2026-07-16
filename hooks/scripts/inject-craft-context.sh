@@ -132,8 +132,11 @@ fi
 
 # Append orchestration index (always, when .craft/ exists)
 # Following Vercel AGENTS.md pattern: passive context > on-demand skills
+# The plugin-root line pairs with the index so every relative path in it (and in
+# raw-Read reference files) resolves against a root the reader can see.
 if [ -f "$ORCH_INDEX" ]; then
   echo ""
+  echo "[Craft plugin root: $(cd "$(dirname "$SCRIPT_DIR")/.." && pwd)]"
   cat "$ORCH_INDEX"
 fi
 

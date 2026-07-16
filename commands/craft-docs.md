@@ -90,7 +90,7 @@ If the file exists, read its contents. These are known doc-drift issues flagged 
 
 #### Step 2b: Dispatch Explore Agent
 
-Read the doc standards reference file: `commands/references/doc-standards.md` (from the plugin, not the project). This defines what the Explore agent should look for.
+Read the doc standards reference file: `${CLAUDE_PLUGIN_ROOT}/commands/references/doc-standards.md` (from the plugin, not the project). This defines what the Explore agent should look for.
 
 Dispatch an **Explore agent** via the Agent tool with `subagent_type: "Explore"`. The prompt adapts to mode.
 
@@ -103,7 +103,7 @@ stale, missing, or uncertain - NOT to write the brief. That happens later.
 Read the doc standards reference first - it defines what "current" means and how
 to handle uncertainty:
 
-[Paste full contents of commands/references/doc-standards.md]
+[Paste full contents of ${CLAUDE_PLUGIN_ROOT}/commands/references/doc-standards.md]
 
 Project root: {PROJECT}
 Scope: {SCOPE or "full project"}
@@ -134,7 +134,7 @@ stale since the last docs update - NOT to write the brief. That happens later.
 Read the doc standards reference first - it defines what "current" means and how
 to handle uncertainty:
 
-[Paste full contents of commands/references/doc-standards.md]
+[Paste full contents of ${CLAUDE_PLUGIN_ROOT}/commands/references/doc-standards.md]
 
 Project root: {PROJECT}
 Scope: {SCOPE or "full project"}

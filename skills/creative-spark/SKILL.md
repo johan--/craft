@@ -209,7 +209,7 @@ Before jumping to layouts and wireframes, spend a moment as a design director:
 - **Name the tension.** Every interesting feature lives at the intersection of competing values. Tensions can be spatial ("density vs clarity"), kinetic ("immediacy vs discovery"), or experiential ("control vs delight"). The best tensions have motion implications built in - "speed vs delight" already implies how the interface should move. When you name the tension, your options become deliberate stances on it rather than arbitrary variations. One option prioritizes density, another prioritizes clarity, a third finds a novel resolution. If the tension isn't obvious, the reframe will surface it.
 - **What does this weigh?** Before any wireframe, find the physical metaphor. Does this feel like flipping cards? Surfacing content from below? Expanding a window? A drawer sliding open? The metaphor determines easing, timing, and direction for every option downstream. Write it as a single Physics line in your preamble. This is internal reasoning - do NOT ask the user.
 - **What would make this *remarkable*?** Not "good" - remarkable. What would make someone show a friend? Screenshot it? Write about it?
-- **Where can we steal from outside software?** Read [references/cross-domain-patterns.md](references/cross-domain-patterns.md) for proven cross-pollinations from architecture, film, game design, editorial, and industrial design. Option C (the "unexpected resolution" slot) MUST draw explicitly from a named non-software domain using the format "From [domain]: [pattern]."
+- **Where can we steal from outside software?** Read `${CLAUDE_PLUGIN_ROOT}/skills/creative-spark/references/cross-domain-patterns.md` for proven cross-pollinations from architecture, film, game design, editorial, and industrial design. Option C (the "unexpected resolution" slot) MUST draw explicitly from a named non-software domain using the format "From [domain]: [pattern]."
 
 Write your output preamble before options:
 1. **Design POV** (2-3 sentences) - your opinionated thesis on what this feature should *feel* like to use
@@ -265,7 +265,7 @@ Want me to explore this direction further, or would you like to discuss other op
 
 Each option follows a type-specific template: UI/UX (with ASCII wireframe + visual direction), Technical (architecture + rationale), or Copy/Voice (tone + examples). For UI options, include visual direction with Feel, Inspiration, Key Elements, and Motion.
 
-> **Output format:** Read [references/output-formats.md](references/output-formats.md) for UI/UX, Technical, and Copy/Voice option format templates.
+> **Output format:** Read `${CLAUDE_PLUGIN_ROOT}/skills/creative-spark/references/output-formats.md` for UI/UX, Technical, and Copy/Voice option format templates.
 
 ## Handling User Responses
 
@@ -281,7 +281,7 @@ If user wants to combine options:
 
 If user is unsure - read which kind of unsure by their language, and route:
 
-→ **Options resonated, can't name which** ("they're all good, I can't tell which", "I want a mix I can't quite see"): run the calibration loop. Read `reference/calibration-loop.md` and run it inline - one concrete either/or at a time ("snappier or more weighted?", "lead with the number or the chart?"), state the discriminating dimension after each, stop the moment the pick clicks. The loop SURFACES a direction - it does NOT commit it. Return to **Present Options for Selection** (or restate the converged direction) and get the explicit pick before writing anything to the story file.
+→ **Options resonated, can't name which** ("they're all good, I can't tell which", "I want a mix I can't quite see"): run the calibration loop. Read `${CLAUDE_PLUGIN_ROOT}/reference/calibration-loop.md` and run it inline - one concrete either/or at a time ("snappier or more weighted?", "lead with the number or the chart?"), state the discriminating dimension after each, stop the moment the pick clicks. The loop SURFACES a direction - it does NOT commit it. Return to **Present Options for Selection** (or restate the converged direction) and get the explicit pick before writing anything to the story file.
 
 → **Nothing landed** ("these all feel kind of expected/obvious"): coverage gap, not a selection problem. Generate 3 more options with a narrower brief - do NOT run the loop.
 
@@ -322,7 +322,7 @@ options:
 
 After the user picks a direction for a UI story, and BEFORE transitioning to `lock-decision`, run the motion refinement workflow. The selected option already has Physicality and Signature motion - this step composes the full `**Motion:**` field using those as constraints, adds motion defaults with rationale, and offers next-level opportunities.
 
-> **Motion workflow:** Read [references/animation-integration.md](references/animation-integration.md) for the full 3-step motion refinement workflow (defaults with rationale, next-level suggestions, compose Motion field).
+> **Motion workflow:** Read `${CLAUDE_PLUGIN_ROOT}/skills/creative-spark/references/animation-integration.md` for the full 3-step motion refinement workflow (defaults with rationale, next-level suggestions, compose Motion field).
 
 ## Remember
 

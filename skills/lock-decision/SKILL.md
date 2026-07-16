@@ -117,7 +117,7 @@ Do NOT output a large markdown block or ask "Ready to continue?" — the caller 
 
 Four lock types: **Design Decisions** (typed UI decisions with valid keys per type), **Pattern Locks** (UI patterns with spec, states, variants, usage rules), **Token Locks** (design values in tokens.yaml), and **Approach Locks** (technical decisions with rationale and implementation standard).
 
-> **Lock templates:** Read [references/lock-templates.md](references/lock-templates.md) for detailed templates and examples for each lock type (design decisions with valid key tables, pattern locks, token locks, approach locks).
+> **Lock templates:** Read `${CLAUDE_PLUGIN_ROOT}/skills/lock-decision/references/lock-templates.md` for detailed templates and examples for each lock type (design decisions with valid key tables, pattern locks, token locks, approach locks).
 
 ## Enforcement
 
