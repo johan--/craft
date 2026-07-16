@@ -1,19 +1,24 @@
-# AUQ Grammar: one worked gate to mirror
+# AUQ Grammar: the worked gates to mirror
 
-This file holds ONE complete worked example of a good alignment gate - a finding
-presented to the user, end to end: the brief, the prose, the widget. Agents that
-surface a product finding (the alignment check at Step 3) Read this at gate time
-and mirror it.
+This file holds the complete worked examples of a good alignment gate - a finding
+presented to the user, end to end. Two kinds of finding exist, and each has its own
+worked gate below: the **fork** (a real decision between live alternatives - the
+brief, the prose, the widget) and the **dead end** (a premise already built or void -
+a few sentences of fact, then only the story-fate question). Agents that surface a
+product finding (the alignment check at Step 3) Read this at gate time and mirror
+the gate that matches their finding.
 
 It is a model, not a rulebook. The old Step 3 taught the gate as a pile of prose
-directives, and every one of them lost to the model's instincts. One worked gate
-carries what a page of rules could not: the length, the air, the voice.
+directives, and every one of them lost to the model's instincts. A worked gate
+carries what a page of rules could not: the length, the air, the voice. The matching
+matters as much as the mirroring - fork ceremony on a dead end is how a
+three-sentence fact becomes a six-paragraph novel.
 
 ## Mirror the shape, not the content
 
-The scenario below is invented - a fictional checkout form, chosen because it owns
-nothing in this codebase. The one rule for reading this file:
-mirror the shape, not the content. Copy how it reads, never what it says:
+The scenarios below are invented - a fictional checkout form, a fictional saved-cart
+reminder - chosen because they own nothing in this codebase. The one rule for reading
+this file: mirror the shape, not the content. Copy how it reads, never what it says:
 
 - **Visible prose.** Every word below is message text the user sees. The reasoning
   is never left in thinking with only the widget showing - that failure is the
