@@ -89,4 +89,9 @@ assert_file_contains "question field stands alone: problem then ask" 'one or two
 assert_file_contains "prose is enrichment, never load-bearing" 'the prose enriches, it is never load-bearing' "$GRAMMAR"
 assert_file_contains "honest runner-up verdicts" 'honest one-line verdict' "$GRAMMAR"
 
+begin_test "options carry the answer contract"
+assert_file_contains "label is the spoken decision" 'the decision in plain words' "$GRAMMAR"
+assert_file_contains "description leads with consequence" 'opens with the consequence' "$GRAMMAR"
+assert_file_contains "one-sided widgets route back to the filter" "not a fork - that is Step 2's filter" "$GRAMMAR"
+
 finish_tests

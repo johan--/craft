@@ -62,14 +62,19 @@ AskUserQuestion:
   question: "The new address check would fit two other forms (the account page and the shipping-book editor), but covering them roughly doubles this story. Apply the check to all three forms now, or just checkout?"
   options:
     - label: "Checkout only (Recommended)"
-      description: "Ships this cycle. The other two forms are real work - a clean follow-up, not a corner cut."
+      description: "Ships this cycle; the account page and shipping-book editor become a named follow-up - a clean follow-up, not a corner cut."
     - label: "All three now"
-      description: "Also solid if you'd rather land it once - but it roughly doubles the diff and moves the ship date."
+      description: "Roughly doubles the diff since each form has its own submit path and tests - also solid if you'd rather land it once."
 ```
 
-The recommendation is first and carries `(Recommended)`. Each option's description
-is an honest one-line verdict - the endorsement on the runner-up, the cost stated
-plainly. The harness renders its own `Chat about this` exit under every widget -
+The recommendation is first and carries `(Recommended)`. The label is
+the decision in plain words - a phrase you could say aloud as your choice. The
+description opens with the consequence - what picking it does to the story and
+what happens next - then closes on the honest one-line verdict: the endorsement
+on the runner-up, the cost stated plainly. If you cannot write an honest case
+for the runner-up, it is not a fork - that is Step 2's filter, not a new one;
+resolve it yourself and narrate that you did. The harness renders its own
+`Chat about this` exit under every widget -
 never author an escape option; every authored option is a real outcome. The
 evidence was cited once, as a coordinate ("three call sites"), never as a claim
 of diligence. Every option was already argued in the prose; none is filler
@@ -106,7 +111,7 @@ AskUserQuestion:
   question: "The saved-cart reminder this story asks for is already built and running; the only gap is that no test covers it. What should this story become?"
   options:
     - label: "Close it - already built (Recommended)"
-      description: "Mark it done; the missing test lands as a quick fix, not a story."
+      description: "Marked done since the reminder already runs; the missing test lands as a quick fix, not a story."
     - label: "Re-scope to the unbuilt part"
-      description: "Keep the story, rewrite the spark around what's genuinely missing - if you had more in mind."
+      description: "Story stays open and the spark gets rewritten around what's genuinely missing - if you had more in mind than the reminder."
 ```
