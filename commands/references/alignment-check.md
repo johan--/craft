@@ -181,7 +181,7 @@ Agent tool:
     Report in under 500 words."
 ```
 
-**The spawn result includes the agent's ID - repeat it in your next visible status line ("Explore agent: <id>") so it survives the distance to Step 4.** The description you typed is NOT an address - a send to the name fails. Follow-up rounds use SendMessage with this ID.
+**A synchronous spawn's result does not expose the agent's address - you receive only the findings.** The description you typed is NOT an address - a send to the name fails. Follow-up rounds therefore re-spawn a seeded investigator (Step 4); never attempt SendMessage without an ID you can actually see.
 
 **Do not proceed to Step 2 until you have the Explore agent's findings in hand.**
 
@@ -220,25 +220,29 @@ After the user answers:
 
 **If scope expanded:**
 
-Use **SendMessage** to the same Explore agent (do NOT spawn a new one):
+Spawn a fresh Explore agent seeded with the original findings and what changed - and say so in one line:
 
 ```
-SendMessage:
-  to: [the agentId from the spawn result - never the description]
-  message: "The user's answers changed the scope. Here's what changed:
+Agent tool:
+  subagent_type: "Explore"
+  description: "Scope-expansion follow-up for [story name]"
+  prompt: "A prior investigation of this codebase reported these findings:
+    [paste the findings report]
+
+    The user's answers changed the scope:
     [Summarize what the user decided]
 
-    Investigate the implications:
+    Investigate ONLY the implications of the change:
     - What additional files does this touch?
     - Any new conflicts or adjacencies from the expanded scope?
     - Does this create any new product questions?
 
-    Same report format. Only report NEW findings - don't repeat what you already found."
+    Same report format. Only report NEW findings - don't repeat the prior ones."
 ```
 
-Process the new findings (Step 2) and surface any new product questions (Step 3).
+(A same-agent SendMessage would preserve the investigation context and is preferred whenever a visible agent ID is genuinely in hand - background spawns surface one - but a synchronous spawn exposes no address. Never guess at an address; a send to the description name fails.)
 
-If the agent is unreachable, spawn a fresh Explore agent seeded with the original findings and what changed - and say so in one line. Never guess at an address.
+Process the new findings (Step 2) and surface any new product questions (Step 3).
 
 **If scope grew significantly** (story went from touching 3 files to 8+, or now spans two distinct concerns):
 

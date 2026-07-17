@@ -4,7 +4,7 @@ Notable, user-facing changes per version. Internal changes (tests, refactors, co
 
 ## 1.99.48 - 2026-07-17
 
-- Fixed the alignment check losing its investigator on follow-up rounds: the agent's ID is now restated visibly at spawn time and follow-up messages address the ID (never the agent's name, which fails), with a documented recovery when the agent is unreachable. Saves a full re-investigation on every scope-expanding alignment loop.
+- Fixed the alignment check's scope-expansion follow-up: a synchronous agent spawn exposes no address to message, so the follow-up now re-spawns a fresh investigator seeded with the prior findings and the scope change - and never guesses at an address (a send to the agent's name fails). Warm-context reuse via background spawns is captured as a designed follow-up.
 - Fixed alignment answers being written to the story twice: an answer whose reasoning already lives in the section it affects no longer gets a duplicate one-word stub in the Decisions section, and reasoning never hides in HTML comments.
 - Removed the hand-authored "Let's discuss" option from every decision question - Claude Code's built-in "Chat about this" already provides that exit on every widget, so gates now offer only real options. Meaningful closers like "Accept as-is" and "Skip for now" are unchanged.
 - Fixed decision-question header chips drifting from position counters ("1 of 3") to topic labels: the worked example now states the chip's job in prose, and the plan-chunks instructions point at the worked example instead of re-summarizing it.
