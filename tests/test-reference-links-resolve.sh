@@ -49,7 +49,7 @@ check_form() {
 
 cd "$PLUGIN_ROOT"
 
-# ${CLAUDE_PLUGIN_ROOT}/... in substitution-capable surfaces (also hooks/, reference/)
+# ${CLAUDE_PLUGIN_ROOT}/... in substitution-capable surfaces (commands/, skills/, reference/)
 check_form '${CLAUDE_PLUGIN_ROOT}' "commands/ skills/ reference/" "variable-anchored" \
   '\$\{CLAUDE_PLUGIN_ROOT\}/[^ `")]+'
 
