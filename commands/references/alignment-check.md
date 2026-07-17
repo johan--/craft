@@ -271,7 +271,7 @@ After the loop completes:
    Keep it a receipt, not a transcript - detailed outcomes belong in the sections below.
 2. Update the story's frontmatter: `alignment: complete`
 3. Update `## Scope` section if the user's answers changed what's included/excluded
-4. Update `## Decisions` if new decisions were made during the dialogue
+4. Update `## Decisions` if new decisions were made during the dialogue - unless the decision's reasoning already lives in the section it affects (Scope, Content Direction, a chunk). Then a one-line pointer in `## Decisions` is enough; don't duplicate the reasoning, and never demote it to an HTML comment
 5. Update `## Likely Files` if the investigation revealed additional files
 6. If a story split occurred, create the new story file
 
