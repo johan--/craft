@@ -2,6 +2,12 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.46 - 2026-07-16
+
+- Changed the alignment check to ask the way you'd want a senior engineer to: findings arrive in plain language with a title naming the problem, only genuine product decisions reach you (engineering calls and already-settled items are decided and narrated for veto), one decision per question in sequence, the recommended option first and labeled, no filler options. The gate now mirrors one of two worked examples - a fork for real decisions, a dead end for stories whose premise is already built or void - so a three-sentence fact never arrives as a six-paragraph essay.
+- Added a position counter to every gate question's header chip ("1 of 2") and made the question text stand alone - one or two sentences of the problem, then the ask - so the question is fully answerable even on models that don't display the reasoning prose.
+- Fixed craft's reference docs failing to load silently: every runtime doc Read is now anchored to the plugin root, every prompt states that root, and a failed Read is disclosed and retried instead of the flow improvising from memory. A new suite test verifies every anchored path resolves.
+
 ## 1.99.45 - 2026-07-13
 
 - Added todo satisfaction detection to adhoc work: when a quick fix or tweak does what an open notebook todo asked for, craft now notices and offers to close the todo with a link to the fix/tweak record - no more todos that quietly stay open after the work already happened. Tweaks fold the close into the existing "How does it look?" acceptance (one consent, both effects); fixes ask only when a match is found, so the common no-match case adds zero friction. Every record now carries a `satisfied_todo:` receipt showing the check ran.
