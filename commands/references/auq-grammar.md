@@ -45,8 +45,9 @@ _The finding (it opens on a title naming the problem):_
 > two other forms that take an address - the account page and the shipping-book
 > editor.
 >
-> Those two aren't free, though. Each has its own submit path and its own tests, so
-> doing all three roughly doubles the diff for this story.
+> Those two aren't free, though - each brings its own tests, and the shipping-book
+> editor has its own submit path entirely, so doing all three roughly doubles the
+> diff. The account page is the cheap half: it shares checkout's submit path.
 >
 > A quick grep puts the address block at three call sites - checkout, account, and
 > the shipping-book editor.
@@ -63,15 +64,19 @@ AskUserQuestion:
   options:
     - label: "Checkout only (Recommended)"
       description: "Ships this cycle; the account page and shipping-book editor become a named follow-up - a clean follow-up, not a corner cut."
+    - label: "Checkout plus the account page"
+      description: "Covers the two forms that share a submit path; the shipping-book editor stays a follow-up - a solid middle if the account page matters this cycle."
     - label: "All three now"
-      description: "Roughly doubles the diff since each form has its own submit path and tests - also solid if you'd rather land it once."
+      description: "Roughly doubles the diff since each form brings its own tests - also solid if you'd rather land it once."
 ```
 
 The recommendation is first and carries `(Recommended)`. The label is
 the decision in plain words - a phrase you could say aloud as your choice. The
 description opens with the consequence - what picking it does to the story and
 what happens next - then closes on the honest one-line verdict: the endorsement
-on the runner-up, the cost stated plainly. If you cannot write an honest case
+on the runner-up, the cost stated plainly. The option count follows the argued
+alternatives - two when only two are real, three when a middle path earned its
+place; the worked count is never a quota. If you cannot write an honest case
 for the runner-up, it is not a fork - that is Step 2's filter, not a new one;
 resolve it yourself and narrate that you did. The harness renders its own
 `Chat about this` exit under every widget -

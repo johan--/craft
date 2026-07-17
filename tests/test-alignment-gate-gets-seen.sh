@@ -89,6 +89,10 @@ assert_file_contains "question field stands alone: problem then ask" 'one or two
 assert_file_contains "prose is enrichment, never load-bearing" 'the prose enriches, it is never load-bearing' "$GRAMMAR"
 assert_file_contains "honest runner-up verdicts" 'honest one-line verdict' "$GRAMMAR"
 
+begin_test "option count follows substance, not a quota"
+assert_file_contains "count-follows-substance stated" 'the worked count is never a quota' "$GRAMMAR"
+assert_file_contains "argued middle path modeled in the fork" 'Checkout plus the account page' "$GRAMMAR"
+
 begin_test "options carry the answer contract"
 assert_file_contains "label is the spoken decision" 'the decision in plain words' "$GRAMMAR"
 assert_file_contains "description leads with consequence" 'opens with the consequence' "$GRAMMAR"

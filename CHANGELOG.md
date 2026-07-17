@@ -9,6 +9,7 @@ Notable, user-facing changes per version. Internal changes (tests, refactors, co
 - Removed the hand-authored "Let's discuss" option from every decision question - Claude Code's built-in "Chat about this" already provides that exit on every widget, so gates now offer only real options. Meaningful closers like "Accept as-is" and "Skip for now" are unchanged.
 - Fixed decision-question header chips drifting from position counters ("1 of 3") to topic labels: the worked example now states the chip's job in prose, and the plan-chunks instructions point at the worked example instead of re-summarizing it.
 - Improved decision-question answers: each option's description now opens with the consequence - what picking it does to the story and what happens next - before its honest verdict, and the label is the decision in plain words. One-sided questions (where no honest case exists for the runner-up) are decided and narrated instead of asked.
+- Fixed decision questions flattening to exactly two options: the option count now follows how many real alternatives exist - a genuine middle path gets its own option instead of being dropped.
 
 ## 1.99.47 - 2026-07-16
 
