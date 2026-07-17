@@ -181,7 +181,7 @@ Agent tool:
     Report in under 500 words."
 ```
 
-**Save the agent's ID** - you will use SendMessage for follow-up rounds.
+**The spawn result includes the agent's ID - repeat it in your next visible status line ("Explore agent: <id>") so it survives the distance to Step 4.** The description you typed is NOT an address - a send to the name fails. Follow-up rounds use SendMessage with this ID.
 
 **Do not proceed to Step 2 until you have the Explore agent's findings in hand.**
 
@@ -224,7 +224,7 @@ Use **SendMessage** to the same Explore agent (do NOT spawn a new one):
 
 ```
 SendMessage:
-  to: [agent ID from Step 1]
+  to: [the agentId from the spawn result - never the description]
   message: "The user's answers changed the scope. Here's what changed:
     [Summarize what the user decided]
 
@@ -237,6 +237,8 @@ SendMessage:
 ```
 
 Process the new findings (Step 2) and surface any new product questions (Step 3).
+
+If the agent is unreachable, spawn a fresh Explore agent seeded with the original findings and what changed - and say so in one line. Never guess at an address.
 
 **If scope grew significantly** (story went from touching 3 files to 8+, or now spans two distinct concerns):
 

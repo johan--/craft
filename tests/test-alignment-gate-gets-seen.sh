@@ -17,6 +17,13 @@ begin_test "Step 1 instructs plain-language findings at the source"
 assert_file_exists "alignment-check.md exists" "$ALIGN"
 assert_file_contains "plain-language instruction present" 'plain language the user can read cold' "$ALIGN"
 
+# --- Step 1/4: SendMessage addresses the agentId, never the description ---
+begin_test "follow-ups address the agent ID with a blessed fallback"
+assert_file_contains "description is not an address" 'The description you typed is NOT an address' "$ALIGN"
+assert_file_contains "ID restated visibly at spawn time" 'repeat it in your next visible status line' "$ALIGN"
+assert_file_contains "send template names the ID rule" 'the agentId from the spawn result - never the description' "$ALIGN"
+assert_file_contains "unreachable fallback blessed" 'spawn a fresh Explore agent seeded with the original findings' "$ALIGN"
+
 # --- Step 2: the objective filter (ask vs act) ---
 begin_test "Step 2 is the objective both-true filter"
 assert_file_contains "filter heading present" '### Step 2: Filter - What Actually Deserves to Interrupt the User' "$ALIGN"

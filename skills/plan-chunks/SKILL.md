@@ -304,7 +304,7 @@ Include in the prompt:
 
 If the agent's output is a `## PLAN FORK` report instead of a concerns summary, the agent hit a two-plans question only the user can answer. Do NOT validate or triage yet:
 1. Read `${CLAUDE_PLUGIN_ROOT}/commands/references/auq-grammar.md` and mirror the fork gate, then surface ONE **AskUserQuestion**: the question field self-contained (one or two sentences of the problem, then the ask), the agent's recommended branch first labeled "(Recommended)", an honest one-line verdict on each branch, and "Let's discuss" closing the set.
-2. **SendMessage the answer back to the SAME planning agent**: "Fork resolved: [chosen branch]. Continue planning." Its investigation context is intact — do not spawn a fresh agent. (Only if the agent is unreachable or SendMessage is unavailable in this environment: re-launch S-1 with the fork resolution included in the prompt.)
+2. **SendMessage the answer back to the SAME planning agent** - addressed by the agentId from the spawn result, never the description: "Fork resolved: [chosen branch]. Continue planning." Its investigation context is intact — do not spawn a fresh agent. (Only if the agent is unreachable or SendMessage is unavailable in this environment: re-launch S-1 with the fork resolution included in the prompt.)
 3. When the agent returns its concerns summary, proceed with Step 1 below as normal.
 
 The agent returns a lightweight concerns summary (~200-400 tokens) and has already written the story file with full planning detail. Run the full validation checklist on both artifacts before proceeding to triage.
