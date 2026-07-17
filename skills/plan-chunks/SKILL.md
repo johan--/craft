@@ -303,7 +303,7 @@ Include in the prompt:
 **Step 0 - PLAN FORK check:**
 
 If the agent's output is a `## PLAN FORK` report instead of a concerns summary, the agent hit a two-plans question only the user can answer. Do NOT validate or triage yet:
-1. Read `${CLAUDE_PLUGIN_ROOT}/commands/references/auq-grammar.md` and mirror the fork gate, then surface ONE **AskUserQuestion**: the question field self-contained (one or two sentences of the problem, then the ask), the agent's recommended branch first labeled "(Recommended)", and an honest one-line verdict on each branch.
+1. Read `${CLAUDE_PLUGIN_ROOT}/commands/references/auq-grammar.md` and mirror the fork gate it models - the exemplar carries the whole grammar (question field, option shapes, header chip); mirror it rather than reconstructing it. Then surface ONE **AskUserQuestion** for the fork.
 2. **SendMessage the answer back to the SAME planning agent** - addressed by the agentId from the spawn result, never the description: "Fork resolved: [chosen branch]. Continue planning." Its investigation context is intact — do not spawn a fresh agent. (Only if the agent is unreachable or SendMessage is unavailable in this environment: re-launch S-1 with the fork resolution included in the prompt.)
 3. When the agent returns its concerns summary, proceed with Step 1 below as normal.
 
@@ -369,7 +369,7 @@ options:
 
 The agent has written the story file and returned flagged concerns, decisions, and validation results. Your job is to triage the concerns summary with the user — surface what needs human judgment.
 
-**Before constructing any triage AskUserQuestion (Steps 1-5), Read `${CLAUDE_PLUGIN_ROOT}/commands/references/auq-grammar.md` and mirror the worked gate that matches the question** - a decision weighing alternatives is a fork; a fact that decides itself is a dead end. Every question field is self-contained: one or two sentences of the problem, then the ask - answerable by someone who saw nothing above it. The grammar governs how options read (recommendation first, honest one-line verdicts, no filler); it never changes which outcomes an option set offers.
+**Before constructing any triage AskUserQuestion (Steps 1-5), Read `${CLAUDE_PLUGIN_ROOT}/commands/references/auq-grammar.md` and mirror the worked gate that matches the question** - a decision weighing alternatives is a fork; a fact that decides itself is a dead end. The exemplar carries the whole grammar (question field, option shapes, header chip); mirror it rather than reconstructing it from a summary. The grammar governs how options read; it never changes which outcomes an option set offers.
 
 **Answer-time write:** after each answered triage question (Steps 1-5), apply that answer's edit to the story file immediately - per the write rules in `${CLAUDE_PLUGIN_ROOT}/skills/plan-chunks/references/batch-triage.md` ("Story File Writing") - then print one truthful receipt line before the next question renders. A real edit names what changed ("Updated Chunk 3: inline confirmation replaces modal"); a no-op answer prints "kept as planned" and makes no edit. Answers must survive a session that dies mid-triage.
 
@@ -379,7 +379,7 @@ If the concerns summary's Critical Blockers section has entries, surface them im
 
 > "[Story Name] has a blocker: [blocker description]. [Agent's recommendation]."
 
-Use **AskUserQuestion** per blocker - the question field carries the blocker and its consequence (self-contained), the agent's recommendation first labeled "(Recommended)", and honest one-line verdicts on the alternatives. If the blocker means the story can't be planned, stop and report why. (A blocker with no live alternatives is a dead end - mirror the dead-end gate and ask the story-fate question.)
+Use **AskUserQuestion** per blocker, mirroring the exemplar's fork gate. If the blocker means the story can't be planned, stop and report why. (A blocker with no live alternatives is a dead end - mirror the dead-end gate and ask the story-fate question.)
 
 **Step 2 - Flagged Concerns:**
 

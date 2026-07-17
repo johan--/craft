@@ -2,6 +2,13 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.48 - 2026-07-17
+
+- Fixed the alignment check losing its investigator on follow-up rounds: the agent's ID is now restated visibly at spawn time and follow-up messages address the ID (never the agent's name, which fails), with a documented recovery when the agent is unreachable. Saves a full re-investigation on every scope-expanding alignment loop.
+- Fixed alignment answers being written to the story twice: an answer whose reasoning already lives in the section it affects no longer gets a duplicate one-word stub in the Decisions section, and reasoning never hides in HTML comments.
+- Removed the hand-authored "Let's discuss" option from every decision question - Claude Code's built-in "Chat about this" already provides that exit on every widget, so gates now offer only real options. Meaningful closers like "Accept as-is" and "Skip for now" are unchanged.
+- Fixed decision-question header chips drifting from position counters ("1 of 3") to topic labels: the worked example now states the chip's job in prose, and the plan-chunks instructions point at the worked example instead of re-summarizing it.
+
 ## 1.99.47 - 2026-07-16
 
 - Changed plan-chunks' decision questions - the plan fork, all five triage questions, and batch triage - to mirror the same worked question grammar the alignment gate uses: self-contained questions in plain language, the recommended option first and labeled, honest one-line verdicts, no filler options. The carrier-less "A design decision needs revisiting:" question is gone.

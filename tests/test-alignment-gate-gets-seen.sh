@@ -83,6 +83,8 @@ assert_file_not_contains "authored escape retired from the gate doc too" "et's d
 assert_file_contains "built-in exit named, authoring forbidden" 'never author an escape option' "$GRAMMAR"
 assert_file_contains "built-in exit is the harness's" 'Chat about this' "$GRAMMAR"
 assert_file_contains "header chip carries the position counter" 'header: "1 of 1"' "$GRAMMAR"
+assert_file_contains "chip's job stated in prose, not just modeled" 'running position counter' "$GRAMMAR"
+assert_file_contains "topic labels forbidden on gate chips" 'never a topic label' "$GRAMMAR"
 assert_file_contains "question field stands alone: problem then ask" 'one or two sentences of the problem, then' "$GRAMMAR"
 assert_file_contains "prose is enrichment, never load-bearing" 'the prose enriches, it is never load-bearing' "$GRAMMAR"
 assert_file_contains "honest runner-up verdicts" 'honest one-line verdict' "$GRAMMAR"

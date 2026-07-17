@@ -28,17 +28,17 @@ FORK_BLOCK="$(sed -n '/\*\*Step 0 - PLAN FORK check:\*\*/,/\*\*Step 1 - Validate
 begin_test "S-2 PLAN FORK reads the exemplar and mirrors the fork gate"
 assert_contains "fork block exists" 'PLAN FORK' "$FORK_BLOCK"
 assert_contains "fork reads auq-grammar at gate time" 'auq-grammar.md' "$FORK_BLOCK"
-assert_contains "recommended branch first, labeled" '(Recommended)' "$FORK_BLOCK"
-assert_contains "honest verdict per branch" 'honest one-line verdict' "$FORK_BLOCK"
+assert_contains "fork mirrors the exemplar, not a summary" 'mirror the fork gate it models' "$FORK_BLOCK"
+assert_contains "exemplar named as the whole grammar" 'the exemplar carries the whole grammar' "$FORK_BLOCK"
 assert_not_contains "authored escape retired from the fork" "et's discuss" "$FORK_BLOCK"
-assert_contains "question field self-contained" 'one or two sentences of the problem' "$FORK_BLOCK"
 
 # --- S-3: one gate-time Read covers all five triage questions ---
 begin_test "S-3 opens on the gate-time Read of the exemplar"
 assert_file_contains "S-3 reads auq-grammar before constructing questions" 'Before constructing any triage AskUserQuestion (Steps 1-5), Read' "$SKILL"
 assert_file_contains "mirror matched to the question kind" 'mirror the worked gate that matches the question' "$SKILL"
 assert_file_contains "fork vs dead end named" 'a fact that decides itself is a dead end' "$SKILL"
-assert_file_contains "question fields stand alone" 'answerable by someone who saw nothing above it' "$SKILL"
+assert_file_contains "question fields stand alone (locked in the exemplar)" 'answerable by someone who saw nothing above it' "$GRAMMAR"
+assert_file_contains "digests point, never respec" 'mirror it rather than reconstructing it' "$SKILL"
 assert_file_contains "grammar governs shape, never outcomes" 'it never changes which outcomes' "$SKILL"
 
 begin_test "S-3 answer-time write with truthful receipts"

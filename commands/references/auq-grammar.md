@@ -75,8 +75,11 @@ evidence was cited once, as a coordinate ("three call sites"), never as a claim
 of diligence. Every option was already argued in the prose; none is filler
 invented to round out the list.
 And the question field stands alone: one or two sentences of the problem, then
-the ask - answerable by someone who saw nothing above it, on every model. This
-holds for both gates, always; the prose enriches, it is never load-bearing.
+the ask - answerable by someone who saw nothing above it, on every model. The
+header chip is the running position counter - `"1 of 2"`, then `"2 of 2"` -
+never a topic label; it is the only place the user sees how many decisions are
+coming. This holds for both gates, always;
+the prose enriches, it is never load-bearing.
 
 ## The worked dead end
 
