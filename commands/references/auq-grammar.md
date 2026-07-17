@@ -5,8 +5,8 @@ presented to the user, end to end. Two kinds of finding exist, and each has its 
 worked gate below: the **fork** (a real decision between live alternatives - the
 brief, the prose, the widget) and the **dead end** (a premise already built or void -
 a few sentences of fact, then only the story-fate question). Agents that surface a
-product finding (the alignment check at Step 3) Read this at gate time and mirror
-the gate that matches their finding.
+product finding (the alignment check at Step 3, and plan-chunks' fork and triage
+questions) Read this at gate time and mirror the gate that matches their finding.
 
 It is a model, not a rulebook. The old Step 3 taught the gate as a pile of prose
 directives, and every one of them lost to the model's instincts. A worked gate

@@ -303,7 +303,7 @@ Include in the prompt:
 **Step 0 - PLAN FORK check:**
 
 If the agent's output is a `## PLAN FORK` report instead of a concerns summary, the agent hit a two-plans question only the user can answer. Do NOT validate or triage yet:
-1. Surface ONE **AskUserQuestion**: the fork question with both branches' consequences and the agent's recommendation first, labeled "(Recommended)". Self-contained — the user judges from the dialog alone.
+1. Read `${CLAUDE_PLUGIN_ROOT}/commands/references/auq-grammar.md` and mirror the fork gate, then surface ONE **AskUserQuestion**: the question field self-contained (one or two sentences of the problem, then the ask), the agent's recommended branch first labeled "(Recommended)", an honest one-line verdict on each branch, and "Let's discuss" closing the set.
 2. **SendMessage the answer back to the SAME planning agent**: "Fork resolved: [chosen branch]. Continue planning." Its investigation context is intact — do not spawn a fresh agent. (Only if the agent is unreachable or SendMessage is unavailable in this environment: re-launch S-1 with the fork resolution included in the prompt.)
 3. When the agent returns its concerns summary, proceed with Step 1 below as normal.
 
@@ -369,13 +369,17 @@ options:
 
 The agent has written the story file and returned flagged concerns, decisions, and validation results. Your job is to triage the concerns summary with the user — surface what needs human judgment.
 
+**Before constructing any triage AskUserQuestion (Steps 1-5), Read `${CLAUDE_PLUGIN_ROOT}/commands/references/auq-grammar.md` and mirror the worked gate that matches the question** - a decision weighing alternatives is a fork; a fact that decides itself is a dead end. Every question field is self-contained: one or two sentences of the problem, then the ask - answerable by someone who saw nothing above it. The grammar governs how options read (recommendation first, honest one-line verdicts, no filler); it never changes which outcomes an option set offers.
+
+**Answer-time write:** after each answered triage question (Steps 1-5), apply that answer's edit to the story file immediately - per the write rules in `${CLAUDE_PLUGIN_ROOT}/skills/plan-chunks/references/batch-triage.md` ("Story File Writing") - then print one truthful receipt line before the next question renders. A real edit names what changed ("Updated Chunk 3: inline confirmation replaces modal"); a no-op answer prints "kept as planned" and makes no edit. Answers must survive a session that dies mid-triage.
+
 **Step 1 — Critical Blockers:**
 
 If the concerns summary's Critical Blockers section has entries, surface them immediately before anything else:
 
 > "[Story Name] has a blocker: [blocker description]. [Agent's recommendation]."
 
-Use **AskUserQuestion** per blocker with the agent's recommendation and alternatives. If the blocker means the story can't be planned, stop and report why.
+Use **AskUserQuestion** per blocker - the question field carries the blocker and its consequence (self-contained), the agent's recommendation first labeled "(Recommended)", honest one-line verdicts on the alternatives, and "Let's discuss" closing the set. If the blocker means the story can't be planned, stop and report why. (A blocker with no live alternatives is a dead end - mirror the dead-end gate and ask the story-fate question.)
 
 **Step 2 - Flagged Concerns:**
 
@@ -392,12 +396,12 @@ Review the Design Decision Validation table from the concerns summary. If any en
 Use **AskUserQuestion**:
 
 ```
-question: "A design decision needs revisiting:"
+question: "[The design decision, what the codebase showed, and the ask - self-contained, e.g. 'The story locked X, but planning found Y - adjust to the agent's fix, or keep X?']"
 options:
-  - label: "Adjust: [agent's proposed fix]"
+  - label: "Adjust: [agent's proposed fix] (Recommended)"
     description: "[Why original doesn't work + how this solves it]"
   - label: "Keep original anyway"
-    description: "I understand the tradeoff, proceed"
+    description: "[The honest cost of keeping it, in a phrase]"
   - label: "Let's discuss"
     description: "I want to explore alternatives"
 ```
@@ -437,7 +441,7 @@ Check the Cycle Impact section from the concerns summary. If any item is non-"no
 Use **AskUserQuestion**:
 
 ```
-question: "Planning revealed a cycle impact:"
+question: "[The cycle impact and its consequence - self-contained, e.g. 'Planning found this story is really three: A, B, C - split it, or continue as one?']"
 options:
   - label: "Split this story"
     description: "Actually 2-3 stories: [brief list]"
@@ -448,6 +452,8 @@ options:
   - label: "Continue as-is"
     description: "I understand, proceed anyway"
 ```
+
+(Mark the option matching the agent's recommendation "(Recommended)" and list it first; give each shown option an honest one-line verdict. Show only the options the impact actually argues for.)
 
 **Fast path:** If no low-confidence items exist across all five steps → report "No risks or concerns flagged — plan looks clean." and skip straight to plan presentation. Don't create artificial interaction.
 
@@ -506,7 +512,7 @@ The agent already wrote the story file with full detail. Your job depends on the
 
 **If "Yes, mark ready":**
 
-The story file is already complete — just flip the status:
+Triage answers already landed in the story file at answer time (S-3's answer-time write), so this is a status flip plus final reconciliation - verify nothing answered is missing, then:
 
 ```bash
 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/update-story-status.sh [story-file] ready
@@ -883,7 +889,7 @@ The batch triage flow (BT-1 through BT-7) reviews all plans with the user after 
 | **BT-3** | Worth Noting (mention-tier product-stake, or medium confidence) | Presented visibly per story; questions only where the user reacts. |
 | **BT-4** | Cohesion/Coordination | Surface file overlaps, component duplication, decision conflicts. AskUserQuestion per issue. |
 | **BT-5** | Per-Story Approval | Read story file fresh. Present ONE story at a time. Never hold two plans in context. Each gets Approve/Explore/Adjust/Reject. |
-| **BT-6** | Finalize | Apply triage adjustments, update status to ready. Queue adjusted stories for re-planning. |
+| **BT-6** | Finalize | Reconcile - triage adjustments already landed at answer time; verify consistency, update status to ready. Queue adjusted stories for re-planning. |
 | **BT-7** | Summary | Report counts, offer implementation or re-planning. |
 
 ### Critical Rules

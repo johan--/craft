@@ -2,6 +2,11 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.47 - 2026-07-16
+
+- Changed plan-chunks' decision questions - the plan fork, all five triage questions, and batch triage - to mirror the same worked question grammar the alignment gate uses: self-contained questions in plain language, the recommended option first and labeled, honest one-line verdicts, no filler options. The carrier-less "A design decision needs revisiting:" question is gone.
+- Added answer-time saving during plan triage: each answered question is written to the story file immediately with a visible receipt line ("kept as planned" when nothing changes), in both single-story and batch triage - so answers survive an interrupted session instead of living only in the conversation. Batch's end-of-flow write is now a consistency check, and re-planning an adjusted story treats already-answered decisions as binding.
+
 ## 1.99.46 - 2026-07-16
 
 - Changed the alignment check to ask the way you'd want a senior engineer to: findings arrive in plain language with a title naming the problem, only genuine product decisions reach you (engineering calls and already-settled items are decided and narrated for veto), one decision per question in sequence, the recommended option first and labeled, no filler options. The gate now mirrors one of two worked examples - a fork for real decisions, a dead end for stories whose premise is already built or void - so a three-sentence fact never arrives as a six-paragraph essay.

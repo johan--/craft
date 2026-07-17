@@ -38,17 +38,21 @@ informational_count = items with confidence: high
 
 ## AskUserQuestion Templates
 
+**Before constructing any BT-2/BT-3/BT-4 AskUserQuestion, Read `${CLAUDE_PLUGIN_ROOT}/commands/references/auq-grammar.md` and mirror the worked gate that matches the question** - these are forks (a recommendation weighed against a real alternative). The question field is self-contained: one or two sentences of the problem, then the ask. The recommendation is the first option, labeled "(Recommended)", and every option carries an honest one-line verdict. The grammar governs how options read; it never changes which outcomes a template offers - the distinct closers below survive as-is.
+
+**Answer-time write (same rule as S-3):** after each answered BT-2/BT-3/BT-4 question, apply that answer's edit to the affected story file immediately (per "Story File Writing" below) and print one truthful receipt line before the next question renders; a no-op answer prints "kept as planned". A BT-4 cohesion answer writes BOTH stories' coordination notes at answer time - the second-side note is a one-line append to the other story's chunk, not a plan load, so the never-hold-two-plans rule is not violated. Per-answer writes touch one story file at a time. Answers must survive a session that dies mid-triage.
+
 ### BT-2: Needs Review (per item)
 
 ```yaml
-question: "[Story Name] — [concern description]"
+question: "[Story Name] — [the concern and the ask, self-contained: what the agent found, what it trades off, which way to go]"
 header: "Review"
 multiSelect: false
 options:
-  - label: "[Agent's recommendation]"
+  - label: "[Agent's recommendation] (Recommended)"
     description: "[Agent's reasoning — 1-2 sentences explaining why]"
   - label: "[Alternative approach]"
-    description: "[Why this might be better — concrete tradeoff]"
+    description: "[Honest verdict — why this might be better, or its cost in a phrase]"
   - label: "Skip for now"
     description: "Leave this for implementation to figure out"
 ```
@@ -58,14 +62,14 @@ options:
 ### BT-3: Worth Noting (per item — same as BT-2)
 
 ```yaml
-question: "[Story Name] — [decision/concern description]"
+question: "[Story Name] — [the decision and the ask, self-contained: what the agent decided, what it trades off, keep or change]"
 header: "Worth noting"
 multiSelect: false
 options:
   - label: "[Agent's recommendation] (Recommended)"
     description: "[Agent's reasoning — 1-2 sentences explaining why]"
   - label: "[Alternative approach]"
-    description: "[Why this might be better — concrete tradeoff]"
+    description: "[Honest verdict — why this might be better, or its cost in a phrase]"
   - label: "Accept as-is"
     description: "Agent's call is fine, move on"
 ```
@@ -75,17 +79,19 @@ options:
 ### BT-4: Cohesion Issue (per issue)
 
 ```yaml
-question: "[Issue — e.g., 'auth-form.tsx modified by both Login and Signup stories']"
+question: "[The overlap and the ask, self-contained — e.g., 'Login and Signup both modify auth-form.tsx; who owns it, or extract a shared component?']"
 header: "Overlap"
 multiSelect: false
 options:
-  - label: "[Resolution 1 — e.g., 'Story A owns, Story B imports']"
-    description: "[What this means for implementation]"
-  - label: "[Resolution 2 — e.g., 'Extract shared component']"
-    description: "[What this means for implementation]"
+  - label: "[Recommended resolution] (Recommended)"
+    description: "[What this means for implementation — and why it wins]"
+  - label: "[Alternative resolution]"
+    description: "[Honest verdict — what this means for implementation, its cost in a phrase]"
   - label: "Flag for implementation"
     description: "Note the overlap, handle during implementation"
 ```
+
+A resolved BT-4 answer lands in BOTH story files at answer time (see the answer-time write rule above) — never defer the second side to BT-6.
 
 ### BT-5: Per-Story Approval
 
@@ -251,7 +257,7 @@ When a story is marked "Adjust" in BT-5:
 2. The story is queued for re-planning AFTER the batch triage completes
 3. Re-planning uses the single-story path (S-1 through S-6)
 4. The user's feedback from step 1 is included as `APPROACH:` context in the agent prompt — e.g., `APPROACH: User wants fewer chunks, plan is over-scoped`
-5. Previous triage decisions (from BT-2/BT-4) that apply to this story are included so the agent doesn't re-ask resolved questions
+5. Previous triage decisions (from BT-2/BT-4) that apply to this story are included as BINDING constraints, not just don't-re-ask context — those answers already landed in the story file at answer time and were receipted to the user; the re-planning agent must preserve them in the new plan or flag a conflict in its concerns summary, never silently drop a receipted answer
 6. After re-planning, the story goes through single-story triage (S-3/S-4) — NOT back through batch triage
 
 ### Cohesion Issues That Can't Be Resolved
@@ -266,7 +272,7 @@ If a cohesion issue has no clean resolution (e.g., two stories genuinely need to
 
 ## Story File Writing (BT-6 Details)
 
-BT-6 uses the same write logic as single-story S-5. For each approved story:
+**BT-6 is reconciliation, not first-write.** Triage adjustments already landed in the story files at answer time — both sides of every BT-4 resolution included — with a receipt shown per answer. BT-6's job is to verify consistency (nothing answered is missing from the files), apply the frontmatter updates, and flip status to ready. The write rules below define WHAT a complete story file contains; use them as the checklist to verify against, and as the write logic for anything that genuinely hasn't landed yet. For each approved story:
 
 ### What Gets Written
 
