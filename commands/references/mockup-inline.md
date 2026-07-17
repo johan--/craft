@@ -10,7 +10,7 @@
 
 A converged mockup is design truth the user approved in their browser. This flow gets there through three rounds of real reactions - diverge, refine, polish - then solidifies new design values to tokens.yaml BEFORE any destination artifact exists, so every downstream gate (binding contracts, chunk-validator, style-analyzer) enforces the mockup because the bible already agrees with it. The shell has already parsed the subject and run the single-session guard - this file owns everything else.
 
-**Exactly three AskUserQuestion calls exist in this flow: vibe (Brief), solidify (acceptance), destination (fork).** Round picks and reactions are conversational text - a widget between the user and their taste kills the funnel. Never add a fourth.
+**Exactly three taste AskUserQuestion calls exist in this flow: vibe (Brief), solidify (acceptance), destination (fork). Up to two first-run pre-flight AUQs (Setup, Scope - Step 1) may precede them, on a project's first-ever mockup only.** Round picks and reactions are conversational text - a widget between the user and their taste kills the funnel. The taste budget is exactly three, permanently: pre-flight is logistics, not taste, and deletes itself once a mockup record exists; nothing else may add a widget to this flow.
 
 All writes live under the project's own `.craft/` (cold path: `$MOCKUP_ROOT/.craft/` - see Step 1) - the write gate never opens for a mockup.
 
@@ -22,6 +22,40 @@ All writes live under the project's own `.craft/` (cold path: `$MOCKUP_ROOT/.cra
 - **Cold (no root resolves):** run one cheap visual-file check - a Glob pass over `.tsx .jsx .vue .svelte .css .scss .sass .less`, excluding `.craft/`, `node_modules`, `.git`, `dist`, `build`, `.next`. Never invoke the project-scanner for this.
   - **Zero visual files -> route to `/craft:init`.** No confirmation AskUserQuestion (invoking the command is consent - the same rule /craft itself uses to route to init) and no auto-resume: the funnel STOPS here and init takes over. The user re-invokes `/craft:mockup` after init completes. If they already gave rich mockup detail before the gate, capture it to the notebook AFTER init exists (notebook needs a resolvable root) - never at the gate itself.
   - **Visual files present -> the cold path.** Set `MOCKUP_ROOT` to the git toplevel (`git rev-parse --show-toplevel`) when in a repo, else PWD - never a subdirectory. Every mockup write lives under `$MOCKUP_ROOT/.craft/`, created on demand - only the subdirectories the mockup itself needs. The cold path NEVER writes `.craft/.global-state` or `.craft/project.md`: their absence is craft's "not yet onboarded" signal, and writing either would silently kill the init offer. Run the funnel below reading `${CRAFT_PROJECT_ROOT:-.}` as `$MOCKUP_ROOT`.
+
+**Pre-flight copy rules (locked).** The two pre-flight questions below are transcribed copy - never re-voiced, never "improved". No pre-flight string may contain "guess" or "guessing": the alchemist reads real code on both paths (the never-fabricate rule below - "no default palette ever reaches a brief"), and guess-language is the generic-AI framing this funnel is not. Never escalate: this is one honest ask, all options stay first-class permanently, and no future pass may add urgency, warn harder about what is "lost", re-order or re-weight options, or otherwise tune this beat to drive init adoption. Init is never pitched as a feature list, and "Go from what's on disk" is never written as the lesser option - for someone whose shipped code already is what they want, it is the right call. The pre-flight is a substep of Brief: substeps never become tasks, so it gets no entry on the task rail.
+
+**Pre-flight (first mockup only) - Setup, then Scope.** Two conditional questions that teach what the funnel never says out loud: this is craft's expensive end, and init is a design session whose output these options would grow from. Both gate on the same check - `.craft/mockups/` holds no `*/record.md`, resolved against the funnel's own root (`$MOCKUP_ROOT` on the cold path, `${CRAFT_PROJECT_ROOT:-.}` warm), never PWD-relative and never the shell's Step 2 idiom, which resolves before `MOCKUP_ROOT` exists. The `mkdir` + `record.md` write below is what deletes them: a project that has mocked before sees neither question, and an answered-and-entered run is never re-asked. They are TWO SEPARATE AskUserQuestion calls, never batched into one widget (the solidify beat's one-call idiom does not apply here): Setup runs first because it can terminate the funnel, and Scope's trigger is evaluated only after Setup resolves to "Go from what's on disk" - a batched Scope answer would be collected and then discarded when "Init first" stops the run.
+
+**Setup** - fires on the cold path's visual-files-present branch only (the zero-visual-files branch above keeps its hard route to `/craft:init` - nothing on disk to go from, no question to ask), and only while the record check above is empty:
+
+```
+question: "These options can come from what's already on disk, or from what you're actually chasing right now. Bring inspiration in first, or just go from your existing code."
+header: "Setup"
+options:
+  - label: "Init first"
+    description: "The full session - pull colors from one site, type from another, riff until it's right. These options come from that."
+  - label: "Go from what's on disk"
+    description: "Reads your actual code, no reference brought in. Fast, and still real - just working from what you've already made, not what you're chasing next."
+```
+
+**If "Init first":** the funnel STOPS here and `/craft:init` takes over, under the zero-visual-files branch's exact rules: no confirmation AskUserQuestion (invoking the command is consent), no auto-resume - the user re-invokes `/craft:mockup` after init completes - and any rich mockup detail already given is captured to the notebook AFTER init exists, never at the gate itself. This exit happens BEFORE the record is created, so a user who returns still-cold (init never ran) is offered Setup again - deliberately: a still-cold return means they changed their mind, and the re-ask is the only door back to "Go from what's on disk". No marker is ever written on this exit.
+
+**If "Go from what's on disk":** continue to Scope.
+
+**Scope** - fires on any path, warm or cold, when the subject names a whole page or multi-section surface AND the record check above is empty. Single components - a nav, pricing cards, a hero, a modal - never trigger it. `{Section}` is interpolated from the subject and the surrounding code (the page's own first meaningful section), never hardcoded "hero":
+
+```
+question: "Full page means 3 options, up to 3 rounds - the big swing. Want the whole page now, or take {Section} first to see your range before you spend it all on page one?"
+header: "Scope"
+options:
+  - label: "Full page"
+    description: "All 3 rounds, the whole page. Go big now."
+  - label: "{Section} first"
+    description: "One section, same 3 rounds. Fast look at your range before you spend it all on page one."
+```
+
+The Scope answer settles the subject BEFORE the folder below is created, so a narrowed scope names the slug correctly and no orphan folder exists. A user who answered once - full page or section - made their standing decision; it is never re-asked on later mockups (the record they are about to create keeps both questions silent forever).
 
 **Forbidden locations - both paths, no exceptions:** mockup artifacts never go to `.scratch/`, the session scratchpad, `/tmp`, or any other improvised location. If `.craft/mockups/` does not exist, CREATE it at the anchor above - a missing `.craft/` is never license to divert; diverting is a broken run, not a judgment call.
 
@@ -188,6 +222,6 @@ The fork records the graduation, writes BOTH backlinks - record.md `graduated_to
 - **Story:** story-new's "From mockup" source (commands/references/story-from-mockup.md) does the pre-fill. The mockup's CSS is NORMATIVE there - ported, never reinterpreted.
 - **Park:** capture a notebook todo naming the mockup path. Pickup = todo done, then re-enter THIS destination choice against the still-converged record. Graduating a long-parked mockup first re-verifies the target surface still exists as mocked - structural drift is surfaced before porting.
 
-**Cold path (project not onboarded):** all three destinations stay available. Say ONE ignorable line before the destination question resolves into action - "Heads-up: /craft:init hasn't run here, so this lands in the project's .craft/ and gets picked up by the harness once init wires it in" - plain prose, never a fourth AskUserQuestion, said once. When invoking notebook-capture.sh or create-story.sh, pass the funnel's root explicitly as a command-scoped env var - `CRAFT_PROJECT_ROOT="$MOCKUP_ROOT" ...` - so their root resolution never guesses. The Tweak destination needs the same anchoring by a different route: the handoff to adhoc is a skill session, not a single script call, and on the cold path no session-persistent `CRAFT_PROJECT_ROOT` exists for its later bash commands to fall back on. Include the resolved root in the handoff brief ("cold project, root: [$MOCKUP_ROOT]") and instruct adhoc to prefix `CRAFT_PROJECT_ROOT="$MOCKUP_ROOT"` on every bash command it runs for this invocation - otherwise its bare `${CRAFT_PROJECT_ROOT:-.}` expansions resolve to whatever directory it happens to run from. Each destination creates only its own subdirectory on demand (`.craft/backlog/`, `.craft/notebook/`, `.craft/tweaks/`) - still no `.global-state`, no `project.md`, no scaffold. A later `/craft:init` discovers these artifacts; it never deletes them.
+**Cold path (project not onboarded):** all three destinations stay available. Say ONE ignorable line before the destination question resolves into action - "Heads-up: /craft:init hasn't run here, so this lands in the project's .craft/ and gets picked up by the harness once init wires it in" - plain prose, never an extra AskUserQuestion, said once. When invoking notebook-capture.sh or create-story.sh, pass the funnel's root explicitly as a command-scoped env var - `CRAFT_PROJECT_ROOT="$MOCKUP_ROOT" ...` - so their root resolution never guesses. The Tweak destination needs the same anchoring by a different route: the handoff to adhoc is a skill session, not a single script call, and on the cold path no session-persistent `CRAFT_PROJECT_ROOT` exists for its later bash commands to fall back on. Include the resolved root in the handoff brief ("cold project, root: [$MOCKUP_ROOT]") and instruct adhoc to prefix `CRAFT_PROJECT_ROOT="$MOCKUP_ROOT"` on every bash command it runs for this invocation - otherwise its bare `${CRAFT_PROJECT_ROOT:-.}` expansions resolve to whatever directory it happens to run from. Each destination creates only its own subdirectory on demand (`.craft/backlog/`, `.craft/notebook/`, `.craft/tweaks/`) - still no `.global-state`, no `project.md`, no scaffold. A later `/craft:init` discovers these artifacts; it never deletes them.
 
 No choice ("Choose destination" pending) leaves the record converged and the task open - never nag; the record's openness is independent bookkeeping. An explicit drop ("abandon it") sets `status: abandoned` and completes the task with a note. Abandoned mockups stay on disk; cleanup is manual.

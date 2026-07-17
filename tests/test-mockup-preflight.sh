@@ -1,0 +1,133 @@
+#!/bin/bash
+# test-mockup-preflight.sh - Guard Story 18's locked strings in the mockup funnel spec.
+# Doc-level assertions that the first-run pre-flight beat is specced as locked: the
+# Setup and Scope AUQ copy verbatim, the beat's position (after the cold-start
+# determination, before the mkdir anchor), the amended taste-AUQ invariant, the
+# never-escalate and scoped no-guess rules, the self-elimination property with its
+# one deliberate exception (Init-first exits before the record), the separate-calls
+# rule, and the survival of the load-bearing guards (:74 no-default-palette,
+# :88 (Recommended) marker, :92 substeps-never-tasks). Adjacent stories edit this
+# same shared file; a paraphrased rule or re-voiced copy should fail the suite.
+
+source "$(dirname "${BASH_SOURCE[0]}")/test_helper.sh"
+
+MOCKUP="$PLUGIN_ROOT/commands/references/mockup-inline.md"
+
+# The pre-flight beat, extracted for scoped assertions ("guess" legitimately appears
+# elsewhere in mockup-inline.md - "second-guessed" in the settle gate and "guesses"
+# in Step 6 - and the no-guess RULE statement itself sits above the beat heading,
+# outside this slice by design).
+BEAT_BLOCK="$(sed -n '/Pre-flight (first mockup only)/,/mkdir -p/p' "$MOCKUP")"
+
+# --- Position: the beat sits between the cold-start determination and the mkdir ---
+begin_test "pre-flight beat sits after the cold-start determination and before the mkdir"
+assert_file_exists "mockup-inline.md exists" "$MOCKUP"
+DET_LINE="$(grep -n 'Cold (no root resolves)' "$MOCKUP" | head -1 | cut -d: -f1)"
+BEAT_LINE="$(grep -n 'Pre-flight (first mockup only)' "$MOCKUP" | head -1 | cut -d: -f1)"
+MKDIR_LINE="$(grep -n 'mkdir -p' "$MOCKUP" | head -1 | cut -d: -f1)"
+POSITION="wrong"
+if [ -n "$DET_LINE" ] && [ -n "$BEAT_LINE" ] && [ -n "$MKDIR_LINE" ] \
+  && [ "$BEAT_LINE" -gt "$DET_LINE" ] && [ "$BEAT_LINE" -lt "$MKDIR_LINE" ]; then
+  POSITION="between"
+fi
+assert_eq "beat heading between determination and mkdir anchor" "between" "$POSITION"
+
+# --- Setup AUQ transcribed verbatim ---
+begin_test "Setup AUQ transcribed verbatim"
+assert_file_contains "Setup question line verbatim" 'These options can come from what'"'"'s already on disk, or from what you'"'"'re actually chasing right now. Bring inspiration in first, or just go from your existing code.' "$MOCKUP"
+assert_file_contains "Setup header present" 'header: "Setup"' "$MOCKUP"
+assert_file_contains "Init first label present" 'label: "Init first"' "$MOCKUP"
+assert_file_contains "Init first description verbatim" 'The full session - pull colors from one site, type from another, riff until it'"'"'s right. These options come from that.' "$MOCKUP"
+assert_file_contains "Go from disk label present" 'label: "Go from what'"'"'s on disk"' "$MOCKUP"
+assert_file_contains "Go from disk description verbatim" 'Reads your actual code, no reference brought in. Fast, and still real - just working from what you'"'"'ve already made, not what you'"'"'re chasing next.' "$MOCKUP"
+
+# --- Init first reuses the zero-visual-files rules ---
+begin_test "Init first reuses the zero-visual-files rules"
+assert_contains "funnel stops" 'the funnel STOPS here' "$BEAT_BLOCK"
+assert_contains "no confirmation AUQ" 'no confirmation AskUserQuestion' "$BEAT_BLOCK"
+assert_contains "no auto-resume" 'no auto-resume' "$BEAT_BLOCK"
+assert_contains "notebook capture after init exists" 'captured to the notebook AFTER init exists' "$BEAT_BLOCK"
+
+# --- Init-first exception: exits before the record, re-offer is deliberate ---
+begin_test "Init-first exception stated - still-cold return re-offers Setup deliberately"
+assert_contains "exit precedes the record" 'This exit happens BEFORE the record is created' "$BEAT_BLOCK"
+assert_contains "re-offer is deliberate" 'offered Setup again - deliberately' "$BEAT_BLOCK"
+assert_contains "no marker write on the exit" 'No marker is ever written on this exit' "$BEAT_BLOCK"
+
+# --- Scope AUQ transcribed verbatim with {Section} placeholder ---
+begin_test "Scope AUQ transcribed verbatim with {Section} placeholder"
+assert_file_contains "Scope question line verbatim" 'Full page means 3 options, up to 3 rounds - the big swing. Want the whole page now, or take {Section} first to see your range before you spend it all on page one?' "$MOCKUP"
+assert_file_contains "Scope header present" 'header: "Scope"' "$MOCKUP"
+assert_file_contains "Full page label present" 'label: "Full page"' "$MOCKUP"
+assert_file_contains "Full page description verbatim" 'All 3 rounds, the whole page. Go big now.' "$MOCKUP"
+assert_file_contains "Section-first label with literal placeholder" 'label: "{Section} first"' "$MOCKUP"
+assert_file_contains "Section-first description verbatim" 'One section, same 3 rounds. Fast look at your range before you spend it all on page one.' "$MOCKUP"
+assert_contains "never-hardcode-hero instruction present" 'never hardcoded "hero"' "$BEAT_BLOCK"
+
+# --- Triggers: Setup cold + first-mockup, Scope whole-page + first-mockup ---
+begin_test "Setup trigger is cold + first-mockup-only"
+assert_contains "Setup rides the visual-files-present branch" 'fires on the cold path'"'"'s visual-files-present branch only' "$BEAT_BLOCK"
+assert_contains "zero-visual-files branch keeps its hard route" 'keeps its hard route' "$BEAT_BLOCK"
+
+begin_test "Scope trigger is first-mockup-only and whole-page"
+assert_contains "warmth-independent trigger" 'fires on any path, warm or cold' "$BEAT_BLOCK"
+assert_contains "whole-page subject required" 'whole page or multi-section surface' "$BEAT_BLOCK"
+assert_contains "single-component subjects trigger no pre-flight" 'a nav, pricing cards, a hero, a modal - never trigger it' "$BEAT_BLOCK"
+assert_contains "prior answer stands" 'never re-asked on later mockups' "$BEAT_BLOCK"
+
+# --- Gate: record glob under the funnel's resolved root ---
+begin_test "gate check names the resolved root and the record glob"
+assert_contains "record.md glob named" 'holds no `\*/record.md`' "$BEAT_BLOCK"
+assert_contains "resolved against the funnel root" 'resolved against the funnel'"'"'s own root' "$BEAT_BLOCK"
+assert_contains "never PWD-relative" 'never PWD-relative' "$BEAT_BLOCK"
+assert_contains "shell Step 2 idiom excluded" 'never the shell'"'"'s Step 2 idiom' "$BEAT_BLOCK"
+
+# --- Ordering + separate calls ---
+begin_test "Setup precedes Scope with stated rationale, as two separate calls"
+SETUP_LINE="$(grep -n 'header: "Setup"' "$MOCKUP" | head -1 | cut -d: -f1)"
+SCOPE_LINE="$(grep -n 'header: "Scope"' "$MOCKUP" | head -1 | cut -d: -f1)"
+ORDER="wrong"
+if [ -n "$SETUP_LINE" ] && [ -n "$SCOPE_LINE" ] && [ "$SETUP_LINE" -lt "$SCOPE_LINE" ]; then
+  ORDER="setup-first"
+fi
+assert_eq "Setup block precedes Scope block" "setup-first" "$ORDER"
+assert_contains "termination rationale stated" 'Setup runs first because it can terminate the funnel' "$BEAT_BLOCK"
+assert_contains "two separate calls, never batched" 'TWO SEPARATE AskUserQuestion calls, never batched' "$BEAT_BLOCK"
+assert_contains "Scope evaluated only after Setup resolves" 'evaluated only after Setup resolves to "Go from what'"'"'s on disk"' "$BEAT_BLOCK"
+
+# --- Amended invariant ---
+begin_test "amended invariant names three taste + up to two pre-flight AUQs"
+assert_file_contains "amended taste count present" 'Exactly three taste AskUserQuestion calls exist' "$MOCKUP"
+assert_file_contains "pre-flight allowance present" 'Up to two first-run pre-flight AUQs' "$MOCKUP"
+assert_file_contains "retained taste-protection sentence verbatim" 'a widget between the user and their taste kills the funnel' "$MOCKUP"
+assert_file_not_contains "old exactly-three literal gone" 'Exactly three AskUserQuestion calls exist' "$MOCKUP"
+assert_file_not_contains "old never-add-a-fourth literal gone" 'Never add a fourth' "$MOCKUP"
+
+begin_test "no stale fourth remains"
+assert_file_not_contains "Step 6 count reference neutralized" 'never a fourth AskUserQuestion' "$MOCKUP"
+
+# --- Never-escalate + no-guess rules ---
+begin_test "never-escalate rule stated as locked constraint"
+assert_file_contains "escalation ban distinctive phrase" 'tune this beat to drive init adoption' "$MOCKUP"
+assert_file_contains "options stay first-class" 'all options stay first-class permanently' "$MOCKUP"
+assert_file_contains "disk option never the lesser" 'never written as the lesser option' "$MOCKUP"
+
+begin_test "no-guess rule stated, and no pre-flight string says guess (scoped)"
+assert_file_contains "no-guess rule stated" 'No pre-flight string may contain "guess" or "guessing"' "$MOCKUP"
+assert_not_contains "beat slice free of guess" 'guess' "$BEAT_BLOCK"
+assert_not_contains "beat slice free of Guess" 'Guess' "$BEAT_BLOCK"
+
+# --- Self-elimination ---
+begin_test "self-elimination stated - the run's own record creation deletes both questions"
+assert_contains "record write is the eraser" 'write below is what deletes them' "$BEAT_BLOCK"
+assert_contains "prior mockup silences both" 'a project that has mocked before sees neither question' "$BEAT_BLOCK"
+assert_contains "slug settles before the folder" 'settles the subject BEFORE the folder below is created' "$BEAT_BLOCK"
+
+# --- Load-bearing guards survive ---
+begin_test "load-bearing guards survive"
+assert_file_contains "no-default-palette contract intact" 'no default palette ever reaches a brief' "$MOCKUP"
+assert_file_contains "(Recommended) marker conditional intact" 'Include the muse (Recommended)' "$MOCKUP"
+assert_file_contains "substeps-never-tasks intact" 'Substeps never become tasks' "$MOCKUP"
+assert_file_contains "pre-flight named as substep with no rail entry" 'no entry on the task rail' "$MOCKUP"
+
+finish_tests

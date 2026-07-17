@@ -81,8 +81,8 @@ assert_file_contains "Polish structural rebrief records verbatim then classifies
 begin_test "mockup-inline load-bearing guards survive"
 assert_file_contains "DO-NOT-SIMPLIFY core sentence intact" 'paraphrasing destroys them' "$MOCKUP"
 assert_file_contains "sanctioned-exception note on the guard" 'sanctioned exception' "$MOCKUP"
-assert_file_contains "exactly-three-AUQ contract intact" 'Exactly three AskUserQuestion calls exist' "$MOCKUP"
-assert_file_contains "never-add-a-fourth intact" 'Never add a fourth' "$MOCKUP"
+assert_file_contains "taste-protection sentence intact" 'a widget between the user and their taste kills the funnel' "$MOCKUP"
+assert_file_contains "amended taste-AUQ budget intact" 'Exactly three taste AskUserQuestion calls exist' "$MOCKUP"
 
 RIFF_SKILL="$PLUGIN_ROOT/commands/craft-riff.md"
 

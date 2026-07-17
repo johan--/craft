@@ -2,6 +2,10 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.49 - 2026-07-17
+
+- Added a first-run pre-flight to the mockup funnel: on a project's first-ever mockup, craft now asks up front whether to run the init design session first or build from the code already on disk, and - for whole-page subjects - whether to mock one section first to see your range before spending all three rounds on the full page. Both questions disappear on their own once a first mockup record exists.
+
 ## 1.99.48 - 2026-07-17
 
 - Fixed the alignment check's scope-expansion follow-up: a synchronous agent spawn exposes no address to message, so the follow-up now re-spawns a fresh investigator seeded with the prior findings and the scope change - and never guesses at an address (a send to the agent's name fails). Warm-context reuse via background spawns is captured as a designed follow-up.
