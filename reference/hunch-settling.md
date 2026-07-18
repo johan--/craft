@@ -13,9 +13,13 @@ build rounds and never replaces it.
 ## The executable threshold
 
 The test, run silently on every reaction:
-**can I write the one-line alchemist brief using only the user's words?**
+**does the brief name a specific, boundable thing that changes - a property, a
+region, or another option's element - such that two different builders would
+make the same first move?**
+The plain-language gloss: can I write the one-line alchemist brief using only the user's words?
 A brief needs a target (which element or quality)
-and a direction (what it changes toward).
+and a direction (what it changes toward) - and the direction must carry its
+axis, or two builders diverge on the first move.
 If you would have to supply either noun yourself, the reaction is below the
 executable threshold - that gap is the hunch, and filling it silently with
 your own hypothesis is the bug this gate exists to kill.
@@ -42,12 +46,19 @@ exact thing that was pulling them.
    which usually means the direction is wrong at a level they can't name yet.
    Watch for it hardest late in a loop, where it mimics acceptance-fatigue but
    is not acceptance.
+6. **Unqualified magnitude or addition word** - a lone direction word with no
+   axis: "bigger," "more," "add colors," "less busy." One attractor, not two
+   (not signal 4's comparative), but the axis - which property, which region -
+   is still missing, and two builders would reach for different levers.
 
 ## Above the threshold - do nothing
 
 These proceed full blast, exactly as if this reference didn't exist:
 
 - **Target + direction in the user's words** - "header's too heavy, lighten it."
+  The axis is real (weight). Contrast "option C but bigger" - named target, lone
+  magnitude word, no axis (type? whitespace? viewport claim?): that one is
+  signal 6, below the threshold, however clear it sounds.
 - **A named donor** - "B with C's cards."
 - **Explicit delegation** - "just try something," "surprise me." This is a
   licensed full blast: the user handing you the hunch on purpose is not a gap
