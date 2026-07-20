@@ -5,8 +5,9 @@
 # before the mkdir anchor), the amended taste-AUQ invariant, the never-escalate and
 # scoped no-guess rules, the self-elimination property with its one deliberate
 # exception (Init-first exits before the record), and the survival of the
-# load-bearing guards (no-default-palette, (Recommended) marker, substeps-never-
-# tasks). The Scope AUQ was REMOVED at owner review 2026-07-17 (it minimalized the
+# load-bearing guards (no-default-palette, substeps-never-tasks; the muse
+# (Recommended) marker was removed by Story 20 - the muse path replaced it).
+# The Scope AUQ was REMOVED at owner review 2026-07-17 (it minimalized the
 # first-run wow) - a negative below guards against its return. Adjacent stories edit
 # this same shared file; a paraphrased rule or re-voiced copy should fail the suite.
 
@@ -102,7 +103,6 @@ assert_contains "prior mockup silences it" 'a project that has mocked before nev
 # --- Load-bearing guards survive ---
 begin_test "load-bearing guards survive"
 assert_file_contains "no-default-palette contract intact" 'no default palette ever reaches a brief' "$MOCKUP"
-assert_file_contains "(Recommended) marker conditional intact" 'Include the muse (Recommended)' "$MOCKUP"
 assert_file_contains "substeps-never-tasks intact" 'Substeps never become tasks' "$MOCKUP"
 assert_file_contains "pre-flight named as substep with no rail entry" 'no entry on the task rail' "$MOCKUP"
 

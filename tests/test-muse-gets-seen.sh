@@ -1,11 +1,13 @@
 #!/bin/bash
-# test-muse-gets-seen.sh - Guard Story 6's locked strings across the four spec files.
+# test-muse-gets-seen.sh - Guard Story 6's and Story 20's locked strings across the spec files.
 # Doc-level assertions that the muse-visibility edits are specced as locked: the
 # prose-then-widget turn presentation rule, the horizon line, the hard-rule annotations,
-# the briefing surfacing beats ("Muse's take:" / "Alchemist's take:"), the conditional
-# cold-mockup (Recommended) marker, and the Phase 0.5 Emotional Core sell. Adjacent
-# stories edit these same shared files; a paraphrased rule or a resurrected silent-fold
-# should fail the suite, not slip through review.
+# the briefing surfacing beats ("Muse's take:" / "Alchemist's take:"), the mockup
+# muse path (Story 20: one path, two doors - the reference file, the renamed warm
+# option, the design-empty automatic fork, muse_session semantics), and the Phase 0.5
+# Emotional Core sell. Adjacent stories edit these same shared files; a paraphrased
+# rule, a resurrected silent-fold, or a resurrected (Recommended) marker should fail
+# the suite, not slip through review.
 
 source "$(dirname "${BASH_SOURCE[0]}")/test_helper.sh"
 
@@ -66,30 +68,53 @@ assert_file_contains "no new AUQ at the surfacing beat" 'adds no AskUserQuestion
 assert_file_contains "brief enrichment still feeds Step 2" 'Store the agent briefing(s) as `ENRICHED_BRIEF`' "$SPARK"
 
 MOCKUP="$PLUGIN_ROOT/commands/references/mockup-inline.md"
+MUSE_PATH="$PLUGIN_ROOT/commands/references/mockup-muse-path.md"
 
-# The added Recommended-marker logic, extracted for a scoped negative assertion
-# ("cold" legitimately appears elsewhere in mockup-inline.md - Step 1's canonical
-# cold-start and the brief-loading line - so whole-file negatives can't be used).
-MARKER_BLOCK="$(sed -n "/The muse option's (Recommended) marker is conditional/,/\*\*If \"Include the muse\":\*\*/p" "$MOCKUP")"
-
-# --- Chunk 3: mockup brief surfaces the muse + conditional recommendation ---
-begin_test "mockup brief surfaces the muse briefing verbatim"
+# --- Story 20: the muse path reference exists and the funnel links it ---
+begin_test "muse path reference exists and the funnel routes both doors into it"
 assert_file_exists "mockup-inline.md exists" "$MOCKUP"
-assert_contains "muse take quoted on the mockup path" "Muse's take:" "$(grep "Muse's take:" "$MOCKUP")"
-assert_file_contains "prose only, no new widget" 'prose only, no new widget' "$MOCKUP"
-assert_file_contains "three-AUQ budget intact" 'the budget stays three AUQs' "$MOCKUP"
+assert_file_exists "mockup-muse-path.md exists" "$MUSE_PATH"
+assert_file_contains "funnel links the reference by plugin-root path" 'CLAUDE_PLUGIN_ROOT}/commands/references/mockup-muse-path.md' "$MOCKUP"
 
-begin_test "vibe AUQ conditions the Recommended marker on both files absent"
-assert_contains "marker block exists" 'conditional' "$MARKER_BLOCK"
-assert_contains "recommended label form present" 'Include the muse (Recommended)' "$MARKER_BLOCK"
-assert_contains "condition names tokens.yaml" 'tokens.yaml' "$MARKER_BLOCK"
-assert_contains "condition names locked.md" 'locked.md' "$MARKER_BLOCK"
-assert_contains "both-absent condition explicit" 'NEITHER' "$MARKER_BLOCK"
-assert_contains "unmarked when either exists" 'If either file exists' "$MARKER_BLOCK"
+begin_test "reference carries the register requirement and the authored widget"
+assert_file_contains "register requirement verbatim" 'every stance must fuse a CONCRETE, BUILDABLE design direction' "$MUSE_PATH"
+assert_file_contains "candidate directions section in the prompt" '## Candidate Directions' "$MUSE_PATH"
+assert_file_contains "one-shot muse spawn" 'subagent_type: "craft:muse"' "$MUSE_PATH"
+assert_file_contains "muse take quoted in the reference" "Muse's take:" "$MUSE_PATH"
+assert_file_contains "stances rendered verbatim" 'lifted VERBATIM' "$MUSE_PATH"
+assert_file_contains "briefing written before any widget" 'BEFORE any widget renders' "$MUSE_PATH"
+assert_file_contains "budget reading present" 'counts taste checkpoints, not widget renders' "$MUSE_PATH"
 
-begin_test "edit 5 does not mint a third 'cold'"
-assert_not_contains "marker block avoids the word cold" 'cold' "$MARKER_BLOCK"
-assert_not_contains "marker block avoids Cold too" 'Cold' "$MARKER_BLOCK"
+begin_test "reference carries the parse-guard checklist and retry handling"
+assert_file_contains "count check" '2-3 stances came back' "$MUSE_PATH"
+assert_file_contains "detail check" 'one concrete structural detail' "$MUSE_PATH"
+assert_file_contains "distinctness check" 'structurally different screens' "$MUSE_PATH"
+assert_file_contains "territory label spec" 'recognizable aesthetic territory' "$MUSE_PATH"
+assert_file_contains "brevity never fails a stance" 'Never fail a stance for brevity' "$MUSE_PATH"
+assert_file_contains "retry once on dead spawn or failed check" 're-spawn the muse ONCE' "$MUSE_PATH"
+assert_file_contains "second failure is a plain disclosure" "The muse isn't answering" "$MUSE_PATH"
+assert_file_not_contains "no inferred-directions fallback exists" 'fall back to plain' "$MUSE_PATH"
+
+begin_test "Door 1: warm option renamed, unmarked, widget pick is the only warm entry"
+assert_file_contains "option renamed" "Let's ask the muse" "$MOCKUP"
+assert_file_contains "muse option unmarked and listed last" 'the muse option stays unmarked, listed last' "$MOCKUP"
+assert_file_contains "widget pick is the only warm entry" 'The widget pick is the ONLY way into the muse path on a warm project' "$MOCKUP"
+
+begin_test "Door 2: design-empty fork enters the muse path automatically"
+assert_file_contains "both-absent condition explicit" 'NEITHER `.craft/design/tokens.yaml` NOR `.craft/design/locked.md`' "$MOCKUP"
+assert_file_contains "muse stances are the vibe question" "the muse's authored stances ARE the vibe question" "$MOCKUP"
+assert_file_contains "reuses step 1 facts, no re-scan" 'do not re-scan' "$MOCKUP"
+
+begin_test "muse_session in schema, guard, and recovery - never a re-anchor target"
+assert_file_contains "schema field present" 'muse_session:' "$MOCKUP"
+assert_file_contains "never-a-re-anchor-target semantics stated" 'NEVER a re-anchor target' "$MOCKUP"
+assert_file_contains "recovery reads it as a no-op" 'recovery reads it as a no-op' "$MOCKUP"
+
+begin_test "the old marker logic and silent enrichment stay dead"
+assert_file_not_contains "no (Recommended) muse marker returns" 'Include the muse (Recommended)' "$MOCKUP"
+assert_file_not_contains "no marker-position logic returns" 'Position follows the marker' "$MOCKUP"
+assert_file_not_contains "Muse's take lives in the reference, not the funnel" "Muse's take:" "$MOCKUP"
+assert_file_contains "three-AUQ budget prose intact verbatim" 'Exactly three taste AskUserQuestion calls exist' "$MOCKUP"
 
 INIT="$PLUGIN_ROOT/commands/craft-init.md"
 WORKSHOP="$PLUGIN_ROOT/docs/creative-workshop.md"
@@ -118,3 +143,5 @@ assert_file_contains "alchemist surfacing named in docs" "Alchemist's take:" "$W
 begin_test "README intent line stays Emotional-Core consistent"
 assert_file_contains "README distill line intact" "muse distills them into the project's Emotional Core" "$README"
 assert_file_contains "README cycle-reads line intact" 'Every cycle you plan later reads it' "$README"
+
+finish_tests

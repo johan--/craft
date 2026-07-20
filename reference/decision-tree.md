@@ -456,7 +456,7 @@ flowchart TD
     PREFLIGHT -->|Yes| SETUPQ["Pre-flight Setup AUQ:<br/>Init first (Recommended) /<br/>Go from what's on disk"]
     SETUPQ -->|"Init first"| TOINIT["Funnel stops -<br/>/craft:init takes over"]
     SETUPQ -->|"Go from disk"| BRIEF
-    PREFLIGHT -->|No| BRIEF["Brief: load tokens/locks,<br/>detect mobile, vibe AUQ<br/>(optional muse interrogation)"]
+    PREFLIGHT -->|No| BRIEF["Brief: load tokens/locks,<br/>detect mobile, vibe AUQ<br/>(design-empty: muse authors the question;<br/>warm: 'Let's ask the muse' option)"]
 
     BRIEF --> SPAWN["Spawn alchemist ONCE (Agent tool)<br/>id → record.md agent_session"]
     SPAWN --> DIVERGE["Diverge: 3 stances<br/>on one living page"]
@@ -792,7 +792,7 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 
 | Agent | Purpose |
 |-------|---------|
-| `muse` | Emotional job translator — interrogator for creative-spark Step 1.5 |
+| `muse` | Emotional job translator — interrogator for creative-spark Step 1.5; authors the mockup funnel's vibe question via the muse path |
 | `riff` | Creative collaboration partner - a thinking companion, not an instructor |
 | `alchemist` | CSS interaction physicist — interrogator for creative-spark Step 1.5 |
 | `conductor` | AI orchestration architect |
@@ -827,7 +827,7 @@ See `docs/agent-catalog.md` for full descriptions, model assignments, and usage 
 | `.craft/workflows/` | Workflow session state | per-session state dirs |
 | `.craft/notebook/` | Low-ceremony captured ideas and todos | idea / todo entries |
 | `.craft/research/` | Research and become branch files | `{slug}/_plan.md`, `NN-branch.md` |
-| `.craft/mockups/[date]-[slug]/record.md` | Mockup records - status is the ledger, open until graduated/abandoned | status, agent_session, solidify_outcome, graduated_to |
+| `.craft/mockups/[date]-[slug]/record.md` | Mockup records - status is the ledger, open until graduated/abandoned | status, agent_session, muse_session, solidify_outcome, graduated_to |
 
 ## Directory Structure Check Points
 

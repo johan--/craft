@@ -3,6 +3,8 @@
 <!-- DO NOT SIMPLIFY THIS SCHEMA. Mockup records anchor agent recovery, graduation
      backlinks, and status surfacing. Every frontmatter field below is read by name
      somewhere (status, craft:status; agent_session, recovery; graduated_to, ramps).
+     muse_session records a completed one-shot muse spawn - it is NEVER a re-anchor
+     target; recovery re-anchors against agent_session only.
      Verbatim reactions are the convergence history - paraphrasing destroys them.
      One sanctioned exception: a labeled `Settled:` sub-line beneath a verbatim
      reaction (see the settle gate) - explicitly derived, marked as derived, and
@@ -66,6 +68,7 @@ status: converging
 created: [YYYY-MM-DD]
 project: [project name]
 agent_session: [filled when the alchemist spawns]
+muse_session: [filled at muse spawn when the muse path runs - a completed one-shot artifact, NEVER a re-anchor target; "" if no agentId; empty when the muse never ran]
 solidify_outcome: [filled at the solidify beat]
 graduated_to: [filled at the destination fork]
 origin: [origin tweak name when launched from a taste-pass todo - empty otherwise]
@@ -91,9 +94,9 @@ origin: [origin tweak name when launched from a taste-pass todo - empty otherwis
 
 Then assemble the brief:
 
-1. **Load the constraints** - `.craft/design/tokens.yaml` and `.craft/design/locked.md` (which carries any design-vibe soul statement). These are think-with, not bible: deliberate breaks are licensed, announced when crossed, and tracked toward `## New Values` for the solidify beat. **When either file is absent (the cold path), there are simply no constraints to load** - assemble the brief from the vibe answer, the muse briefing (if invoked), and the alchemist's own reading of the surrounding code. Never fabricate constraints or import template values; no default palette ever reaches a brief.
+1. **Load the constraints** - `.craft/design/tokens.yaml` and `.craft/design/locked.md` (which carries any design-vibe soul statement). These are think-with, not bible: deliberate breaks are licensed, announced when crossed, and tracked toward `## New Values` for the solidify beat. **When either file is absent (the cold path), there are simply no constraints to load** - assemble the brief from the vibe beat's outcome (when the muse path ran, the full muse briefing + the chosen/typed stance verbatim; otherwise the vibe answer) and the alchemist's own reading of the surrounding code. Never fabricate constraints or import template values; no default palette ever reaches a brief.
 2. **Detect mobile - never ask.** Breakpoints in tokens.yaml, media queries in existing components, project.md signals. When detected, every option in every round ships a mobile layout, and verification covers both viewports.
-3. **The vibe question** - the flow's first AskUserQuestion:
+3. **The vibe question** - the flow's first AskUserQuestion. **The design-empty fork runs first (the automatic door):** Step 1's brief-loading already established whether each constraint file exists. If NEITHER `.craft/design/tokens.yaml` NOR `.craft/design/locked.md` exists, the vibe question below does NOT render - with no design constraints on disk, the emotional job is the only compass the brief has. Read `${CLAUDE_PLUGIN_ROOT}/commands/references/mockup-muse-path.md` and follow it: the muse's authored stances ARE the vibe question. This determination reuses the file-presence facts from step 1; do not re-scan. If either file exists, the vibe question renders as written - the muse option stays unmarked, listed last, after the inferred directions:
 
 ```
 question: "What should this feel like? Name a vibe, an inspiration, a mood - it seeds how different the three options dare to be."
@@ -101,13 +104,11 @@ header: "Vibe"
 options:
   - label: "[2-3 vibe directions inferred from the subject + session context]"
     description: "[one line each]"
-  - label: "Include the muse"
-    description: "Have the muse interrogate the emotional job first - its briefing becomes the divergence north star"
+  - label: "Let's ask the muse"
+    description: "The muse interrogates the emotional job, then asks its own question - you steer from its directions"
 ```
 
-**The muse option's (Recommended) marker is conditional.** Step 1's brief-loading already established whether each constraint file exists: if NEITHER `.craft/design/tokens.yaml` NOR `.craft/design/locked.md` exists, the label becomes "Include the muse (Recommended)" - with no design constraints on disk, the emotional job is the only compass the brief has. If either file exists, the label stays "Include the muse" unmarked - the constraints already carry direction. This determination reuses the file-presence facts from step 1; do not re-scan. Position follows the marker: when the marker fires, list the muse option FIRST - a recommendation buried at the bottom reads as an afterthought; when unmarked, it stays last, after the inferred directions.
-
-**If "Include the muse":** invoke the muse via Task (`subagent_type: "craft:muse"`) using creative-spark's interrogation prompt shape (skills/creative-spark/SKILL.md Step 1.6): pass the subject + session context, demand the structured briefing (Stated Problem / Underlying Emotional Job / Mechanic That Carries Feeling / Constraints for Option Generation), and forbid option generation. When the briefing returns, quote 2-3 verbatim lines of it to the user in the message body, prefixed "Muse's take: ..." - pull the vivid lines (Underlying Emotional Job / Mechanic That Carries Feeling), prose only, no new widget. Then the briefing enriches the brief - the muse never builds, and the budget stays three AUQs because this rides inside the vibe answer.
+**If "Let's ask the muse" (the chosen door):** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/mockup-muse-path.md` and follow it. The muse briefs and asks its own authored question - the user sees and steers the muse's work; silent brief enrichment is not a path. The widget pick is the ONLY way into the muse path on a warm project: never infer muse intent from the invocation wording or session context.
 
 Write the brief (vibe answer, constraints, mobile verdict) into `## Brief`. Create the task rail - six TaskCreate tasks, blockedBy-chained in order: **Brief -> Diverge -> Refine -> Polish -> Save (mockup + solidify tokens) -> Choose destination**. Task SUBJECTS are exactly the six beat names - `Brief`, `Diverge`, `Refine`, `Polish`, `Save`, `Choose destination` - no "Mockup:" prefix, no descriptive suffix; the subject is a label, detail goes in the task description. Substeps never become tasks. Skipped rounds complete-with-note. Polish holds ONE task across all its attempts. The rail ENDS at Choose destination - destination flows create their own tasks. Mark Brief complete.
 
@@ -115,7 +116,7 @@ Write the brief (vibe answer, constraints, mobile verdict) into `## Brief`. Crea
 
 Spawn the alchemist ONCE via the Agent tool (`subagent_type: "craft:alchemist"`), passing: the brief, the mockup folder path, the living-page rules below, and the round protocol. Write its agent id to record.md `agent_session` immediately. Every subsequent round is a SendMessage to that same agent - never a fresh spawn per round.
 
-**Recovery (designed, not hoped):** if the agent dies or the session breaks mid-funnel, re-anchor a fresh agent from record.md (brief, reactions so far, `## New Values`, any pending `## Polish Ledger` lines) + the current mockup.html - NEVER from transcript continuity alone. Update `agent_session` to the new id. This is why the record is written before anything else exists.
+**Recovery (designed, not hoped):** if the agent dies or the session breaks mid-funnel, re-anchor a fresh agent from record.md (brief, reactions so far, `## New Values`, any pending `## Polish Ledger` lines) + the current mockup.html - NEVER from transcript continuity alone. Update `agent_session` to the new id. Recovery re-anchors against `agent_session` ONLY - `muse_session` records a completed one-shot muse spawn and is NEVER a re-anchor target; recovery reads it as a no-op. This is why the record is written before anything else exists.
 
 **The living page:** the mockup is ONE page - `mockup.html`. Each round REPLACES its content, so the page only ever shows the current decision: all options at Diverge, the pick's variations at Refine, the finalist at Polish. Before each round transition, the outgoing round is archived to `rounds/round-N.html` (kept for resurrection, never rendered or linked); the new round is then EDITED into the living page, never rewritten from scratch. Presentation adapts to scope: component-scale options stack in real surrounding context (scroll to compare); page-scale options each fill the viewport behind a thin fixed top toggle bar (A/B/C). Every option is ISOLATED: its markup lives in its own container (`#option-a` / `#option-b` / `#option-c`) and every CSS selector it owns is scoped under that container's id - zero shared selectors between options beyond one common reset block. Unscoped styles bleeding across options is a broken build, not a style choice. Options render at REAL scale - never thumbnails, never zoomed-out previews, never shrunk to fit side-by-side. Toggle, replay buttons, and round label are visually distinct dev chrome - never part of the design, never ported.
 
@@ -134,7 +135,7 @@ The gate covers Diverge and Refine reactions and Polish structural rebriefs - th
 
 ## Step 3: Diverge (Round 1)
 
-Brief the alchemist: 3 genuinely different options - stances, not variations - each embedded in real surface context, seeded by the vibe answer (or muse briefing) as the divergence axis. **Diverge is the licensed-to-break round.** Each option names its stance/metaphor up front; at most ONE option may stay inside the project's current design language, and at least one must go further than the brief dared. Tokens and locks discipline Refine and Polish - the user's pick and the solidify beat are where boldness gets domesticated, never here. Three safe layouts in the current palette is a failed round. Verify, show the user, collect the reaction **conversationally** - which one pulls, what's wrong with the others, hybrids welcome.
+Brief the alchemist: 3 genuinely different options - stances, not variations - each embedded in real surface context, seeded by the vibe answer (or, when the muse path ran, the muse briefing + chosen stance) as the divergence axis. **Diverge is the licensed-to-break round.** Each option names its stance/metaphor up front; at most ONE option may stay inside the project's current design language, and at least one must go further than the brief dared. Tokens and locks discipline Refine and Polish - the user's pick and the solidify beat are where boldness gets domesticated, never here. Three safe layouts in the current palette is a failed round. Verify, show the user, collect the reaction **conversationally** - which one pulls, what's wrong with the others, hybrids welcome.
 
 Every reaction passes the settle gate above before it becomes the next round's brief. Write the verbatim reaction to `## Reactions`. Mark Diverge complete. If the user's pick is already final-grade ("that's exactly it, don't touch it"), Refine and Polish may complete-with-note - acceptance still runs Step 5's beats.
 
