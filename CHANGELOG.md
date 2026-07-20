@@ -2,6 +2,12 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.50 - 2026-07-20
+
+- Improved the mockup's first-run setup question after live testing: it now tells you craft hasn't met your taste yet and honestly describes what init's design session can do, instead of describing two doors neutrally.
+- Changed the vibe question so a recommended muse option leads the list instead of trailing the inferred directions.
+- Fixed mockup rounds silently converging to a single page: refine rounds always return variations unless you explicitly ask for one build, and vague reactions like "make it bigger" now get one clarifying question instead of a coin-flip guess.
+
 ## 1.99.49 - 2026-07-17
 
 - Added a first-run pre-flight to the mockup funnel: on a cold project's first-ever mockup, craft now asks up front whether to run the init design session first or build from the code already on disk. The question disappears on its own once a first mockup record exists.
