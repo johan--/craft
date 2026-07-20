@@ -35,7 +35,7 @@ assert_eq "beat heading between determination and mkdir anchor" "between" "$POSI
 
 # --- Setup AUQ transcribed verbatim ---
 begin_test "Setup AUQ transcribed verbatim"
-assert_file_contains "Setup question line verbatim" 'Craft hasn'"'"'t met your taste yet. Init is a short design session - sites you love, colors from one, type from another - and this mockup grows out of it. Or build from the code you already have.' "$MOCKUP"
+assert_file_contains "Setup question line verbatim" 'Craft hasn'"'"'t met your taste yet. Init can run a short design session - sites you love, colors from one, type from another - and this mockup grows from whatever it learns. Or build from the code you already have.' "$MOCKUP"
 assert_file_contains "Setup header present" 'header: "Setup"' "$MOCKUP"
 assert_file_contains "Init first label present with Recommended marker" 'label: "Init first (Recommended)"' "$MOCKUP"
 assert_file_contains "Init first description verbatim" 'The full session - pull colors from one site, type from another, riff until it'"'"'s right. The mockup grows out of that.' "$MOCKUP"
