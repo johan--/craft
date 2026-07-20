@@ -75,7 +75,7 @@ origin: [origin tweak name when launched from a taste-pass todo - empty otherwis
 ---
 
 ## Brief
-[vibe answer, constraints loaded, mobile verdict]
+[vibe answer - or full muse briefing + chosen stance when the muse path ran - constraints loaded, mobile verdict]
 
 ## Reactions
 [verbatim, per round - filled as rounds close]
@@ -110,11 +110,11 @@ options:
 
 **If "Let's ask the muse" (the chosen door):** Read `${CLAUDE_PLUGIN_ROOT}/commands/references/mockup-muse-path.md` and follow it. The muse briefs and asks its own authored question - the user sees and steers the muse's work; silent brief enrichment is not a path. The widget pick is the ONLY way into the muse path on a warm project: never infer muse intent from the invocation wording or session context.
 
-Write the brief (vibe answer, constraints, mobile verdict) into `## Brief`. Create the task rail - six TaskCreate tasks, blockedBy-chained in order: **Brief -> Diverge -> Refine -> Polish -> Save (mockup + solidify tokens) -> Choose destination**. Task SUBJECTS are exactly the six beat names - `Brief`, `Diverge`, `Refine`, `Polish`, `Save`, `Choose destination` - no "Mockup:" prefix, no descriptive suffix; the subject is a label, detail goes in the task description. Substeps never become tasks. Skipped rounds complete-with-note. Polish holds ONE task across all its attempts. The rail ENDS at Choose destination - destination flows create their own tasks. Mark Brief complete.
+Write the brief into `## Brief` - the vibe answer (or, when the muse path ran, the full muse briefing + the chosen/typed stance), the constraints, the mobile verdict. `## Brief` is the single source of truth for the alchemist: Step 2 passes this section whole, so anything not written here never reaches the builder. Create the task rail - six TaskCreate tasks, blockedBy-chained in order: **Brief -> Diverge -> Refine -> Polish -> Save (mockup + solidify tokens) -> Choose destination**. Task SUBJECTS are exactly the six beat names - `Brief`, `Diverge`, `Refine`, `Polish`, `Save`, `Choose destination` - no "Mockup:" prefix, no descriptive suffix; the subject is a label, detail goes in the task description. Substeps never become tasks. Skipped rounds complete-with-note. Polish holds ONE task across all its attempts. The rail ENDS at Choose destination - destination flows create their own tasks. Mark Brief complete.
 
 ## Step 2: The Alchemist (spawned once)
 
-Spawn the alchemist ONCE via the Agent tool (`subagent_type: "craft:alchemist"`), passing: the brief, the mockup folder path, the living-page rules below, and the round protocol. Write its agent id to record.md `agent_session` immediately. Every subsequent round is a SendMessage to that same agent - never a fresh spawn per round.
+Spawn the alchemist ONCE via the Agent tool (`subagent_type: "craft:alchemist"`), passing: the contents of record.md `## Brief` pasted whole and verbatim - never summarized, never re-authored - plus the mockup folder path, the living-page rules below, and the round protocol. Write its agent id to record.md `agent_session` immediately. Every subsequent round is a SendMessage to that same agent - never a fresh spawn per round.
 
 **Recovery (designed, not hoped):** if the agent dies or the session breaks mid-funnel, re-anchor a fresh agent from record.md (brief, reactions so far, `## New Values`, any pending `## Polish Ledger` lines) + the current mockup.html - NEVER from transcript continuity alone. Update `agent_session` to the new id. Recovery re-anchors against `agent_session` ONLY - `muse_session` records a completed one-shot muse spawn and is NEVER a re-anchor target; recovery reads it as a no-op. This is why the record is written before anything else exists.
 

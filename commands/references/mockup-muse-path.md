@@ -81,4 +81,4 @@ Quote 2-3 vivid verbatim briefing lines in prose first, prefixed "Muse's take: .
 
 ## 5. Assemble the brief and rejoin
 
-The brief to the alchemist = the full muse briefing + the chosen/typed stance verbatim + the loaded constraints + the mobile verdict. Rejoin the funnel at the task rail (mockup-inline.md Step 1 creates it after the brief write): the muse path is a Brief substep - no new task, no rail entry.
+The brief to the alchemist is record.md `## Brief` pasted whole and verbatim - the full muse briefing, the chosen/typed stance, the loaded constraints, and the mobile verdict, all already written there. The orchestrator never summarizes, compresses, or re-authors any part of it. Rejoin the funnel at the task rail (mockup-inline.md Step 1 creates it after the brief write): the muse path is a Brief substep - no new task, no rail entry.
