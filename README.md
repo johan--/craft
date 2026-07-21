@@ -163,7 +163,13 @@ Craft is a Claude Code plugin - it runs inside `claude` CLI sessions and adds op
 
 ## What you can do, and when
 
-**First session.** Install, run `/craft:init`, and ship one small thing - `/craft:mockup` on the surface you most want to elevate, `/craft:adhoc` for a bug or small tweak, or `/craft:story-new` → `/craft:story-implement` for something new. You'll see the implement → validate → refine loop in action and you'll have real work shipped within the hour.
+**First session.** Install, run `/craft` - it's the front door, and it knows what to do with a brand-new project. Then ship one small thing:
+
+- **Start building your taste with a mockup or a tweak.** `/craft:mockup` introduces muse and alchemist, your first two crystallized agents: muse asks what it should feel like, alchemist builds three live directions to react to - even in an empty folder. Or tweak something already built - an icon, a wording change. Either way, what you love gets remembered. That's the taste engine starting.
+- **Or fix that bug that's been hanging around.** `/craft:adhoc` names the root cause, checks its confidence with you, then fixes and validates. No ceremony.
+- **Or build something small and new.** `/craft:story-new` → `/craft:story-implement`, and watch the implement → validate → refine loop run for the first time.
+
+You don't have to type these commands, by the way - say it in your own words ("mock up a landing page", "that icon's wrong", "fix the login redirect") and craft opens the right door. Whichever it is, you'll have real work shipped within the hour.
 
 **By week two.** Plan a real cycle and run multiple stories through it. Watch the chunk-validator + refine-chunk loop catch failures and route them to fixes without you babysitting. Run the analyzer agents post-cycle via `/craft:analyze`. Consult one of the crystallized experts via `/craft:ask` when you're stuck on a design call.
 
