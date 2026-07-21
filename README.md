@@ -11,6 +11,8 @@ Craft is a Claude Code plugin that runs your work through a creative → impleme
 ![status](https://img.shields.io/badge/status-actively%20developed-brightgreen)
 ![requires](https://img.shields.io/badge/requires-Claude%20Code%202.1%2B-orange)
 
+**[Install](#install)** · [Getting Started](#getting-started) · [Commands](#commands) · [How it works](#how-craft-work-flows)
+
 **It steals your best ideas back.** You say "that's it!" after working through a tweak, and craft remembers. It waits, then brings that same taste back on a completely different feature - elevated. Keep going, and you'll catch yourself asking, "how did I do this?"
 
 ![Craft building its own repo page live - a terminal conversation on the left drives an adhoc tweak, while on the right the Craft Open Source interface assembles itself in response.](docs/media/craft-caught-in-the-act.gif)
