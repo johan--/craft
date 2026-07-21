@@ -114,9 +114,13 @@ You didn't ask for that one. Craft was paying attention.
 
 That's the real reason the notebook exists: **your taste compounds.** Every design you love is recorded, not spent - a vote for what "good" means in your project. And it climbs: the morphing glow you tweaked onto one flat card becomes the move craft proposes for the row of cards, then the page, then the DNA of a site-wide experience - every step still linked back to the card where it started. Most tools forget what you liked the moment the session ends. Craft keeps score and builds upward from it, until the work isn't just more you - it's you, *refined*.
 
-Craft holds up its end, too. Say "don't let me forget" in the middle of a story and craft offers the notebook - one ignorable line, never a popup - and the entry lands stamped with the story, cycle, or tweak that produced it. And when a build reaches a step only you can do - a deploy setting, a DNS record - Claude writes the full walkthrough into the book, tied to the work it belongs to, waiting for your hands.
+Craft holds up its end, too. Drop a deferral mid-story and craft offers the notebook - one ignorable line, never a popup:
 
-And the book remembers. Every entry knows when it was written and what it became - the one-line thought from three weeks ago is stamped with the story it turned into, and the story knows the line it grew from. Durable facts ride into every session as a dated index, bodies pulled only when they matter. Nothing in it is locked into a shape - a line can become a tweak, a story, an entire cycle, a mockup session - and nothing in it forgets where it came from.
+`"later"` · `"don't let me forget"` · `"side note"` · `"unrelated but"` · `"before I forget"` · `"for next time"` · `"remember to"`
+
+The entry lands stamped with the story, cycle, or tweak that produced it. And when a build reaches a step only you can do - a deploy setting, a DNS record - Claude writes the full walkthrough into the book, tied to the work it belongs to, waiting for your hands.
+
+And the book remembers. Every entry knows when it was written and what it became - the one-line thought from three weeks ago is stamped with the story it turned into, and the story knows the line it grew from. Nothing in it is locked into a shape - a line can become a tweak, a story, an entire cycle, a mockup session - and nothing in it forgets where it came from.
 
 *Capture syntax, lifecycle, and where files live: [Notebook](#notebook), below.*
 
