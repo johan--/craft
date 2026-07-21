@@ -210,6 +210,22 @@ You should see the Craft entry-point prompt. If you don't, run `/plugin` and che
 
 One thing to expect once craft is enabled: Claude starts hinting when a craft feature fits the moment - most visibly at session start, when a story or cycle completes, and when you make small tweaks and fixes. Say "don't let me forget..." mid-session and the orchestrator offers to drop it in your notebook - one ignorable line, never a popup. You don't need to memorize the command table below; the harness surfaces the right door.
 
+### Updating craft
+
+Craft updates ship frequently, and Claude Code does not auto-update third-party plugins - your install stays on its version until you tell it to move. To pick up the latest:
+
+```
+claude plugin marketplace update craft
+```
+
+Or turn on auto-update once and never think about it again:
+
+1. Run `/plugin`.
+2. Go to **Marketplaces** > **craft**.
+3. Select **Enable auto-update**.
+
+From then on, Claude Code checks for new versions shortly after each session starts and prompts `/reload-plugins` when one lands.
+
 ## Getting Started
 
 ### New project or existing?
