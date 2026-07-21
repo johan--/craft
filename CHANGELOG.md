@@ -2,6 +2,10 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.52 - 2026-07-20
+
+- Changed the mockup muse path to build-direct: the muse now authors exactly 3 candidate directions (with conviction, no ranking) and they build one-to-one as Diverge options A/B/C - no stance question to answer from prose. You aim by reacting to real builds. The taste-widget ceiling reads "at most three" to match.
+
 ## 1.99.51 - 2026-07-20
 
 - Added the muse path to the mockup funnel: on a design-empty project the muse now briefs the emotional job and authors the vibe question itself; on a design-rich project a "Let's ask the muse" option joins the vibe question. The muse's work is shown and steerable - silent brief enrichment is gone.
