@@ -75,7 +75,7 @@ assert_contains "shell Step 2 idiom excluded" 'never the shell'"'"'s Step 2 idio
 
 # --- Amended invariant ---
 begin_test "amended invariant names three taste + one pre-flight AUQ"
-assert_file_contains "amended taste count present" 'Exactly three taste AskUserQuestion calls exist' "$MOCKUP"
+assert_file_contains "amended taste count present" 'At most three taste AskUserQuestion calls exist' "$MOCKUP"
 assert_file_contains "pre-flight allowance present" 'One first-run pre-flight AUQ' "$MOCKUP"
 assert_file_contains "retained taste-protection sentence verbatim" 'a widget between the user and their taste kills the funnel' "$MOCKUP"
 assert_file_not_contains "old exactly-three literal gone" 'Exactly three AskUserQuestion calls exist' "$MOCKUP"
