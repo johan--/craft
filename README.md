@@ -52,9 +52,9 @@ Two of these are fitness apps, and they're genuinely different products - an ins
 
 Most Claude Code plugins ship a fixed set of helpers. Craft ships a workshop where you build your own - agents that argue from conviction, not a system prompt.
 
-Ask craft's `conductor` agent whether your agents should talk to each other:
+Craft's `conductor` is the AI-harness eagle eye craft itself is built under - every skill, agent, and hook in this repo was designed under its scrutiny. Ask it whether telling Claude "don't touch prod" actually protects you:
 
-> "We need agents to talk to each other" - you almost certainly need orchestrated specialization (agents deliver to a spec), not collaboration. Multi-agent swarms fail 68% of the time. Hierarchical multi-agent fails 36%. Orchestrated pipeline: 0%.
+> "You can, and it'll work about 95% of the time - which means it's guaranteed to fail on the exact run you can least afford it to. Instructions are guidance, not enforcement; a rule in your CLAUDE.md is a request the model can starve out under context pressure. If breaking this would actually hurt you, that's not a prompt - that's a hook. Exit code 2 blocks. A sentence just hopes."
 
 That's not a system prompt. It's a crystallized practitioner. `/craft:become` studies a tool, role, or person and turns it into a portable agent that argues from scar tissue earned at 2 AM on run 50 - not read from docs.
 
