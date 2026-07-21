@@ -20,7 +20,7 @@ claude plugin marketplace add drobins25/craft
 claude plugin install craft@craft
 ```
 
-Then enable it once inside Claude Code - [full install steps](#install).
+Then start Claude Code and run `/craft` - [full install notes](#install).
 
 **It steals your best ideas back.** You say "that's it!" after working through a tweak, and craft remembers. It waits, then brings that same taste back on a completely different feature - elevated. Keep going, and you'll catch yourself asking, "how did I do this?"
 
@@ -189,9 +189,7 @@ You don't have to type these commands, by the way - say it in your own words ("m
 
 > Requires Claude Code 2.1 or later. Tested on macOS and Linux; on Windows, WSL is recommended (native + Git Bash should work but is untested).
 
-Two commands to install, then a one-time enable in `/plugin` - about a minute, start to finish.
-
-From your terminal, run these two commands:
+Two commands from your terminal, then launch Claude Code - about a minute, start to finish.
 
 ```
 claude plugin marketplace add drobins25/craft
@@ -200,11 +198,7 @@ claude plugin install craft@craft
 
 The first command registers the **craft** marketplace by cloning this repo to `~/.claude/plugins/marketplaces/craft/`. The second installs the plugin from it.
 
-Then, inside a Claude Code session:
-
-1. Run `/plugin` - the **craft** marketplace (drobins25/craft) should be listed.
-2. Go to **Browse plugins** > **craft** > **Enable plugin**.
-3. Run `/reload-plugins`.
+Then start Claude Code - the plugin loads on launch. (Already in a session? Run `/reload-plugins` instead.)
 
 Verify it worked:
 
@@ -212,7 +206,7 @@ Verify it worked:
 /craft
 ```
 
-You should see the Craft entry-point prompt.
+You should see the Craft entry-point prompt. If you don't, run `/plugin` and check that the **craft** marketplace (drobins25/craft) is listed with the plugin installed.
 
 One thing to expect once craft is enabled: Claude starts hinting when a craft feature fits the moment - most visibly at session start, when a story or cycle completes, and when you make small tweaks and fixes. Say "don't let me forget..." mid-session and the orchestrator offers to drop it in your notebook - one ignorable line, never a popup. You don't need to memorize the command table below; the harness surfaces the right door.
 
