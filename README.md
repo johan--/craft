@@ -4,7 +4,9 @@
 
 > **Stop Vibing. Start Crafting.**
 
-Craft is a Claude Code plugin that runs your work through a creative → implement → review loop, with a workshop for building expert agents you consult along the way.
+Claude Code plugin: guided + controlled development orchestration harness with built-in workflow + state management, for designing + building durable, production-ready software through the entire product lifecycle - new projects or existing codebases.
+
+Your codebase is read-only by default. Changes never land as a side effect of asking a question - every write goes through a channel you opened: a planned story, an investigated fix, a live tweak, or an approved one-off.
 
 ![version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdrobins25%2Fcraft%2Fmain%2F.claude-plugin%2Fplugin.json&query=%24.version&label=version&color=blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
