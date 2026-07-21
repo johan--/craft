@@ -140,7 +140,7 @@ Most tools in this space are a different shape than Craft. Here's the lay of the
 | OpenHands, Aider | Standalone agents that bring their own runtime to drive your repo | You want an agent that owns the terminal |
 | Cursor | An AI-native editor | You want AI woven into where you type |
 | Agent OS | A tool-agnostic spec layer you drop into any assistant | You want portable specs across tools |
-| **Craft** | **A plugin inside Claude Code that opinionates the loop above the model** | **You want a paved workflow inside the session you're already in** |
+| **Craft** | **A plugin inside Claude Code that paves the workflow and gates the writes - changes land only through channels you open** | **You want agent speed without handing over custody of your codebase** |
 
 Craft doesn't compete with LangGraph at the SDK layer - it adds creative ideation, locked decisions, checkpointed execution, and crystallized expert agents on top of the Claude Code session you already have.
 
