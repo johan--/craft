@@ -43,7 +43,8 @@ assert_not_contains "no source enumeration in the block" 'Google Fonts' "$TOOL_N
 # --- Consumer: the orchestrator's fetch flow ---
 begin_test "sources are pinned - Google Fonts and official icon repos"
 assert_file_contains "typeface source pinned" 'Google Fonts for typefaces' "$MOCKUP"
-assert_file_contains "icon sources pinned" 'the official Lucide, Phosphor, or Heroicons repositories' "$MOCKUP"
+assert_file_contains "icon sources pinned" 'the jsDelivr CDN mirror of the official Lucide, Phosphor, or Heroicons packages' "$MOCKUP"
+assert_file_contains "per-file GitHub raw loops banned" 'Never loop per-file over raw.githubusercontent.com' "$MOCKUP"
 assert_file_contains "no other origin ever" 'No other origin is ever fetched from' "$MOCKUP"
 
 begin_test "the orchestrator fetches into the mockup's assets folder"

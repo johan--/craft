@@ -2,6 +2,14 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 1.99.54 - 2026-07-22
+
+- Added real fonts and icons to mockups. When a mockup can't be judged fairly with a stand-in - the design needs the actual typeface, the actual icon set - craft now fetches the real thing from trusted open-license sources and builds it into the page. Nothing is installed into your project, and the mockup stays a single self-contained file that works anywhere. Licensed fonts craft can't fetch get one honest line and a tuned stand-in instead.
+- Added memory for that material: when the mockup grows into a story or tweak, craft remembers which font or icon set you chose and installs it the way your project expects, instead of pasting the mockup's embedded copy into your code.
+- Fixed slow, unreliable icon fetching: icons now arrive in seconds instead of minutes, a renamed icon resolves itself automatically, and an icon that genuinely doesn't exist is called out instead of silently left off the page.
+- Changed git pushes: craft never approves a push for you anymore. It can still block a risky one, but a clean push always waits for your yes.
+- Changed the mockup's muse option label to say what it does: "Let the muse drive."
+
 ## 1.99.52 - 2026-07-20
 
 - Changed the mockup muse path to build-direct: the muse now authors exactly 3 candidate directions (with conviction, no ranking) and they build one-to-one as Diverge options A/B/C - no stance question to answer from prose. You aim by reacting to real builds. The taste-widget ceiling reads "at most three" to match.

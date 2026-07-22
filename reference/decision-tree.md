@@ -456,7 +456,7 @@ flowchart TD
     PREFLIGHT -->|Yes| SETUPQ["Pre-flight Setup AUQ:<br/>Init first (Recommended) /<br/>Go from what's on disk"]
     SETUPQ -->|"Init first"| TOINIT["Funnel stops -<br/>/craft:init takes over"]
     SETUPQ -->|"Go from disk"| BRIEF
-    PREFLIGHT -->|No| BRIEF["Brief: load tokens/locks,<br/>detect mobile<br/>(design-empty: muse authors 3 directions,<br/>no vibe AUQ - builds direct to Diverge;<br/>warm: vibe AUQ with 'Let's ask the muse' option)"]
+    PREFLIGHT -->|No| BRIEF["Brief: load tokens/locks,<br/>detect mobile<br/>(design-empty: muse authors 3 directions,<br/>no vibe AUQ - builds direct to Diverge;<br/>warm: vibe AUQ with 'Let the muse drive' option)"]
 
     BRIEF --> SPAWN["Spawn alchemist ONCE (Agent tool)<br/>id → record.md agent_session"]
     SPAWN --> DIVERGE["Diverge: 3 stances<br/>on one living page"]
