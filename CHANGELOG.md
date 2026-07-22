@@ -2,6 +2,23 @@
 
 Notable, user-facing changes per version. Internal changes (tests, refactors, contributor tooling) bump the version without an entry, so version numbers here may skip.
 
+## 2.0.0 - 2026-07-22
+
+Craft 2.0 is the answer to the fairest criticism the first release got: a hard gate between Claude and your code is only safe until the ceremony makes you want to skip it - and a gate you skip once was never a gate, it was a suggestion. The 2.0 line taught craft to route instead of stop. Your codebase is still read-only by default, but a blocked write now hands Claude the doors that can open it - an investigated fix, a live tweak, a planned story - each with its own machinery to run before anything lands, and every one of them ending at your approval. Same strictness, a fraction of the friction.
+
+And the records that killed the ceremony became the feature nobody planned: every reaction you give gets filed, so a pile of "Love it"s is literally your taste, sitting on file - and craft builds with it next time without being asked.
+
+The pillars of the 2.0 line, in the order you'll probably meet them:
+
+- **Live mockups.** Name something visual and `/craft:mockup` puts three genuinely different options in your browser - real scale, real context, at most one allowed to play it safe. You converge by reacting in plain words, watch micro-adjustments land in the open page, and accept when it's right. Works on a brand-new project with no setup at all.
+- **A muse you can hear.** On a project with no design identity yet, craft's muse briefs the emotional job in its own words - quoted to you, never silently folded in - and authors the three directions the first round builds. Init distills what you're making into an Emotional Core that every later decision can feel.
+- **Real materials.** When a mockup needs the actual typeface or icon set to be judged fairly, craft fetches the real thing from trusted open-license sources and builds it in. Nothing installs into your project, and when the design graduates, craft remembers what you chose and installs it the way your project expects.
+- **Taste that compounds.** Accept a tweak with "Love it" and it doesn't just ship - it's remembered. Once enough loved changes accrue, the Taste Pass offers a victory lap: craft scouts other surfaces the same taste could reach and brings them to you, unprompted. Approved designs solidify into tokens that every later build is checked against.
+- **Questions worth answering.** Craft's planning and alignment questions now ask the way a senior engineer would: plain language, real options only, the consequence of each choice up front, and your answers saved the moment you give them.
+- **A gate that earns the trust.** Quality gates fingerprint the toolchains your repo actually has, validation only runs commands you've verified, and craft never approves a git push on your behalf - a clean push waits for your yes, every time.
+
+Everything below this entry is the receipt trail: the 1.99 line is where each of these was built, tested live, and hardened.
+
 ## 1.99.54 - 2026-07-22
 
 - Added real fonts and icons to mockups. When a mockup can't be judged fairly with a stand-in - the design needs the actual typeface, the actual icon set - craft now fetches the real thing from trusted open-license sources and builds it into the page. Nothing is installed into your project, and the mockup stays a single self-contained file that works anywhere. Licensed fonts craft can't fetch get one honest line and a tuned stand-in instead.
