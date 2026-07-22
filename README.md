@@ -1,4 +1,4 @@
-![Craft - a Claude Code plugin. Stop vibing, start crafting. Craft steals your best ideas back: you say "that's it!" after working through a tweak, and craft remembers - then brings that taste back on a completely different feature later, elevated.](docs/media/hero.svg)
+![Craft - a Claude Code plugin. Claude proposes. You decide. Craft builds. Stop Vibing. Start Crafting. Your codebase is read-only until a tweak, a fix, or a story opens it. Claude proposes a researched plan, you decide, and everything that lands on disk goes on file. And your taste compounds - say "Love it!" once, and craft builds with it next time, without being asked.](docs/media/hero.svg)
 
 # Craft
 
