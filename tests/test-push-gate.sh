@@ -82,8 +82,9 @@ assert_contains "reason names the secret path" ".env" "$OUT"
 rm -rf "$TEST_DIR"
 echo ""
 
-# Test 3: Explicit allow on clean tree + triaged ledger (not silence)
-begin_test "Explicit allow on clean tree and triaged ledger"
+# Test 3: Abstains on clean tree + triaged ledger - the gate never approves a
+# push, so the user's own permission flow decides
+begin_test "Abstains on clean tree and triaged ledger"
 
 TEST_DIR=$(mktemp -d)
 mkdir -p "$TEST_DIR/.craft"
@@ -96,7 +97,7 @@ EXIT_CODE=$?
 set -e
 
 assert_eq "exits 0" "0" "$EXIT_CODE"
-assert_contains "emits explicit allow (silence would prompt)" '"permissionDecision": "allow"' "$OUT"
+assert_eq "no output (never approves - user's permission flow decides)" "" "$OUT"
 
 rm -rf "$TEST_DIR"
 echo ""

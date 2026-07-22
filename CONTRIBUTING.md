@@ -120,7 +120,7 @@ bash scripts/check-doc-drift.sh   # exit 0 = clean, exit 1 = drift (prints exact
 
 It derives every expected value from source (`ls agents/*.md`, etc.) and never hardcodes a count. Run it after any change that adds, renames, or removes a command, skill, or agent. It also sanity-checks `CHANGELOG.md` (the newest entry can't be ahead of the plugin version) and, when there are unpushed `feat:` commits, requires a changelog change in that range - a feature can't ship without release notes.
 
-Maintainers can wire it as a local pre-push gate so a drifted `git push` is blocked in-session: add a `PreToolUse` hook (matcher `Bash`, `if: "Bash(git push *)"`) to your local, gitignored `.claude/settings.local.json` pointing at `scripts/pre-push-gate.sh`. That registration stays local; the check script is the shared, version-controlled piece (and drops into CI unchanged).
+Maintainers can wire it as a local pre-push gate so a drifted `git push` is blocked in-session: keep a small wrapper script in your local, gitignored `.claude/hooks/` that runs `scripts/check-doc-drift.sh` and emits a PreToolUse permission decision, and register it in `.claude/settings.local.json` as a `PreToolUse` hook (matcher `Bash`, `if: "Bash(git push *)"`). The wrapper and its registration stay local; the check script is the shared, version-controlled piece (and drops into CI unchanged).
 
 This is contributor tooling for developing craft itself - it has no role in projects built *with* craft.
 

@@ -7,11 +7,11 @@
 #   2. Secret-shaped paths in the outgoing range @{u}..HEAD, matched against
 #      the shared deny-pattern list (secret-deny-patterns.sh).
 #
-# On a clean tree with a triaged ledger it emits an EXPLICIT allow: a
-# PreToolUse hook that exits 0 with no output does NOT approve the call
-# (verified against the hooks docs - "staying silent doesn't approve it"),
-# and auto-approve-plugin-scripts.sh deliberately abstains on git push, so
-# without this allow every plain push would fall to a permission prompt.
+# On a clean tree with a triaged ledger it stays SILENT - no allow, no deny.
+# The gate only ever blocks; it never grants push approval. Combined with
+# auto-approve-plugin-scripts.sh abstaining on git push, a clean push falls
+# through to the user's own permission flow (prompt or their allowlist).
+# Craft never decides that a push is approved - only the user does.
 #
 # Output is exit-0 JSON (hookSpecificOutput.permissionDecision) - NEVER
 # exit 2, which can make the model stop instead of acting on the reason.
@@ -86,12 +86,6 @@ ${SECRETS}Remove these from the outgoing history before pushing. The pattern lis
   fi
 fi
 
-# --- Clean: explicit allow so plain pushes stay frictionless ---
-jq -n '{
-  hookSpecificOutput: {
-    hookEventName: "PreToolUse",
-    permissionDecision: "allow",
-    permissionDecisionReason: "craft push gate: no untriaged leftovers, no secret-shaped outgoing paths"
-  }
-}'
+# --- Clean: abstain. Approving a push is never craft's call - the user's own
+# permission flow (prompt or allowlist) decides.
 exit 0

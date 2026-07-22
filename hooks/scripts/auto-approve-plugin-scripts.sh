@@ -28,9 +28,9 @@ if echo "$COMMAND" | grep -qE 'git\s+push\s+.*--force'; then
   exit 0
 fi
 
-# Git: any push - abstain entirely; push-gate.sh owns the push decision
-# (it denies on custody violations and explicitly allows clean pushes).
-# Emitting allow here could preempt the gate's deny.
+# Git: any push - abstain entirely; push-gate.sh denies on custody violations
+# and otherwise abstains too, so a clean push always falls through to the
+# user's own permission flow. Emitting allow here could preempt the gate's deny.
 if echo "$COMMAND" | grep -qE '(^|\s)git\s+push'; then
   exit 0
 fi
